@@ -1,0 +1,7 @@
+TEAM_ID=
+
+PRODUCT_NAME=MapleCalendar
+PRODUCT_BUNDLE_IDENTIFIER=com.sixclassguys.maplecalendar.MapleCalendar$(TEAM_ID)
+
+CURRENT_PROJECT_VERSION=1
+MARKETING_VERSION=1.0
