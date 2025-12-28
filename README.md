@@ -1,39 +1,34 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# 🍄 메이플 캘린더
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+> "오늘 진행하는 이벤트가 뭐지? 이벤트가 너무 많아서 모르겠네…"
+>
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+### 그런 메붕이들을 위한 이벤트 일정 알리미, 메이플 캘린더
+- 수많은 이벤트 일정을 한 눈에 확인하자
+- 오늘 무슨 이벤트가 종료되는지 알림받자
+- 특정 날짜에 무슨 이벤트가 있는지 숙지하자
+- 그 외에 간단하게 내 캐릭터의 현재 상태를 알아보자
+&nbsp;
 
-* [/shared](./shared/src) is for the code that will be shared between all targets in the project.
-  The most important subfolder is [commonMain](./shared/src/commonMain/kotlin). If preferred, you
-  can add code to the platform-specific folders here too.
+## 📒 주요 기능
+| 기능               | 설명                                     |
+|------------------|----------------------------------------|
+| 📡 기능            | 설명                                     |
 
-### Build and Run Android Application
+&nbsp;
+## ⚒ 기술 스택
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+&nbsp;
 
-### Build and Run iOS Application
+## 📂 프로젝트 구조
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+### 시스템 아키텍처
 
----
+### ER Diagram
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+&nbsp;
+
+## 📌 기타 정보
+<a href="https://www.notion.so/6-XXX-2d6508dbbd51816d8936f12252e00abf?source=copy_link">
+  <img alt="Static Badge" src="https://img.shields.io/badge/Notion-%2523000000.svg?style=for-the-badge&logo=notion&logoColor=white&labelColor=black&color=black">
+</a>
