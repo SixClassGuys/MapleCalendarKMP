@@ -1,25 +1,47 @@
 package com.sixclassguys.maplecalendar
 
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.LaunchedEffect
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.sixclassguys.maplecalendar.presentation.NotificationViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+        // 알림 권한 요청 (안드로이드 13 이상)
+        askNotificationPermission(this)
+
         setContent {
+            val viewModel: NotificationViewModel = koinViewModel()
+            LaunchedEffect(Unit) {
+                viewModel.initNotification()
+            }
+
             App()
         }
     }
 }
 
-@Preview
-@Composable
-fun AppAndroidPreview() {
-    App()
+private fun askNotificationPermission(activity: Activity) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                101
+            )
+        }
+    }
 }
