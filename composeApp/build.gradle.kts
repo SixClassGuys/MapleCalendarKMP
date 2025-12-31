@@ -20,6 +20,9 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+
+            // Android용 DataStore (Context 관련 기능 때문)
+            implementation("androidx.datastore:datastore-preferences:1.1.1")
         }
         commonMain.dependencies {
             // Shared Component
@@ -50,6 +53,10 @@ kotlin {
 
             // Coroutines
             implementation(libs.kotlinx.coroutines.core)
+
+            // DataStore
+            implementation("androidx.datastore:datastore-preferences-core:1.1.1")
+            implementation("androidx.datastore:datastore:1.1.1")
 
             // Firebase Messaging
             implementation("dev.gitlive:firebase-messaging:2.4.0")

@@ -46,6 +46,10 @@ kotlin {
             // Coroutines
             implementation(libs.kotlinx.coroutines.core)
 
+            // DataStore
+            implementation("androidx.datastore:datastore-preferences-core:1.1.1")
+            implementation("androidx.datastore:datastore:1.1.1")
+
             // Firebase Messaging
             implementation("dev.gitlive:firebase-messaging:2.4.0")
 
@@ -54,14 +58,21 @@ kotlin {
         }
 
         androidMain.dependencies {
-            // Android 전용 엔진 및 Koin
+            // Android 전용 엔진(OkHttp) 및 Koin
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
+
+            // Android용 DataStore (Context 관련 기능 때문)
+            implementation("androidx.datastore:datastore-preferences:1.1.1")
         }
 
         iosMain.dependencies {
-            // iOS 전용 엔진 (Darwin)
+            // iOS 전용 엔진(Darwin) 및 Koin
             implementation(libs.ktor.client.darwin)
+            implementation(libs.koin.android)
+
+            // Android용 DataStore (Context 관련 기능 때문)
+            implementation("androidx.datastore:datastore-preferences:1.1.1")
         }
 
         commonTest.dependencies {
