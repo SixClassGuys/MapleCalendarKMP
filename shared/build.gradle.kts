@@ -32,6 +32,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.lifecycle.viewmodel.compose)
 
+            // Datetime
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+
             // Ktor
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)

@@ -35,10 +35,18 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.materialIconsExtended)
 
             // ViewModel
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
+            // Datetime
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+
+            // Coil core 및 Compose 지원
+            implementation("io.coil-kt.coil3:coil-compose:3.0.0-rc01")
+            implementation("io.coil-kt.coil3:coil-network-ktor3:3.0.0-rc01")
 
             // Ktor
             implementation(libs.ktor.client.core)
