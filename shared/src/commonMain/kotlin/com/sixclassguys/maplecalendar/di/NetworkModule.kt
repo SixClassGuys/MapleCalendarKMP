@@ -1,5 +1,7 @@
 package com.sixclassguys.maplecalendar.di
 
+import com.sixclassguys.maplecalendar.data.remote.datasource.EventDataSource
+import com.sixclassguys.maplecalendar.data.remote.datasource.EventDataSourceImpl
 import com.sixclassguys.maplecalendar.data.remote.datasource.NotificationDataSource
 import com.sixclassguys.maplecalendar.data.remote.datasource.NotificationDataSourceImpl
 import io.ktor.client.*
@@ -37,4 +39,7 @@ val networkModule = module {
 
     // Notification DataSource 객체 주입
     single<NotificationDataSource> { NotificationDataSourceImpl(get()) }
+
+    // Event DataSource 객체 주입
+    single<EventDataSource> { EventDataSourceImpl(get()) }
 }
