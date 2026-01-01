@@ -6,6 +6,8 @@ import kotlinx.datetime.LocalDate
 
 sealed class CalendarIntent {
 
+    data object Refresh : CalendarIntent()
+
     data class ChangeMonth(val offset: Int) : CalendarIntent()
 
     data class SelectDate(val date: LocalDate) : CalendarIntent()

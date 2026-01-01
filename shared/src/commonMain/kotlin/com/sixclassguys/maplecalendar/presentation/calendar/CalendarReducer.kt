@@ -42,6 +42,10 @@ class CalendarReducer {
 
     fun reduce(currentState: CalendarUiState, intent: CalendarIntent): CalendarUiState {
         return when (intent) {
+            is CalendarIntent.Refresh -> {
+                currentState.copy(isLoading = true)
+            }
+
             is CalendarIntent.ChangeMonth -> {
                 val targetDate = getLocalDateByOffset(intent.offset)
                 currentState.copy(
@@ -58,11 +62,14 @@ class CalendarReducer {
                         isLoading = false,
                         eventsMap = currentState.eventsMap + (intent.key to result.data)
                     )
+
                     is ApiState.Error -> currentState.copy(
                         isLoading = false,
                         errorMessage = result.message
                     )
+
                     is ApiState.Loading -> currentState.copy(isLoading = true)
+
                     else -> currentState
                 }
             }

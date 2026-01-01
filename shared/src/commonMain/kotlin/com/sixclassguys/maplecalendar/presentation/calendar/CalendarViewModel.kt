@@ -42,6 +42,11 @@ class CalendarViewModel(
 
         // 부수 효과 처리 (네트워크 통신 등)
         when (intent) {
+            is CalendarIntent.Refresh -> {
+                val key = "${uiState.value.year}-${uiState.value.month.number}"
+                loadEventsFromServer(uiState.value.year, uiState.value.month.number, key)
+            }
+
             is CalendarIntent.ChangeMonth -> {
                 val targetDate = getLocalDateByOffset(intent.offset)
                 val key = "${targetDate.year}-${targetDate.monthNumber}"
