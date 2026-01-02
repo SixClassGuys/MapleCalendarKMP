@@ -6,6 +6,7 @@ import kotlinx.datetime.Month
 
 data class CalendarUiState(
     val isLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
     val year: Int = 0,
     val month: Month = Month.JANUARY,
     val days: List<LocalDate?> = emptyList(),

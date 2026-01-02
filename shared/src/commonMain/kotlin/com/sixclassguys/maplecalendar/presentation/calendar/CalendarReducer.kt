@@ -43,16 +43,19 @@ class CalendarReducer {
     fun reduce(currentState: CalendarUiState, intent: CalendarIntent): CalendarUiState {
         return when (intent) {
             is CalendarIntent.Refresh -> {
-                currentState.copy(isLoading = true)
+                currentState.copy(
+                    isLoading = true,
+                    isRefreshing = true
+                )
             }
 
             is CalendarIntent.ChangeMonth -> {
                 val targetDate = getLocalDateByOffset(intent.offset)
                 currentState.copy(
+                    isLoading = true, // 달이 바뀌면 로딩 표시
                     year = targetDate.year,
                     month = targetDate.month,
-                    days = generateDays(targetDate.year, targetDate.month),
-                    isLoading = true // 달이 바뀌면 로딩 표시
+                    days = generateDays(targetDate.year, targetDate.month)
                 )
             }
 
@@ -60,11 +63,13 @@ class CalendarReducer {
                 when (val result = intent.apiState) {
                     is ApiState.Success -> currentState.copy(
                         isLoading = false,
+                        isRefreshing = false,
                         eventsMap = currentState.eventsMap + (intent.key to result.data)
                     )
 
                     is ApiState.Error -> currentState.copy(
                         isLoading = false,
+                        isRefreshing = false,
                         errorMessage = result.message
                     )
 
@@ -75,11 +80,13 @@ class CalendarReducer {
             }
 
             is CalendarIntent.SelectDate -> currentState.copy(
+                isRefreshing = false,
                 selectedDate = intent.date,
                 showBottomSheet = true
             )
 
             is CalendarIntent.DismissBottomSheet -> currentState.copy(
+                isRefreshing = false,
                 selectedDate = null,
                 showBottomSheet = false
             )

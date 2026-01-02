@@ -65,7 +65,7 @@ fun MapleCalendarScreen(
 
     // 전체 스크롤 상태 및 새로고침 상태 관리
     val scrollState = rememberScrollState()
-    val isRefreshing = uiState.isLoading
+    val isRefreshing = uiState.isRefreshing && uiState.isLoading
 
     val startIndex = 5000
     val pagerState = rememberPagerState(
