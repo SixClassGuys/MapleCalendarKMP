@@ -20,6 +20,8 @@ sealed class Navigation(
 
     data object Calendar : Navigation("calendar")
 
+    data object EventDetail : Navigation("eventDetail")
+
     data object Board :
         Navigation("board", R.drawable.bottomnav_board, R.drawable.bottomnav_board_disabled, "모아보기")
 

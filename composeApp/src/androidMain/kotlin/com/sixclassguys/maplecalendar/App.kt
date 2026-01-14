@@ -1,5 +1,6 @@
 package com.sixclassguys.maplecalendar
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
@@ -18,22 +19,31 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.sixclassguys.maplecalendar.navigation.Navigation
 import com.sixclassguys.maplecalendar.navigation.navhost.NavHost
+import com.sixclassguys.maplecalendar.presentation.home.HomeViewModel
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleWhite
 import com.sixclassguys.maplecalendar.ui.component.BottomNavigationBar
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
 @Preview
 fun App() {
+    val activity = LocalContext.current as ComponentActivity
+    val homeViewModel: HomeViewModel = koinViewModel(viewModelStoreOwner = activity)
+    val homeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+
     val focusManager = LocalFocusManager.current
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -70,7 +80,13 @@ fun App() {
                 if (currentRoute in screenWithBottomBar) {
                     BottomNavigationBar(
                         navController = navController,
-                        onCalendarClicked = {  }
+                        onCalendarClicked = {
+                            if (homeUiState.characterBasic == null) {
+                                navController.navigate("login_flow")
+                            } else {
+                                navController.navigate("calendar_flow")
+                            }
+                        }
                     )
                 }
             }
@@ -86,7 +102,8 @@ fun App() {
                     .padding(navHostPadding)
                     .background(Color.Transparent),
                 navController = navController,
-                startDestination = "main_flow"
+                startDestination = "main_flow",
+                homeViewModel = homeViewModel
             )
         }
     }
