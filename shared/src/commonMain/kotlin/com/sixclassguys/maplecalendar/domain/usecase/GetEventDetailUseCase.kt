@@ -5,11 +5,11 @@ import com.sixclassguys.maplecalendar.domain.model.MapleEvent
 import com.sixclassguys.maplecalendar.domain.repository.EventRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetTodayEventsUseCase(
+class GetEventDetailUseCase(
     private val repository: EventRepository
 ) {
 
-    suspend operator fun invoke(year: Int, month: Int, day: Int, apiKey: String): Flow<ApiState<List<MapleEvent>>> {
-        return repository.getTodayEvents(year, month, day, apiKey)
+    suspend operator fun invoke(apiKey: String, eventId: Long): Flow<ApiState<MapleEvent?>> {
+        return repository.getEventDetail(apiKey, eventId)
     }
 }
