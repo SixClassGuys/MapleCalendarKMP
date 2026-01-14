@@ -15,12 +15,12 @@ class AppPreferences(
     // --- FCM 토큰 관련 ---
     val lastSentToken: Flow<String?> = dataStore.data
         .map { preferences -> preferences[KEY_LAST_SENT_FCM_TOKEN] }
-
     suspend fun saveToken(token: String) {
         dataStore.edit { preferences ->
             preferences[KEY_LAST_SENT_FCM_TOKEN] = token
         }
     }
+    suspend fun deleteToken() = dataStore.edit { it.remove(KEY_LAST_SENT_FCM_TOKEN) }
 
     // --- 로그인 관련 ---
     val openApiKey: Flow<String?> = dataStore.data.map { it[OPEN_API_KEY] }
@@ -35,7 +35,7 @@ class AppPreferences(
 
     // --- 알림 설정 관련 ---
     val isNotificationMode: Flow<Boolean> =
-        dataStore.data.map { it[KEY_IS_NOTIFICATION_MODE] ?: false }
+        dataStore.data.map { it[KEY_IS_NOTIFICATION_MODE] ?: true }
 
     suspend fun setNotificationMode(enabled: Boolean) =
         dataStore.edit { it[KEY_IS_NOTIFICATION_MODE] = enabled }

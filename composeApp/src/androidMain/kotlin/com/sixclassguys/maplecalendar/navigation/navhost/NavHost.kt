@@ -10,10 +10,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.sixclassguys.maplecalendar.navigation.Navigation
+import com.sixclassguys.maplecalendar.presentation.calendar.CalendarIntent
+import com.sixclassguys.maplecalendar.presentation.calendar.CalendarViewModel
 import com.sixclassguys.maplecalendar.presentation.home.HomeViewModel
 import com.sixclassguys.maplecalendar.presentation.login.LoginViewModel
 import com.sixclassguys.maplecalendar.ui.board.BoardScreen
 import com.sixclassguys.maplecalendar.ui.calendar.MapleCalendarScreen
+import com.sixclassguys.maplecalendar.ui.calendar.MapleEventDetailScreen
 import com.sixclassguys.maplecalendar.ui.home.HomeScreen
 import com.sixclassguys.maplecalendar.ui.login.LoginScreen
 import com.sixclassguys.maplecalendar.ui.login.SelectRepresentativeCharacterScreen
@@ -27,7 +30,8 @@ import org.koin.compose.viewmodel.koinViewModel
 fun NavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    startDestination: String
+    startDestination: String,
+    homeViewModel: HomeViewModel
 ) {
     val activity = LocalContext.current as ComponentActivity
 
@@ -41,7 +45,7 @@ fun NavHost(
             route = "main_flow"
         ) {
             composable(Navigation.Splash.destination) {
-                val homeViewModel: HomeViewModel = koinViewModel(viewModelStoreOwner = activity)
+                // val homeViewModel: HomeViewModel = koinViewModel(viewModelStoreOwner = activity)
                 SplashScreen(
                     viewModel = homeViewModel,
                     onNavigateToHome = {
@@ -53,12 +57,7 @@ fun NavHost(
             }
 
             composable(Navigation.Home.destination) {
-                val homeViewModel: HomeViewModel = koinViewModel(
-                    viewModelStoreOwner = activity
-                )
-
-                Napier.d("Home 화면 진입 - VM ID: ${homeViewModel.hashCode()}")
-                Napier.d("Home 화면 진입 - Handle ID: ${homeViewModel.savedStateHandle.hashCode()}")
+                // val homeViewModel: HomeViewModel = koinViewModel(viewModelStoreOwner = activity)
 
                 // 이제 이 homeViewModel은 "main_flow"의 핸들을 가지고 있음
                 HomeScreen(
@@ -74,8 +73,29 @@ fun NavHost(
             PlaylistScreen()
         }
 
-        composable(Navigation.Calendar.destination) {
-            MapleCalendarScreen()
+        navigation(
+            startDestination = Navigation.Calendar.destination,
+            route = "calendar_flow"
+        ) {
+            composable(Navigation.Calendar.destination) {
+                val calendarViewModel: CalendarViewModel = koinViewModel(viewModelStoreOwner = activity)
+                MapleCalendarScreen(
+                    viewModel = calendarViewModel,
+                    onNavigateToEventDetail = {
+                        calendarViewModel.onIntent(CalendarIntent.FetchNexonOpenApiKey)
+                        calendarViewModel.onIntent(CalendarIntent.FetchGlobalAlarmStatus)
+                        navController.navigate(Navigation.EventDetail.destination)
+                    }
+                )
+            }
+
+            composable(Navigation.EventDetail.destination) {
+                val calendarViewModel: CalendarViewModel = koinViewModel(viewModelStoreOwner = activity)
+                MapleEventDetailScreen(viewModel = calendarViewModel) {
+                    calendarViewModel.onIntent(CalendarIntent.ClearSelectedEvent)
+                    navController.navigateUp()
+                }
+            }
         }
 
         composable(Navigation.Board.destination) {
@@ -83,7 +103,11 @@ fun NavHost(
         }
 
         composable(Navigation.Setting.destination) {
-            SettingScreen()
+            SettingScreen(
+                homeViewModel = homeViewModel
+            ) {
+                navController.navigate("login_flow")
+            }
         }
 
         navigation(
@@ -102,9 +126,15 @@ fun NavHost(
                     viewModel = loginViewModel,
                     onNavigateToCharacterSelection = { navController.navigate(Navigation.SelectRepresentativeCharacter.destination) },
                     onNavigateToHome = {
+                        Napier.d("Login 성공 - 값을 넣는 VM ID: ${homeViewModel.hashCode()}")
+                        homeViewModel.savedStateHandle["loginSuccess"] = true
+
                         navController.navigate(Navigation.Home.destination) {
-                            // 홈으로 갈 때 로그인 플로우 전체를 팝업(삭제)
-                            popUpTo("login_flow") { inclusive = true }
+                            popUpTo(navController.graph.startDestinationId) {
+                                inclusive = true
+                            }
+                            // 홈 화면이 이미 스택에 있다면 새로 만들지 않고 재사용(중복 방지)
+                            launchSingleTop = true
                         }
                     }
                 )
@@ -115,8 +145,8 @@ fun NavHost(
                 val loginViewModel: LoginViewModel = koinViewModel(viewModelStoreOwner = loginParentEntry)
 
                 // Activity 스코프의 HomeViewModel을 가져옴
-                val activity = LocalContext.current as ComponentActivity
-                val homeViewModel: HomeViewModel = koinViewModel(viewModelStoreOwner = activity)
+                // val activity = LocalContext.current as ComponentActivity
+                // val homeViewModel: HomeViewModel = koinViewModel(viewModelStoreOwner = activity)
 
                 SelectRepresentativeCharacterScreen(
                     viewModel = loginViewModel,

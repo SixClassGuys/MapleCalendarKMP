@@ -7,21 +7,34 @@ import com.sixclassguys.maplecalendar.domain.model.ApiState
 import com.sixclassguys.maplecalendar.domain.model.MapleEvent
 import com.sixclassguys.maplecalendar.domain.repository.EventRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 
 class EventRepositoryImpl(
     private val dataSource: EventDataSource
 ) : EventRepository {
 
+    override suspend fun getEventDetail(apiKey: String, eventId: Long): Flow<ApiState<MapleEvent?>> = flow {
+        emit(ApiState.Loading)
+
+        val response = dataSource.fetchEventDetail(apiKey, eventId)
+        val events = response?.toDomain()
+
+        if (events == null) {
+            emit(ApiState.Error("No OCID found"))
+        } else {
+            emit(ApiState.Success(events))
+        }
+    }
+
     override suspend fun getTodayEvents(
         year: Int,
         month: Int,
-        day: Int
+        day: Int,
+        apiKey: String
     ): Flow<ApiState<List<MapleEvent>>> = flow {
         emit(ApiState.Loading)
 
-        val response = dataSource.fetchTodayEvents(year, month, day)
+        val response = dataSource.fetchTodayEvents(year, month, day, apiKey)
         val events = response.map { it.toDomain() }
 
         if (events.isEmpty()) {
