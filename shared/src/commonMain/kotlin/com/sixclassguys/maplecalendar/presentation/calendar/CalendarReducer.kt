@@ -18,6 +18,10 @@ class CalendarReducer {
         }
     }
 
+    fun getTodayDate(): LocalDate {
+        return Clock.System.todayIn(TimeZone.currentSystemDefault())
+    }
+
     fun getLocalDateByOffset(offset: Int): LocalDate {
         val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
         var targetMonth = today.monthNumber + offset
@@ -49,22 +53,83 @@ class CalendarReducer {
                 )
             }
 
+            is CalendarIntent.FetchNexonOpenApiKey -> {
+                currentState.copy(
+                    isLoading = true
+                )
+            }
+
+            is CalendarIntent.FetchNexonOpenApiKeySuccess -> {
+                currentState.copy(
+                    isLoading = false,
+                    nexonApiKey = intent.key
+                )
+            }
+
+            is CalendarIntent.FetchNexonOpenApiKeyFailed -> {
+                currentState.copy(
+                    isLoading = false,
+                    errorMessage = intent.message
+                )
+            }
+
+            is CalendarIntent.FetchGlobalAlarmStatus -> {
+                currentState.copy(
+                    isLoading = true
+                )
+            }
+
+            is CalendarIntent.FetchGlobalAlarmStatusSuccess -> {
+                currentState.copy(
+                    isLoading = false,
+                    isGlobalAlarmEnabled = intent.isEnabled
+                )
+            }
+
+            is CalendarIntent.FetchGlobalAlarmStatusFailed -> {
+                currentState.copy(
+                    isLoading = false,
+                    errorMessage = intent.message
+                )
+            }
+
             is CalendarIntent.ChangeMonth -> {
                 val targetDate = getLocalDateByOffset(intent.offset)
                 currentState.copy(
                     isLoading = true, // 달이 바뀌면 로딩 표시
                     year = targetDate.year,
                     month = targetDate.month,
-                    days = generateDays(targetDate.year, targetDate.month)
+                    days = generateDays(targetDate.year, targetDate.month),
+                    selectedDate = getTodayDate()
                 )
             }
 
-            is CalendarIntent.FetchEventsResult -> {
+            is CalendarIntent.SaveEventsByDay -> {
                 when (val result = intent.apiState) {
                     is ApiState.Success -> currentState.copy(
                         isLoading = false,
                         isRefreshing = false,
-                        eventsMap = currentState.eventsMap + (intent.key to result.data)
+                        eventsMapByDay = currentState.eventsMapByDay + (intent.key to result.data)
+                    )
+
+                    is ApiState.Error -> currentState.copy(
+                        isLoading = false,
+                        isRefreshing = false,
+                        errorMessage = result.message
+                    )
+
+                    is ApiState.Loading -> currentState.copy(isLoading = true)
+
+                    else -> currentState
+                }
+            }
+
+            is CalendarIntent.SaveEventsByMonth -> {
+                when (val result = intent.apiState) {
+                    is ApiState.Success -> currentState.copy(
+                        isLoading = false,
+                        isRefreshing = false,
+                        eventsMapByMonth = currentState.eventsMapByMonth + (intent.key to result.data)
                     )
 
                     is ApiState.Error -> currentState.copy(
@@ -90,6 +155,93 @@ class CalendarReducer {
                 selectedDate = null,
                 showBottomSheet = false
             )
+
+            is CalendarIntent.ClearSelectedEvent -> {
+                currentState.copy(
+                    selectedEvent = null,
+                    isNotificationEnabled = false,
+                    scheduledNotifications = emptyList()
+                )
+            }
+
+            is CalendarIntent.SelectEvent -> {
+                currentState.copy(
+                    isLoading = true
+                )
+            }
+
+            is CalendarIntent.SelectEventSuccess -> {
+                val isNotificationEnabled = intent.event?.isRegistered ?: false
+                val scheduledNotifications = intent.event?.notificationTimes ?: emptyList()
+                currentState.copy(
+                    isLoading = false,
+                    selectedEvent = intent.event,
+                    isNotificationEnabled = isNotificationEnabled,
+                    scheduledNotifications = scheduledNotifications
+                )
+            }
+
+            is CalendarIntent.SelectEventFailed -> {
+                currentState.copy(
+                    isLoading = false,
+                    errorMessage = intent.message
+                )
+            }
+
+            is CalendarIntent.ToggleNotification -> {
+                currentState.copy(
+                    isLoading = true
+                )
+            }
+
+            is CalendarIntent.ToggleNotificationSuccess -> {
+                val isNotificationEnabled = intent.event.isRegistered
+                val scheduledNotifications = intent.event.notificationTimes
+                currentState.copy(
+                    isLoading = false,
+                    selectedEvent = intent.event,
+                    isNotificationEnabled = isNotificationEnabled,
+                    scheduledNotifications = scheduledNotifications
+                )
+            }
+
+            is CalendarIntent.ToggleNotificationFailed -> {
+                currentState.copy(
+                    isLoading = false,
+                    errorMessage = intent.message
+                )
+            }
+
+            is CalendarIntent.ShowAlarmDialog -> {
+                currentState.copy(
+                    showAlarmDialog = intent.show,
+                )
+            }
+
+            is CalendarIntent.SubmitNotificationTimes -> {
+                currentState.copy(
+                    isLoading = true
+                )
+            }
+
+            is CalendarIntent.SubmitNotificationTimesSuccess -> {
+                val event = intent.event
+                val isNotificationEnabled = intent.event.isRegistered
+                val scheduledNotifications = intent.event.notificationTimes
+                currentState.copy(
+                    isLoading = false,
+                    selectedEvent = event,
+                    isNotificationEnabled = isNotificationEnabled,
+                    scheduledNotifications = scheduledNotifications
+                )
+            }
+
+            is CalendarIntent.SubmitNotificationTimesFailed -> {
+                currentState.copy(
+                    isLoading = false,
+                    errorMessage = intent.message
+                )
+            }
         }
     }
 }
