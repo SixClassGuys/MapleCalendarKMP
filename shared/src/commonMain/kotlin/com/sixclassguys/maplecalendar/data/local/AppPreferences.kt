@@ -15,14 +15,17 @@ class AppPreferences(
     // --- FCM 토큰 관련 ---
     val lastSentToken: Flow<String?> = dataStore.data
         .map { preferences -> preferences[KEY_LAST_SENT_FCM_TOKEN] }
-
     suspend fun saveToken(token: String) {
         dataStore.edit { preferences ->
             preferences[KEY_LAST_SENT_FCM_TOKEN] = token
         }
     }
+    suspend fun deleteToken() = dataStore.edit { it.remove(KEY_LAST_SENT_FCM_TOKEN) }
 
-    // --- 캐릭터 정보 (OCID) 관련 ---
+    // --- 로그인 관련 ---
+    val openApiKey: Flow<String?> = dataStore.data.map { it[OPEN_API_KEY] }
+    suspend fun saveOpenApiKey(key: String) = dataStore.edit { it[OPEN_API_KEY] = key }
+
     val characterOcid: Flow<String?> = dataStore.data.map { it[KEY_CHARACTER_OCID] }
     suspend fun saveCharacterOcid(ocid: String) = dataStore.edit { it[KEY_CHARACTER_OCID] = ocid }
 
@@ -32,7 +35,7 @@ class AppPreferences(
 
     // --- 알림 설정 관련 ---
     val isNotificationMode: Flow<Boolean> =
-        dataStore.data.map { it[KEY_IS_NOTIFICATION_MODE] ?: false }
+        dataStore.data.map { it[KEY_IS_NOTIFICATION_MODE] ?: true }
 
     suspend fun setNotificationMode(enabled: Boolean) =
         dataStore.edit { it[KEY_IS_NOTIFICATION_MODE] = enabled }
@@ -43,6 +46,7 @@ class AppPreferences(
     companion object {
 
         private val KEY_LAST_SENT_FCM_TOKEN = stringPreferencesKey("last_sent_fcm_token")
+        private val OPEN_API_KEY = stringPreferencesKey("open_api_key")
         private val KEY_CHARACTER_OCID = stringPreferencesKey("character_ocid")
         private val KEY_IS_DARK_MODE = booleanPreferencesKey("is_dark_mode")
         private val KEY_IS_NOTIFICATION_MODE = booleanPreferencesKey("is_notification_mode")

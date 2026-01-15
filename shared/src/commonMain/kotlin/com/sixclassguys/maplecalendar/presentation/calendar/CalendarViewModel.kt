@@ -2,37 +2,165 @@ package com.sixclassguys.maplecalendar.presentation.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sixclassguys.maplecalendar.domain.model.ApiState
+import com.sixclassguys.maplecalendar.domain.repository.NotificationEventBus
+import com.sixclassguys.maplecalendar.domain.usecase.GetApiKeyUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.GetEventDetailUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.GetGlobalAlarmStatusUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetMonthlyEventsUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.GetTodayEventsUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.SubmitEventAlarmUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.ToggleEventAlarmUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.*
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 
 class CalendarViewModel(
     private val reducer: CalendarReducer,
-    private val getMonthlyEventsUseCase: GetMonthlyEventsUseCase
+    private val eventBus: NotificationEventBus,
+    private val getApiKeyUseCase: GetApiKeyUseCase,
+    private val getGlobalAlarmStatusUseCase: GetGlobalAlarmStatusUseCase,
+    private val getTodayEventsUseCase: GetTodayEventsUseCase,
+    private val getMonthlyEventsUseCase: GetMonthlyEventsUseCase,
+    private val getEventDetailUseCase: GetEventDetailUseCase,
+    private val submitEventAlarmUseCase: SubmitEventAlarmUseCase,
+    private val toggleEventAlarmUseCase: ToggleEventAlarmUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(CalendarUiState())
+    private val _uiState = MutableStateFlow<CalendarUiState>(CalendarUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
-        onIntent(CalendarIntent.ChangeMonth(0))
-    }
-
-    private fun loadEventsFromServer(year: Int, month: Int, key: String) {
+        onIntent(CalendarIntent.FetchNexonOpenApiKey)
+        onIntent(CalendarIntent.FetchGlobalAlarmStatus)
         viewModelScope.launch {
-            getMonthlyEventsUseCase(year, month).collect { apiState ->
-                // 통신 결과를 FetchEventsResult라는 Intent로 전달하여 상태에 반영
-                onIntent(CalendarIntent.FetchEventsResult(key, apiState))
+            eventBus.events.collect { eventId ->
+                // 💡 알림이 오면 즉시 데이터 갱신
+                onIntent(CalendarIntent.SelectEvent(eventId))
             }
         }
     }
 
-    fun getLocalDateByOffset(offset: Int): LocalDate = reducer.getLocalDateByOffset(offset)
+    private fun getNexonOpenApiKey() {
+        viewModelScope.launch {
+            getApiKeyUseCase().collect { state ->
+                when (state) {
+                    is ApiState.Success -> {
+                        onIntent(CalendarIntent.FetchNexonOpenApiKeySuccess(state.data))
+                    }
 
-    fun generateDays(year: Int, month: Month) = reducer.generateDays(year, month)
+                    is ApiState.Error -> {
+                        onIntent(CalendarIntent.FetchNexonOpenApiKeyFailed(state.message))
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun getGlobalAlarmStatus() {
+        viewModelScope.launch {
+            getGlobalAlarmStatusUseCase().collect { state ->
+                when (state) {
+                    is ApiState.Success -> {
+                        onIntent(CalendarIntent.FetchGlobalAlarmStatusSuccess(state.data))
+                    }
+
+                    is ApiState.Error -> {
+                        onIntent(CalendarIntent.FetchGlobalAlarmStatusFailed(state.message))
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun fetchEventsByDay(year: Int, month: Int, day: Int, key: String) {
+        viewModelScope.launch {
+            val nexonApiKey = _uiState.value.nexonApiKey ?: ""
+            getTodayEventsUseCase(year, month, day, nexonApiKey).collect { apiState ->
+                onIntent(CalendarIntent.SaveEventsByDay(key, apiState))
+            }
+        }
+    }
+
+    private fun fetchEventsByMonth(year: Int, month: Int, key: String) {
+        viewModelScope.launch {
+            getMonthlyEventsUseCase(year, month).collect { apiState ->
+                onIntent(CalendarIntent.SaveEventsByMonth(key, apiState))
+            }
+        }
+    }
+
+    private fun fetchEvent(eventId: Long) {
+        viewModelScope.launch {
+            val apiKey = _uiState.value.nexonApiKey ?: ""
+            getEventDetailUseCase(apiKey, eventId).collect { state ->
+                when (state) {
+                    is ApiState.Success -> {
+                        onIntent(CalendarIntent.SelectEventSuccess(state.data))
+                    }
+
+                    is ApiState.Error -> {
+                        onIntent(CalendarIntent.SelectEventFailed(state.message))
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun toggleEventAlarm() {
+        viewModelScope.launch {
+            val apiKey = _uiState.value.nexonApiKey ?: ""
+            val eventId = _uiState.value.selectedEvent?.id ?: 0L
+            toggleEventAlarmUseCase(apiKey, eventId).collect { state ->
+                when (state) {
+                    is ApiState.Success -> {
+                        onIntent(CalendarIntent.ToggleNotificationSuccess(state.data))
+                    }
+
+                    is ApiState.Error -> {
+                        onIntent(CalendarIntent.ToggleNotificationFailed(state.message))
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun submitEventAlarm(dates: List<LocalDateTime>) {
+        viewModelScope.launch {
+            val apiKey = _uiState.value.nexonApiKey ?: ""
+            val eventId = _uiState.value.selectedEvent?.id ?: 0L
+            val isEnabled = _uiState.value.isNotificationEnabled
+            val alarmTimes = dates.map { it.toString() }
+            submitEventAlarmUseCase(apiKey, eventId, isEnabled, alarmTimes).collect { state ->
+                when (state) {
+                    is ApiState.Success -> {
+                        onIntent(CalendarIntent.SubmitNotificationTimesSuccess(state.data))
+                    }
+
+                    is ApiState.Error -> {
+                        onIntent(CalendarIntent.SubmitNotificationTimesFailed(state.message))
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun getTodayDate(): LocalDate = reducer.getTodayDate()
+
+    fun getLocalDateByOffset(offset: Int): LocalDate = reducer.getLocalDateByOffset(offset)
 
     fun onIntent(intent: CalendarIntent) {
         // Reducer를 통해 즉시 상태 업데이트 (계산 로직)
@@ -43,18 +171,67 @@ class CalendarViewModel(
         // 부수 효과 처리 (네트워크 통신 등)
         when (intent) {
             is CalendarIntent.Refresh -> {
-                val key = "${uiState.value.year}-${uiState.value.month.number}"
-                loadEventsFromServer(uiState.value.year, uiState.value.month.number, key)
+                onIntent(CalendarIntent.SelectDate(_uiState.value.selectedDate ?: getTodayDate()))
+            }
+
+            is CalendarIntent.FetchNexonOpenApiKey -> {
+                getNexonOpenApiKey()
+            }
+
+            is CalendarIntent.FetchGlobalAlarmStatus -> {
+                getGlobalAlarmStatus()
+            }
+
+            is CalendarIntent.FetchNexonOpenApiKeySuccess -> {
+                onIntent(CalendarIntent.ChangeMonth(0))
             }
 
             is CalendarIntent.ChangeMonth -> {
+                val selectedDate = _uiState.value.selectedDate
+                val year = selectedDate?.year ?: getTodayDate().year
+                val month = selectedDate?.monthNumber ?: getTodayDate().monthNumber
+                val day = selectedDate?.dayOfMonth ?: getTodayDate().dayOfMonth
+                val dayKey = "${year}-${month}-${day}"
                 val targetDate = getLocalDateByOffset(intent.offset)
-                val key = "${targetDate.year}-${targetDate.monthNumber}"
+                val monthKey = "${targetDate.year}-${targetDate.monthNumber}"
+
+                if (!_uiState.value.eventsMapByDay.containsKey(dayKey)) {
+                    fetchEventsByDay(
+                        targetDate.year,
+                        targetDate.monthNumber,
+                        targetDate.dayOfMonth,
+                        dayKey
+                    )
+                }
 
                 // 해당 월 데이터가 없을 때만 서버에서 가져옴
-                if (!_uiState.value.eventsMap.containsKey(key)) {
-                    loadEventsFromServer(targetDate.year, targetDate.monthNumber, key)
+                if (!_uiState.value.eventsMapByMonth.containsKey(monthKey)) {
+                    fetchEventsByMonth(targetDate.year, targetDate.monthNumber, monthKey)
                 }
+            }
+
+            is CalendarIntent.SelectDate -> {
+                val selectedDate = _uiState.value.selectedDate
+                val year = selectedDate?.year ?: getTodayDate().year
+                val month = selectedDate?.monthNumber ?: getTodayDate().monthNumber
+                val day = selectedDate?.dayOfMonth ?: getTodayDate().dayOfMonth
+                val key = "${year}-${month}-${day}"
+
+                if (!_uiState.value.eventsMapByDay.containsKey(key)) {
+                    fetchEventsByDay(year, month, day, key)
+                }
+            }
+
+            is CalendarIntent.SelectEvent -> {
+                fetchEvent(intent.eventId)
+            }
+
+            is CalendarIntent.ToggleNotification -> {
+                toggleEventAlarm()
+            }
+
+            is CalendarIntent.SubmitNotificationTimes -> {
+                submitEventAlarm(intent.dates)
             }
 
             else -> {} // 다른 인텐트들은 상태 업데이트만으로 충분함
