@@ -30,7 +30,7 @@ struct TabMenuView: View {
                     Text(tab.1)
                         .font(.caption)
                 }
-                .foregroundColor(selected == tab.0 ? .white : .gray)
+                .foregroundColor(selected == tab.0 ? .mapleWhite : .mapleGray)
                 .frame(maxWidth: .infinity)
                 .onTapGesture {
                     selected = tab.0

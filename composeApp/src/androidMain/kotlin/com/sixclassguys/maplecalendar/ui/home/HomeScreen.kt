@@ -1,5 +1,6 @@
 package com.sixclassguys.maplecalendar.ui.home
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -36,6 +37,7 @@ import com.sixclassguys.maplecalendar.ui.component.EmptyCharacterBasicCard
 import com.sixclassguys.maplecalendar.ui.component.HomeAppBar
 import com.sixclassguys.maplecalendar.ui.component.TodayEventsCard
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,

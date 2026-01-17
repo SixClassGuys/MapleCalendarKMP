@@ -66,7 +66,7 @@ val networkModule = module {
     }
 
     single(named("NexonClient")) {
-        val apiKey: String = get(named("nexonApiKey"))
+        val apiKey: String = try { get(named("nexonApiKey")) } catch (e: Exception) { "" }
 
         HttpClient { // 실제 엔진(OkHttp, Darwin 등)은 Ktor가 선택
             // JSON 직렬화 설정
@@ -98,7 +98,10 @@ val networkModule = module {
             // 추가 설정
             defaultRequest {
                 url("https://open.api.nexon.com/maplestory/v1/")
-                header("x-nxopen-api-key", apiKey)
+                // API Key가 있을 때만 헤더 추가
+                if (apiKey.isNotEmpty()) {
+                    header("x-nxopen-api-key", apiKey)
+                }
                 contentType(ContentType.Application.Json)
             }
         }
