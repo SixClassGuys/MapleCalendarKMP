@@ -24,7 +24,7 @@ struct EventCardView: View {
             
             Text(event.title)
                 .font(.system(size: 18, weight: .bold))
-                .foregroundColor(.black)
+                .foregroundColor(.mapleBlack)
             
             Text(event.dateRange)
                 .font(.system(size: 14))
