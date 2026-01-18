@@ -15,7 +15,7 @@ struct CharacterCardView: View {
                 HStack {
                     Text("신창섭")
                         .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(.black)
+                        .foregroundColor(.mapleBlack)
                     
                     Spacer()
                     
@@ -27,7 +27,7 @@ struct CharacterCardView: View {
                         .background(
                             Capsule().stroke(Color.black, lineWidth: 1)
                         )
-                        .background(Capsule().fill(Color.white))
+                        .background(Capsule().fill(Color.mapleWhite))
                 }
                 
                 // 레벨 및 경험치
@@ -52,12 +52,12 @@ struct CharacterCardView: View {
                 .font(.system(size: 14))
                 .padding(.top, 4)
             }
-            .foregroundColor(.black) // 전체 텍스트 검정색
+            .foregroundColor(.mapleBlack) // 전체 텍스트 검정색
         }
         .padding(20)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(Color.orange) // 이전에 만든 hex 생성자 사용
+                .fill(Color.mapleOrange) // 이전에 만든 hex 생성자 사용
         )
         
     }

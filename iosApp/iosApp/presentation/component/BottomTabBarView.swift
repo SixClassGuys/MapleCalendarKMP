@@ -29,7 +29,7 @@ struct TabCurveShape: Shape {
 }
 struct BottomTabBarView: View {
     @Binding var selectedTab: Int
-    let mainColor = Color.orange // 사용자가 지정한 주황색
+    let mainColor = Color.mapleOrange
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -79,7 +79,7 @@ struct BottomTabBarView: View {
             Spacer()
             Image(systemName: icon)
                 .font(.title2)
-                .foregroundColor(selectedTab == index ? .white : .white.opacity(0.7))
+                .foregroundColor(selectedTab == index ? .mapleWhite : .mapleGray)
             Spacer()
         }
     }

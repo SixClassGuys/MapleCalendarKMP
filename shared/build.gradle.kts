@@ -1,3 +1,4 @@
+import co.touchlab.skie.configuration.FlowInterop
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
@@ -106,5 +107,14 @@ android {
         val apiKey = localProperties.getProperty("NEXON_API_KEY") ?: ""
 
         buildConfigField("String", "NEXON_API_KEY", apiKey)
+    }
+}
+
+skie {
+    features {
+        // Flow를 AsyncSequence로 강제 변환 활성화
+        group("kotlinx.coroutines.flow.Flow") {
+            FlowInterop.Enabled(true)
+        }
     }
 }

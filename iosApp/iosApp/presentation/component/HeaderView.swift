@@ -20,7 +20,7 @@ struct HeaderView: View {
             HStack(spacing: 16) {
                 Image(systemName: "bell").font(.system(size: 30))
             }
-            .foregroundColor(.orange)
+            .foregroundColor(.mapleOrange)
         }
         .padding(.top, 8)
         .padding(.horizontal, 20)
