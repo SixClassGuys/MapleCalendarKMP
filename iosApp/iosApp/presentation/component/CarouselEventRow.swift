@@ -49,28 +49,47 @@ struct CalendarEventCard: View {
     
     var body: some View {
         
-        VStack(alignment: .leading, spacing: 8) {
-            // 이미지 영역
-            AsyncImage(url: URL(string: event.thumbnailUrl ?? "")) { image in
-                image.resizable()
-                    .aspectRatio(contentMode: .fill) // 와이어프레임처럼 꽉 차게
-            } placeholder: {
-                Rectangle().fill(Color.gray.opacity(0.2))
-                    .overlay(ProgressView())
+        VStack(alignment: .leading, spacing: 0) { // 내부 간격을 0으로 하고 패딩으로 조절
+            // 1. 이미지 영역
+            AsyncImage(url: URL(string: event.thumbnailUrl ?? "")) { phase in
+                if let image = phase.image {
+                    image.resizable()
+                        .aspectRatio(contentMode: .fill)
+                } else if phase.error != nil {
+                    Color.gray.opacity(0.1) // 에러 시 배경
+                } else {
+                    Rectangle().fill(Color.gray.opacity(0.1))
+                        .overlay(ProgressView())
+                }
             }
-            .frame(width: 260, height: 140) // 💡 너비를 적절히 조절하여 다음 카드가 보이게 함
-            .clipped() // 프레임 밖으로 나가는 이미지 절단
-            .cornerRadius(12)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(event.title).font(.system(size: 16, weight: .bold))
+            .frame(width: 260, height: 140)
+            .clipped()
+            // 이미지의 위쪽 모서리만 둥글게 하고 싶다면 카드 전체 cornerRadius 부여
+
+            // 2. 텍스트 영역 (흰색 배경 섹션)
+            VStack(alignment: .leading, spacing: 6) {
+                Text(event.title)
+                    .font(.system(size: 15, weight: .bold))
                     .lineLimit(1)
                     .foregroundColor(.black)
                 
-                Text("\(event.startDate) ~ \(event.endDate)").font(.system(size: 12))
-                    .foregroundColor(.gray)
+                HStack(spacing: 4) {
+                    Image(systemName: "calendar") // 안드로이드 느낌을 위한 아이콘 추가
+                        .font(.system(size: 10))
+                    Text("\(event.startDate) ~ \(event.endDate)")
+                        .font(.system(size: 11))
+                }
+                .foregroundColor(.gray)
             }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 12)
+            .frame(width: 260, alignment: .leading)
+            .background(Color.white) // 텍스트 섹션 배경색
         }
-        .frame(width: 260) // 전체 카드 너비 고정
+        .background(Color.white)
+        .cornerRadius(16) // 전체 카드의 둥근 모서리
+        // 💡 그림자 효과를 주어 안드로이드처럼 입체감을 부여
+        .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
+        .padding(.vertical, 10) // 그림자가 잘리지 않도록 상하 여백 추가
     }
 }
