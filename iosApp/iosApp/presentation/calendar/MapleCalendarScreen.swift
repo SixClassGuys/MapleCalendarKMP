@@ -11,7 +11,7 @@ struct MapleCalendarScreen: View {
         ZStack {
             Color.white.ignoresSafeArea()
             
-            ScrollView {
+            ScrollView(.vertical) {
                 VStack(alignment: .leading, spacing: 0) {
                     // 1. 헤더 타이틀
                     Text("캘린더").font(.system(size: 32, weight: .bold))
@@ -55,6 +55,10 @@ struct MapleCalendarScreen: View {
                     .padding(.bottom, 32)
                 }
             }
+        }
+        .onAppear {
+            // 상세 페이지에서 돌아왔을 때 선택된 이벤트 상태를 초기화
+            viewModel.onIntent(intent: CalendarIntent.SelectEvent(eventId: 0)) // 0 또는 null 처리를 위한 ID
         }
     }
 }
