@@ -111,9 +111,6 @@ class CalendarViewModel: ObservableObject {
                 print("Fetching for key: \(key)")
                 let apiKey = uiState.nexonApiKey ?? ""
                 let flow = try await getTodayEventsUseCase.invoke(year: year, month: month, day: day, apiKey: apiKey)
-                
-                // flow.collect 내부의 클로저가 어느 스레드에서 실행될지 알 수 없으므로
-                // 내부에서 다시 MainActor를 명시합니다.
                 try await flow.collect(collector: FlowCollectorWrapper<AnyObject> { state, completionHandler in
                     Task { @MainActor in
                         if let apiState = state as? ApiState<NSArray> {
@@ -127,18 +124,15 @@ class CalendarViewModel: ObservableObject {
             }
         }
     }
-        
+    
+    // 추후 제거할 수도 있음
     private func fetchEventsByMonth(year: Int32, month: Int32, key: String) {
         Task {
             do {
-                // 1. SKIE로 인해 invoke() 결과가 AsyncSequence를 지원하는 SkieSwiftFlow로 옵니다.
                 let flow = try await getMonthlyEventsUseCase.invoke(year: year, month: month)
                 
-                // 2. collect 대신 for await 사용
                 for await state in flow {
-                    // state는 ApiState<NSArray> 타입으로 들어옵니다.
                     if let apiState = state as? ApiState<NSArray> {
-                        // 3. 인텐트에 그대로 전달 (이미 NSArray 타입이므로 추가 캐스팅 없이 깔끔하게 전달 가능합니다)
                         self.onIntent(intent: CalendarIntent.SaveEventsByMonth(key: key, apiState: apiState))
                     }
                 }
@@ -149,16 +143,34 @@ class CalendarViewModel: ObservableObject {
     }
         
     private func fetchEventDetail(eventId: Int64) {
+        if (eventId == 0) {
+            return
+        }
         Task {
+            print("상세 요청 시작: \(eventId)")
             let apiKey = uiState.nexonApiKey ?? ""
-            let flow = try await getEventDetailUseCase.invoke(apiKey: apiKey, eventId: eventId)
-            try await flow.collect(collector: FlowCollectorWrapper<AnyObject> { state, _ in
-                if let success = state as? ApiStateSuccess<MapleEvent> {
-                    self.onIntent(intent: CalendarIntent.SelectEventSuccess(event: success.data))
-                } else if let error = state as? ApiStateError {
-                    self.onIntent(intent: CalendarIntent.SelectEventFailed(message: error.message))
-                }
-            })
+            
+            do {
+                let flow = try await getEventDetailUseCase.invoke(apiKey: apiKey, eventId: eventId)
+                
+                try await flow.collect(collector: FlowCollectorWrapper<AnyObject> { state, completionHandler in
+                    // 💡 반드시 MainActor에서 UI 관련 Intent를 처리
+                    Task { @MainActor in
+                        if let success = state as? ApiStateSuccess<MapleEvent>, let data = success.data {
+                            print("상세 로드 성공: \(data.title)")
+                            self.onIntent(intent: CalendarIntent.SelectEventSuccess(event: data))
+                        } else if let error = state as? ApiStateError {
+                            print("상세 로드 실패: \(error.message)")
+                            self.onIntent(intent: CalendarIntent.SelectEventFailed(message: error.message))
+                        }
+                        
+                        // 💡 중요: completionHandler를 호출해야 Kotlin Flow가 계속 진행되거나 정상 종료됩니다.
+                        completionHandler(nil)
+                    }
+                })
+            } catch {
+                print("상세 요청 중 에러 발생: \(error)")
+            }
         }
     }
         
@@ -166,12 +178,49 @@ class CalendarViewModel: ObservableObject {
         Task {
             let apiKey = uiState.nexonApiKey ?? ""
             let eventId = uiState.selectedEvent?.id ?? 0
-            let flow = try await toggleEventAlarmUseCase.invoke(apiKey: apiKey, eventId: eventId)
-            try await flow.collect(collector: FlowCollectorWrapper<AnyObject> { state, _ in
-                if let success = state as? ApiStateSuccess<MapleEvent> {
-                    self.onIntent(intent: CalendarIntent.ToggleNotificationSuccess(event: success.data!))
-                }
-            })
+            do {
+                let flow = try await toggleEventAlarmUseCase.invoke(apiKey: apiKey, eventId: eventId)
+                try await flow.collect(collector: FlowCollectorWrapper<AnyObject> { state, completionHandler in
+                    Task { @MainActor in
+                        if let success = state as? ApiStateSuccess<MapleEvent> {
+                            self.onIntent(intent: CalendarIntent.ToggleNotificationSuccess(event: success.data!))
+                        } else if let error = state as? ApiStateError {
+                            self.onIntent(intent: CalendarIntent.ToggleNotificationFailed(message: error.message))
+                        }
+                        completionHandler(nil)
+                    }
+                })
+            } catch {
+                print("Toggle Alarm Error: \(error)")
+            }
+        }
+    }
+    
+    private func submitEventAlarm(dates: [Kotlinx_datetimeLocalDateTime]) { // 1. List 대신 Array 사용
+        Task {
+            let apiKey = uiState.nexonApiKey ?? ""
+            let eventId = uiState.selectedEvent?.id ?? 0 // 2. Swift의 Int64/Int 처리
+            let isEnabled = uiState.isNotificationEnabled
+            
+            do {
+                // 3. Kotlin의 toString() 호출 시 소괄호 필요
+                let alarmTimes = dates.map { $0.description() } // 또는 $0.toString()
+                
+                let flow = try await submitEventAlarmUseCase.invoke(apiKey: apiKey, eventId: eventId, isEnabled: isEnabled, alarmTimes: alarmTimes)
+                try await flow.collect(collector: FlowCollectorWrapper<AnyObject> { state, completionHandler in
+                    Task { @MainActor in
+                        if let success = state as? ApiStateSuccess<MapleEvent>, let data = success.data {
+                            self.onIntent(intent: CalendarIntent.SubmitNotificationTimesSuccess(event: data))
+                        } else if let error = state as? ApiStateError {
+                            self.onIntent(intent: CalendarIntent.SubmitNotificationTimesFailed(message: error.message))
+                        }
+                        completionHandler(nil)
+                    }
+                })
+            } catch {
+                print("Submit Alarm Error: \(error)")
+            }
+            
         }
     }
     
@@ -223,9 +272,11 @@ class CalendarViewModel: ObservableObject {
                     fetchEventsByDay(year: date.year, month: date.monthNumber, day: date.dayOfMonth, key: key)
                 }
             case let selectEvent as CalendarIntent.SelectEvent:
-                    fetchEventDetail(eventId: selectEvent.eventId)
+                fetchEventDetail(eventId: selectEvent.eventId)
             case is CalendarIntent.ToggleNotification:
-                    toggleEventAlarm()
+                toggleEventAlarm()
+            case is CalendarIntent.SubmitNotificationTimes:
+                submitEventAlarm(dates: (intent as! CalendarIntent.SubmitNotificationTimes).dates)
             default:
                 break
         }
