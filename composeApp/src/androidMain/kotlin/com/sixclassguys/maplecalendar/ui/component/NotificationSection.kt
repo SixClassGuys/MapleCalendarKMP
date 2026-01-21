@@ -1,5 +1,7 @@
 package com.sixclassguys.maplecalendar.ui.component
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,6 +34,7 @@ import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.utils.toMapleNotificationString
 import kotlinx.datetime.LocalDateTime
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NotificationSection(
     isEnabled: Boolean,

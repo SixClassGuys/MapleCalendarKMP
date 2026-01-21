@@ -1,6 +1,8 @@
 package com.sixclassguys.maplecalendar.ui.calendar
 
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -49,6 +51,7 @@ val IMAGE_HEIGHT = 200.dp
 val COLLAPSED_TOP_BAR_HEIGHT = 48.dp // 제목+날짜 2줄을 위해 기존보다 조금 높임
 val EXPANDED_TOP_BAR_HEIGHT = 280.dp // 이미지(200) + 간격(16) + 제목/날짜 영역
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MapleEventDetailScreen(
     viewModel: CalendarViewModel,
