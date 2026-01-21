@@ -16,6 +16,7 @@ data class EventResponse(
     val thumbnailUrl: String?,
     val startDate: String,
     val endDate: String,
+    val eventTypes: List<String>,
     val isRegistered: Boolean = false,
     val alarmTimes: List<String> = emptyList()
 )
@@ -28,6 +29,7 @@ fun EventResponse.toDomain(): MapleEvent {
         thumbnailUrl = this.thumbnailUrl,
         startDate = LocalDate.parse(startDate.substringBefore("T")),
         endDate = LocalDate.parse(endDate.substringBefore("T")),
+        eventTypes = this.eventTypes,
         isRegistered = this.isRegistered,
         notificationTimes = this.alarmTimes.map { LocalDateTime.parse(it) }
     )

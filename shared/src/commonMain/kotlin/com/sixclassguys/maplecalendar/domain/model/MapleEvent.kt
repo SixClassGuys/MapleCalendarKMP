@@ -12,6 +12,7 @@ data class MapleEvent(
     val thumbnailUrl: String?,
     val startDate: LocalDate,
     val endDate: LocalDate,
+    val eventTypes: List<String>,
     val isRegistered: Boolean,
     val notificationTimes: List<LocalDateTime>
 )
