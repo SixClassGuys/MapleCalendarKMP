@@ -1,5 +1,6 @@
 package com.sixclassguys.maplecalendar.ui.component
 
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -47,6 +49,7 @@ fun BottomNavigationBar(
     navController: NavController,
     onCalendarClicked: () -> Unit
 ) {
+    val context = LocalContext.current
     val navItems = listOf(
         Navigation.Home, Navigation.Playlist, Navigation.Board, Navigation.Setting
     )
@@ -118,9 +121,14 @@ fun BottomNavigationBar(
                     item = item,
                     isSelected = currentRoute == item.destination,
                     onClick = {
-                        navController.navigate(item.destination) {
-                            popUpTo(navController.graph.startDestinationId)
-                            launchSingleTop = true
+                        // BGM 플레이리스트와 게시판 기능은 준비중
+                        if ((item == Navigation.Playlist) || (item == Navigation.Board)) {
+                            Toast.makeText(context, "준비중입니다.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            navController.navigate(item.destination) {
+                                popUpTo(navController.graph.startDestinationId)
+                                launchSingleTop = true
+                            }
                         }
                     }
                 )

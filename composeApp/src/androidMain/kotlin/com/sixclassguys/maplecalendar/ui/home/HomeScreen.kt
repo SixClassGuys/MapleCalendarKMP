@@ -77,7 +77,10 @@ fun HomeScreen(
             // 1. 상단 앱바를 리스트의 첫 번째 아이템으로 삽입
             item {
                 HomeAppBar(
-                    onNotificationClick = { /* 알림 이동 */ }
+                    onNotificationClick = {
+                        // 알림 모아보기 기능은 준비중
+                        Toast.makeText(context, "준비중입니다.", Toast.LENGTH_SHORT).show()
+                    }
                 )
             }
 

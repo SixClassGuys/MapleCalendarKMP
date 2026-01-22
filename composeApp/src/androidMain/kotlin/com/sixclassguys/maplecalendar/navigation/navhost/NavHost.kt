@@ -1,7 +1,9 @@
 package com.sixclassguys.maplecalendar.navigation.navhost
 
 import android.annotation.SuppressLint
+import android.os.Build
 import androidx.activity.ComponentActivity
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -27,6 +29,7 @@ import com.sixclassguys.maplecalendar.ui.splash.SplashScreen
 import io.github.aakira.napier.Napier
 import org.koin.compose.viewmodel.koinViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("ContextCastToActivity")
 @Composable
 fun NavHost(
