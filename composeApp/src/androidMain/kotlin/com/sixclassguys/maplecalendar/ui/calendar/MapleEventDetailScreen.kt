@@ -30,7 +30,6 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -40,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarIntent
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarViewModel
 import com.sixclassguys.maplecalendar.theme.MapleGray
+import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.AlarmSettingDialog
 import com.sixclassguys.maplecalendar.ui.component.EventCollapsingHeader
 import com.sixclassguys.maplecalendar.ui.component.EventDetailHeader
@@ -145,7 +145,7 @@ fun MapleEventDetailScreen(
                 // 4. 홈페이지 상세 (WebView)
                 Text(
                     text = "홈페이지",
-                    fontWeight = FontWeight.Bold,
+                    style = Typography.titleSmall,
                     modifier = Modifier.padding(16.dp)
                 )
 

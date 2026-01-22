@@ -26,11 +26,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.domain.model.CharacterBasic
 import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.MapleWorld
 
 @Composable
@@ -40,23 +40,20 @@ fun CharacterBasicCard(
     val worldMark = MapleWorld.getWorld(basic.worldName)?.iconRes ?: R.drawable.ic_world_scania
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.5.dp, MapleOrange),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
-            modifier = Modifier
-                .padding(16.dp) // 전체 여백 살짝 조정
+            modifier = Modifier.padding(16.dp) // 전체 여백 살짝 조정
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // 1. 캐릭터 이미지 영역
             Box(
-                modifier = Modifier
-                    .size(140.dp),
+                modifier = Modifier.size(140.dp),
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
@@ -87,8 +84,8 @@ fun CharacterBasicCard(
                 ) {
                     Text(
                         text = basic.characterName,
-                        fontSize = 22.sp, // 더 크게 강조
-                        fontWeight = FontWeight.ExtraBold,
+                        style = Typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
 
@@ -108,7 +105,7 @@ fun CharacterBasicCard(
                     ) {
                         Text(
                             text = basic.characterGuildName,
-                            fontSize = 12.sp,
+                            style = Typography.bodyMedium,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
                             color = Color.Black
                         )
@@ -117,14 +114,13 @@ fun CharacterBasicCard(
 
                 Text(
                     text = "Lv. ${basic.characterLevel}  ${basic.characterExpRate}%",
-                    fontSize = 15.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
+                    style = Typography.bodyLarge,
+                    color = Color.Black
                 )
 
                 Text(
                     text = basic.characterClass,
-                    fontSize = 15.sp,
+                    style = Typography.bodyLarge,
                     color = Color.Black
                 )
 
@@ -149,15 +145,14 @@ fun CharacterDetailRow(label: String, value: String) {
     ) {
         Text(
             text = label,
-            fontSize = 14.sp,
+            style = Typography.bodyMedium,
             color = Color.Black,
             modifier = Modifier.width(50.dp) // 레이블 너비 고정으로 정렬 유지
         )
         Text(
             text = value,
-            fontSize = 14.sp,
-            color = Color.Black,
-            fontWeight = FontWeight.Bold
+            style = Typography.bodyMedium,
+            color = Color.Black
         )
     }
 }

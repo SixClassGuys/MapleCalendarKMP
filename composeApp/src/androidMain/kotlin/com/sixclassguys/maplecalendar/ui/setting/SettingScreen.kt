@@ -20,16 +20,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.home.HomeIntent
 import com.sixclassguys.maplecalendar.presentation.home.HomeViewModel
 import com.sixclassguys.maplecalendar.presentation.setting.SettingIntent
 import com.sixclassguys.maplecalendar.presentation.setting.SettingViewModel
 import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.Typography
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -47,10 +45,7 @@ fun SettingScreen(
     ) {
         Text(
             text = "환경설정",
-            style = TextStyle(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            ),
+            style = Typography.titleLarge,
             modifier = Modifier.padding(bottom = 40.dp)
         )
 
@@ -73,8 +68,7 @@ fun SettingScreen(
             ) {
                 Text(
                     text = "이벤트 알림 수신",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
+                    style = Typography.labelLarge
                 )
                 Switch(
                     checked = uiState.isGlobalAlarmEnabled,
@@ -118,8 +112,7 @@ fun MapleButton(
     ) {
         Text(
             text = text,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
+            style = Typography.bodyLarge,
             color = Color.White
         )
     }

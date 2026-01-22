@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.utils.MapleWorld
 
 @Composable
@@ -54,6 +55,7 @@ fun WorldSelector(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = selectedWorld.ifEmpty { "월드 선택" },
+                fontFamily = PretendardFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )

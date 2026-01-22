@@ -31,14 +31,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.daysInMonth
 import com.sixclassguys.maplecalendar.utils.plusMonths
 import kotlinx.datetime.Clock
@@ -100,15 +99,23 @@ fun CalendarPlaceholder(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = { onMonthChange(-1) }) {
-                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = null, tint = MapleOrange)
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                            contentDescription = null,
+                            tint = MapleOrange
+                        )
                     }
                     Text(
                         text = "${dateForPage.year}년 ${dateForPage.monthNumber}월",
-                        fontWeight = FontWeight.Bold,
+                        style = Typography.bodyLarge,
                         color = MapleOrange
                     )
                     IconButton(onClick = { onMonthChange(1) }) {
-                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = MapleOrange)
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = null,
+                            tint = MapleOrange
+                        )
                     }
                 }
 
@@ -121,9 +128,9 @@ fun CalendarPlaceholder(
                     listOf("일", "월", "화", "수", "목", "금", "토").forEach {
                         Text(
                             text = it,
+                            style = Typography.bodySmall,
                             modifier = Modifier.weight(1f),
                             textAlign = TextAlign.Center,
-                            fontSize = 12.sp,
                             color = if (it == "일") Color.Red else if (it == "토") Color.Blue else Color.Gray
                         )
                     }
@@ -149,15 +156,18 @@ fun CalendarPlaceholder(
                                     val isSelected = selectedDates.contains(date)
 
                                     Box(
-                                        modifier = Modifier.weight(1f).aspectRatio(1f).padding(2.dp).clip(CircleShape)
+                                        modifier = Modifier.weight(1f)
+                                            .aspectRatio(1f)
+                                            .padding(2.dp)
+                                            .clip(CircleShape)
                                             .background(if (isSelected) MapleOrange else Color.Transparent)
                                             .then(if (isEventDay) Modifier.clickable { onDateClick(date) } else Modifier),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
                                             day.toString(),
-                                            color = if (isEventDay) (if (isSelected) MapleWhite else MapleBlack) else MapleGray,
-                                            fontSize = 12.sp
+                                            style = Typography.bodySmall,
+                                            color = if (isEventDay) (if (isSelected) MapleWhite else MapleBlack) else MapleGray
                                         )
                                     }
                                 } else {

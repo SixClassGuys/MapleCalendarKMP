@@ -18,13 +18,14 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,8 +34,8 @@ import com.sixclassguys.maplecalendar.presentation.login.LoginIntent
 import com.sixclassguys.maplecalendar.presentation.login.LoginViewModel
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
 fun LoginScreen(
@@ -44,6 +45,7 @@ fun LoginScreen(
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState.isLoginSuccess) {
         if (uiState.isLoginSuccess) {
@@ -61,6 +63,13 @@ fun LoginScreen(
         }
     }
 
+    LaunchedEffect(uiState.errorMessage) {
+        val message = uiState.errorMessage
+        if (message != null) {
+            snackbarHostState.showSnackbar(message = message)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,8 +81,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "로그인",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
+            style = Typography.titleLarge,
             color = MapleBlack
         )
 
@@ -82,16 +90,14 @@ fun LoginScreen(
         // 2. 설명 텍스트
         Text(
             text = "대부분의 기능은\n로그인을 해야 이용하실 수 있습니다.",
-            fontSize = 16.sp,
-            color = MapleGray,
-            lineHeight = 24.sp
+            style = Typography.bodyLarge,
+            color = MapleGray
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "NEXON Open API 사이트에서 넥슨 아이디로 로그인하여\nAPI Key를 확인하세요!",
-            fontSize = 16.sp,
-            color = MapleGray,
-            lineHeight = 20.sp
+            style = Typography.bodyLarge,
+            color = MapleGray
         )
 
         Spacer(modifier = Modifier.height(40.dp))
@@ -103,6 +109,7 @@ fun LoginScreen(
             placeholder = {
                 Text(
                     text = "NEXON Open API Key를 입력하세요.",
+                    style = Typography.bodyMedium,
                     color = MapleGray
                 )
             },
@@ -152,20 +159,10 @@ fun LoginScreen(
             } else {
                 Text(
                     text = "Open API Key로 로그인",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
+                    style = Typography.titleMedium,
+                    fontSize = 24.sp
                 )
             }
-        }
-
-        // 에러 메시지 처리 (필요 시)
-        uiState.errorMessage?.let { message ->
-            Text(
-                text = message,
-                color = MapleOrange,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(top = 8.dp)
-            )
         }
     }
 }

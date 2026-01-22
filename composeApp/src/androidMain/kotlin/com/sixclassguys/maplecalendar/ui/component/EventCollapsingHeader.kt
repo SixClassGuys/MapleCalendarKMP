@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.domain.model.MapleEvent
+import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.ui.calendar.COLLAPSED_TOP_BAR_HEIGHT
 import com.sixclassguys.maplecalendar.ui.calendar.IMAGE_HEIGHT
 
@@ -141,6 +142,7 @@ fun EventCollapsingHeader(
                 Text(
                     text = event.title,
                     fontSize = titleSize,
+                    fontFamily = PretendardFamily,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
                     maxLines = 1,
@@ -151,6 +153,7 @@ fun EventCollapsingHeader(
                 Text(
                     text = "${event.startDate} ~ ${event.endDate}",
                     fontSize = dateSize,
+                    fontFamily = PretendardFamily,
                     color = Color.Gray,
                     textAlign = textAlign,
                     modifier = Modifier.fillMaxWidth()

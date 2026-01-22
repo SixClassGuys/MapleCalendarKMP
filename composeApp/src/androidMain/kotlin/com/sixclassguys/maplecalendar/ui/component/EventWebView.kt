@@ -16,7 +16,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.sixclassguys.maplecalendar.ui.calendar.COLLAPSED_TOP_BAR_HEIGHT
 import com.sixclassguys.maplecalendar.utils.convertToMobileUrl
 
-@SuppressLint("ClickableViewAccessibility", "ConfigurationScreenWidthHeight",
+@SuppressLint(
+    "ClickableViewAccessibility",
+    "ConfigurationScreenWidthHeight",
     "SetJavaScriptEnabled"
 )
 @Composable

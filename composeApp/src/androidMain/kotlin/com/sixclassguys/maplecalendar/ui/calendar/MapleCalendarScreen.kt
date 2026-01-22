@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarIntent
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarViewModel
+import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.CalendarCard
 import com.sixclassguys.maplecalendar.ui.component.CarouselEventRow
 import com.sixclassguys.maplecalendar.ui.component.EmptyEventScreen
@@ -63,8 +64,7 @@ fun MapleCalendarScreen(
                 item {
                     Text(
                         text = "캘린더",
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = Typography.titleLarge,
                         modifier = Modifier.padding(16.dp)
                     )
 
@@ -93,8 +93,7 @@ fun MapleCalendarScreen(
 
                     Text(
                         text = if (selectedDateText == null) "날짜를 선택해주세요!" else "$selectedDateText 진행중인 이벤트",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        style = Typography.titleMedium,
                         modifier = Modifier.padding(16.dp)
                     )
 
@@ -126,8 +125,7 @@ fun MapleCalendarScreen(
                     Spacer(modifier = Modifier.height(24.dp))
                     Text(
                         text = "오늘의 보스 일정",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        style = Typography.titleMedium,
                         modifier = Modifier.padding(16.dp)
                     )
 

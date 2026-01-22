@@ -34,10 +34,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarUiState
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.plusMonths
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
@@ -51,16 +51,15 @@ fun CalendarCard(
     onDateClick: (LocalDate) -> Unit,
     today: LocalDate
 ) {
-    // 💡 1. 페이지 개수를 고정하고 중앙에서 시작합니다.
+    // 1. 페이지 개수를 고정하고 중앙에서 시작합
     val pageCount = 2000
     val initialPage = pageCount / 2
     val pagerState = rememberPagerState(initialPage = initialPage) { pageCount }
     val scope = rememberCoroutineScope()
 
-    // 💡 2. [핵심] 사용자의 수동 스와이프가 끝났을 때만 뷰모델 업데이트
-    // isScrollInProgress를 체크하여 프로그래밍적인 이동(animateScroll)과 수동 스와이프를 구분합니다.
+    // 2. [핵심] 사용자의 수동 스와이프가 끝났을 때만 뷰모델 업데이트
+    // isScrollInProgress를 체크하여 프로그래밍적인 이동(animateScroll)과 수동 스와이프를 구분
     LaunchedEffect(pagerState.targetPage) {
-        // targetPage가 바뀌었을 때, 현재 uiState와 차이가 있다면 그때만 이벤트를 던집니다.
         val monthOffset = pagerState.targetPage - initialPage
         val startOfMonth = LocalDate(today.year, today.month, 1)
         val targetDate = startOfMonth.plusMonths(monthOffset)
@@ -84,7 +83,7 @@ fun CalendarCard(
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxWidth(),
-            // 💡 스와이프 감도 조절 (너무 휙휙 넘어가지 않게)
+            // 스와이프 감도 조절 (너무 휙휙 넘어가지 않게)
             flingBehavior = PagerDefaults.flingBehavior(state = pagerState)
         ) {
             Column(
@@ -110,8 +109,7 @@ fun CalendarCard(
                     }
                     Text(
                         text = "${uiState.year}년 ${uiState.month.value}월",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = Typography.titleMedium,
                         color = MapleOrange
                     )
                     IconButton(
@@ -137,10 +135,10 @@ fun CalendarCard(
                     daysOfWeek.forEach { day ->
                         Text(
                             text = day,
-                            modifier = Modifier.weight(1f),
+                            style = Typography.bodyMedium,
                             textAlign = TextAlign.Center,
-                            fontSize = 14.sp,
-                            color = if (day == "일") Color.Red else if (day == "토") Color.Blue else Color.Gray
+                            color = if (day == "일") Color.Red else if (day == "토") Color.Blue else Color.Gray,
+                            modifier = Modifier.weight(1f)
                         )
                     }
                 }
@@ -171,6 +169,7 @@ fun CalendarCard(
 
                                             else -> Color.Black
                                         },
+                                        style = Typography.bodySmall,
                                         fontWeight = if (date == uiState.selectedDate || date == today) FontWeight.Bold else FontWeight.Normal
                                     )
                                 }

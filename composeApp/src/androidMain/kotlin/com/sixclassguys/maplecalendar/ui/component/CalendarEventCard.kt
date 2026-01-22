@@ -21,15 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.domain.model.MapleEvent
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
 fun CalendarEventCard(
@@ -65,14 +64,13 @@ fun CalendarEventCard(
                 // 이벤트 제목
                 Text(
                     text = event.title,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = Typography.bodyLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     color = MapleBlack
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // 이벤트 기간 표시
                 Row(
@@ -87,7 +85,7 @@ fun CalendarEventCard(
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "${event.startDate} ~ ${event.endDate}",
-                        fontSize = 12.sp,
+                        style = Typography.bodySmall,
                         color = MapleGray
                     )
                 }

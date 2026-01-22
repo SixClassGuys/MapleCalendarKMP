@@ -79,21 +79,21 @@ val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = PretendardFamily,
         fontWeight = FontWeight.Bold,
-        fontSize = 22.sp,
+        fontSize = 28.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
     titleMedium = TextStyle(
         fontFamily = PretendardFamily,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp,
+        fontSize = 24.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.15.sp
     ),
     titleSmall = TextStyle(
         fontFamily = PretendardFamily,
         fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
+        fontSize = 20.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
@@ -121,7 +121,7 @@ val Typography = Typography(
     labelLarge = TextStyle(
         fontFamily = PretendardFamily,
         fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
+        fontSize = 18.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),

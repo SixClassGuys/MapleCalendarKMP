@@ -24,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.home.HomeIntent
 import com.sixclassguys.maplecalendar.presentation.home.HomeViewModel
@@ -32,6 +31,7 @@ import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.CharacterBasicCard
 import com.sixclassguys.maplecalendar.ui.component.EmptyCharacterBasicCard
 import com.sixclassguys.maplecalendar.ui.component.HomeAppBar
@@ -112,7 +112,7 @@ fun HomeScreen(
             item {
                 Text(
                     text = "오늘 진행하는 이벤트",
-                    fontSize = 20.sp,
+                    style = Typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MapleBlack
                 )
@@ -124,8 +124,8 @@ fun HomeScreen(
                 item {
                     Text(
                         text = "진행 중인 이벤트가 없습니다.",
-                        color = MapleGray,
-                        fontSize = 16.sp
+                        style = Typography.bodyLarge,
+                        color = MapleGray
                     )
                 }
             } else {

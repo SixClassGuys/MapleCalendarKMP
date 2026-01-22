@@ -10,13 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
 fun RepresentativeConfirmButton(
@@ -37,9 +36,8 @@ fun RepresentativeConfirmButton(
     ) {
         Text(
             text = "대표 캐릭터 선택",
-            color = textColor,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
+            style = Typography.titleMedium,
+            color = textColor
         )
     }
 }

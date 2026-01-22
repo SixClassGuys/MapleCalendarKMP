@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.domain.model.MapleEvent
+import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.utils.MapleEventType
 
 @Composable
@@ -24,7 +25,6 @@ fun EventDetailHeader(event: MapleEvent) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        // 💡 태그 영역만 남깁니다. (제목과 날짜는 위에서 내려옴)
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -37,10 +37,11 @@ fun EventDetailHeader(event: MapleEvent) {
                 ) {
                     Text(
                         text = tag,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                        fontFamily = PretendardFamily,
                         fontSize = 12.sp,
                         color = Color.White,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                     )
                 }
             }

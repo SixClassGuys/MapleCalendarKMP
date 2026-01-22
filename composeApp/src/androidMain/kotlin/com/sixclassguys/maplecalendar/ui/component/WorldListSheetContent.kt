@@ -30,6 +30,7 @@ import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
 import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.utils.MapleWorld
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,14 +46,14 @@ fun WorldSelectBottomSheet(
         dragHandle = null // 핸들을 숨기거나 커스텀 가능
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
                 .padding(bottom = 24.dp)
         ) {
             // 1. 헤더 타이틀
             Text(
                 text = "WORLD SELECT",
                 color = MapleStatTitle, // 디자인 속 노란색/라임색
+                fontFamily = PretendardFamily,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.ExtraBold,
                 modifier = Modifier.padding(20.dp)
@@ -109,6 +110,7 @@ fun WorldItem(
         Spacer(modifier = Modifier.width(12.dp))
         Text(
             text = worldName,
+            fontFamily = PretendardFamily,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
             color = MapleBlack

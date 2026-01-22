@@ -22,6 +22,8 @@ import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.domain.model.MapleEvent
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
+import com.sixclassguys.maplecalendar.theme.PretendardFamily
+import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
 fun TodayEventsCard(
@@ -29,8 +31,7 @@ fun TodayEventsCard(
     onClick: () -> Unit = {}
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null, // 클릭 시 물결 효과 제거(깔끔함을 위해)
@@ -58,6 +59,7 @@ fun TodayEventsCard(
         // 2. 이벤트 제목
         Text(
             text = event.title,
+            fontFamily = PretendardFamily,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = MapleBlack
@@ -68,7 +70,7 @@ fun TodayEventsCard(
         // 3. 이벤트 기간 (오늘 날짜 포함 여부와 관계없이 전체 기간 표시)
         Text(
             text = "${event.startDate} ~ ${event.endDate}",
-            fontSize = 14.sp,
+            style = Typography.bodyMedium,
             color = MapleGray
         )
     }

@@ -23,15 +23,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.login.LoginIntent
 import com.sixclassguys.maplecalendar.presentation.login.LoginViewModel
-import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.CharacterItemCard
 import com.sixclassguys.maplecalendar.ui.component.CharacterStepIndicator
 import com.sixclassguys.maplecalendar.ui.component.RepresentativeConfirmButton
@@ -102,8 +99,8 @@ fun SelectRepresentativeCharacterScreen(
             item(span = { GridItemSpan(columns) }) {
                 Text(
                     text = "대표 캐릭터 선택",
-                    modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
-                    style = TextStyle(fontSize = 32.sp, fontWeight = FontWeight.ExtraBold)
+                    style = Typography.titleLarge,
+                    modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
                 )
             }
 
@@ -118,7 +115,7 @@ fun SelectRepresentativeCharacterScreen(
                 Spacer(modifier = Modifier.height(48.dp))
                 Text(
                     text = "계정 내에서 대표캐릭터로 등록을 원하는\n캐릭터를 선택해주세요!",
-                    style = TextStyle(color = MapleGray, fontSize = 15.sp, lineHeight = 22.sp)
+                    style = Typography.bodyLarge
                 )
             }
 
