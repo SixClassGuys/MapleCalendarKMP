@@ -11,7 +11,9 @@ import com.sixclassguys.maplecalendar.domain.model.LoginResult
 import com.sixclassguys.maplecalendar.domain.model.Member
 import com.sixclassguys.maplecalendar.domain.repository.AuthRepository
 import com.sixclassguys.maplecalendar.getPlatform
+import com.sixclassguys.maplecalendar.util.ApiException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
 class AuthRepositoryImpl(
@@ -32,6 +34,12 @@ class AuthRepositoryImpl(
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
     }
 
     override suspend fun autoLogin(
@@ -51,5 +59,11 @@ class AuthRepositoryImpl(
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
     }
 }
