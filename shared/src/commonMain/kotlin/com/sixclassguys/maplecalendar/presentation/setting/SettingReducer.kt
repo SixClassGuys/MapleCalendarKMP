@@ -23,21 +23,6 @@ class SettingReducer {
             )
         }
 
-        is SettingIntent.FetchCharacterBasicSuccess -> {
-            currentState.copy(
-                isLoading = false,
-                isLoginSuccess = true
-            )
-        }
-
-        is SettingIntent.FetchCharacterBasicFailed -> {
-            currentState.copy(
-                isLoading = false,
-                isLoginSuccess = false,
-                errorMessage = intent.message
-            )
-        }
-
         is SettingIntent.FetchGlobalAlarmStatus -> {
             currentState.copy(
                 isLoading = true

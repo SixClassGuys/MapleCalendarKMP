@@ -31,6 +31,14 @@ sealed class HomeIntent {
 
     data class LoadEventsFailed(val message: String) : HomeIntent()
 
+    data object SyncNotificationWithSystem : HomeIntent()
+
+    data object ToggleGlobalAlarmStatus : HomeIntent()
+
+    data class ToggleGlobalAlarmStatusSuccess(val isEnabled: Boolean) : HomeIntent()
+
+    data class ToggleGlobalAlarmStatusFailed(val message: String) : HomeIntent()
+
     data object Login : HomeIntent()
 
     data object Logout : HomeIntent()

@@ -1,5 +1,7 @@
 package com.sixclassguys.maplecalendar.presentation.home
 
+import io.github.aakira.napier.Napier
+
 class HomeReducer {
 
     fun reduce(currentState: HomeUiState, intent: HomeIntent): HomeUiState = when (intent) {
@@ -59,6 +61,33 @@ class HomeReducer {
         }
 
         is HomeIntent.LoadEventsFailed -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = intent.message
+            )
+        }
+
+        is HomeIntent.SyncNotificationWithSystem -> {
+            currentState.copy(
+
+            )
+        }
+
+        is HomeIntent.ToggleGlobalAlarmStatus -> {
+            currentState.copy(
+                isLoading = true
+            )
+        }
+
+        is HomeIntent.ToggleGlobalAlarmStatusSuccess -> {
+            Napier.d("알림 ON: ${intent.isEnabled}")
+            currentState.copy(
+                isLoading = false,
+                isGlobalAlarmEnabled = intent.isEnabled
+            )
+        }
+
+        is HomeIntent.ToggleGlobalAlarmStatusFailed -> {
             currentState.copy(
                 isLoading = false,
                 errorMessage = intent.message

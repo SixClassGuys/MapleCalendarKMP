@@ -3,12 +3,14 @@ package com.sixclassguys.maplecalendar.presentation.home
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sixclassguys.maplecalendar.data.local.AppPreferences
+import com.sixclassguys.maplecalendar.PermissionChecker
 import com.sixclassguys.maplecalendar.domain.model.ApiState
 import com.sixclassguys.maplecalendar.domain.usecase.AutoLoginUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetApiKeyUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetFcmTokenUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetTodayEventsUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.ToggleGlobalAlarmStatusUseCase
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -21,9 +23,11 @@ import kotlinx.datetime.toLocalDateTime
 class HomeViewModel(
     val savedStateHandle: SavedStateHandle,
     private val reducer: HomeReducer,
+    private val permissionChecker: PermissionChecker,
     private val getApiKeyUseCase: GetApiKeyUseCase,
     private val getFcmTokenUseCase: GetFcmTokenUseCase,
     private val autoLoginUseCase: AutoLoginUseCase,
+    private val toggleGlobalAlarmStatusUseCase: ToggleGlobalAlarmStatusUseCase,
     private val getTodayEventsUseCase: GetTodayEventsUseCase
 ) : ViewModel() {
 
@@ -80,6 +84,49 @@ class HomeViewModel(
         }
     }
 
+    private fun handleSyncNotification() {
+        viewModelScope.launch {
+            val isSystemGranted = permissionChecker.isNotificationGranted()
+            Napier.d("알림 권한 허용: $isSystemGranted")
+            val isServerSideOn = _uiState.value.isGlobalAlarmEnabled
+            Napier.d("알림 수신 ON: $isServerSideOn")
+            Napier.d("알림 동기화 요청 시도: 시스템권한=$isSystemGranted, 서버상태=$isServerSideOn")
+            // 데이터 불일치 상태: 서버는 ON인데 시스템 권한은 OFF인 경우만 서버 통신
+            if (isServerSideOn && !isSystemGranted) {
+                // 서버에 OFF 상태 업데이트 요청
+                onIntent(HomeIntent.ToggleGlobalAlarmStatus)
+            }
+        }
+    }
+
+    private fun toggleGlobalAlarmStatus(apiKey: String) {
+        Napier.d("toggleGlobalAlarmStatus 호출됨! apiKey 존재여부: ${apiKey.isNotEmpty()}")
+
+        if (apiKey.isEmpty()) {
+            Napier.e("에러: API Key가 없어서 서버 통신을 시작할 수 없습니다.")
+            return
+        }
+
+        viewModelScope.launch {
+            toggleGlobalAlarmStatusUseCase(apiKey).collect { state ->
+                Napier.d("통신 상태 변경 감지: $state") // 💡 2. 상태 변화 관찰
+                when (state) {
+                    is ApiState.Success -> {
+                        Napier.d("알림 수신 여부 변경 성공")
+                        onIntent(HomeIntent.ToggleGlobalAlarmStatusSuccess(state.data))
+                    }
+
+                    is ApiState.Error -> {
+                        Napier.d("알림 수신 여부 변경 실패")
+                        onIntent(HomeIntent.ToggleGlobalAlarmStatusFailed(state.message))
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
     private fun getTodayEvents() {
         viewModelScope.launch {
             val now = Clock.System.now()
@@ -127,10 +174,19 @@ class HomeViewModel(
 
             is HomeIntent.LoadCharacterBasicSuccess -> {
                 getTodayEvents()
+                handleSyncNotification()
             }
 
             is HomeIntent.LoadCharacterBasicFailed -> {
                 getTodayEvents()
+            }
+
+            is HomeIntent.SyncNotificationWithSystem -> {
+                handleSyncNotification()
+            }
+
+            is HomeIntent.ToggleGlobalAlarmStatus -> {
+                toggleGlobalAlarmStatus(_uiState.value.nexonApiKey ?: "")
             }
 
             else -> {}
