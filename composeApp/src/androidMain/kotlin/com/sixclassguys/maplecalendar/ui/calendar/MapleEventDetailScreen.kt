@@ -100,6 +100,13 @@ fun MapleEventDetailScreen(
     }
 
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(uiState.selectedEvent) {
+        if (uiState.selectedEvent == null) {
+            onBack()
+        }
+    }
+
     val event = uiState.selectedEvent ?: return // 이벤트가 없으면 표시 안함
     val currentEvent by rememberUpdatedState(event)
 
