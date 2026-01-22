@@ -1,6 +1,9 @@
 package com.sixclassguys.maplecalendar.presentation.home
 
 import com.sixclassguys.maplecalendar.domain.model.CharacterBasic
+import com.sixclassguys.maplecalendar.domain.model.CharacterDojangRanking
+import com.sixclassguys.maplecalendar.domain.model.CharacterRanking
+import com.sixclassguys.maplecalendar.domain.model.CharacterUnion
 import com.sixclassguys.maplecalendar.domain.model.MapleEvent
 
 sealed class HomeIntent {
@@ -13,6 +16,10 @@ sealed class HomeIntent {
 
     data class LoadCharacterBasicSuccess(
         val characterBasic: CharacterBasic?,
+        val characterDojangRanking: CharacterDojangRanking?,
+        val characterOverallRanking: CharacterRanking?,
+        val characterServerRanking: CharacterRanking?,
+        val characterUnion: CharacterUnion?,
         val isGlobalAlarmEnabled: Boolean
     ) : HomeIntent()
 

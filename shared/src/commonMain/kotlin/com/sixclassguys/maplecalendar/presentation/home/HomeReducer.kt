@@ -29,6 +29,10 @@ class HomeReducer {
                 isLoading = false,
                 isAutoLoginFinished = true,
                 characterBasic = intent.characterBasic,
+                characterDojangRanking = intent.characterDojangRanking,
+                characterOverallRanking = intent.characterOverallRanking,
+                characterServerRanking = intent.characterServerRanking,
+                characterUnion = intent.characterUnion,
                 isGlobalAlarmEnabled = intent.isGlobalAlarmEnabled
             )
         }

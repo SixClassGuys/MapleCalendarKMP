@@ -48,7 +48,8 @@ fun HomeScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
-    val loginSuccess by viewModel.savedStateHandle.getStateFlow("loginSuccess", false).collectAsState()
+    val loginSuccess by viewModel.savedStateHandle.getStateFlow("loginSuccess", false)
+        .collectAsState()
 
     LaunchedEffect(loginSuccess) {
         if (loginSuccess) {
@@ -96,18 +97,33 @@ fun HomeScreen(
             // 2. 캐릭터 정보 섹션
             item {
                 Spacer(modifier = Modifier.height(24.dp))
+                val basic = uiState.characterBasic
+                val dojangRanking = uiState.characterDojangRanking
+                val overallRanking = uiState.characterOverallRanking
+                val serverRanking = uiState.characterServerRanking
+                val union = uiState.characterUnion
                 when {
-                    uiState.characterBasic != null -> {
-                        CharacterBasicCard(basic = uiState.characterBasic!!)
+                    ((basic != null) && (dojangRanking != null) && (overallRanking != null) && (serverRanking != null) && (union != null)) -> {
+                        CharacterBasicCard(
+                            basic = basic,
+                            dojangRanking = dojangRanking,
+                            overallRanking = overallRanking,
+                            serverRanking = serverRanking,
+                            union = union
+                        )
                     }
+
                     uiState.isLoading -> {
                         Box(
-                            modifier = Modifier.fillMaxWidth().height(200.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator(color = MapleOrange)
                         }
                     }
+
                     else -> {
                         EmptyCharacterBasicCard(
                             onClick = { viewModel.onIntent(HomeIntent.Login) }

@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toJavaLocalDateTime
+import java.text.DecimalFormat
 import java.time.format.DateTimeFormatter
 
 object MapleDateFormatters {
@@ -19,6 +20,16 @@ object MapleDateFormatters {
 fun LocalDateTime.toMapleNotificationString(): String {
     // kotlinx -> java 변환 후 포맷팅
     return this.toJavaLocalDateTime().format(MapleDateFormatters.notificationFormatter)
+}
+
+fun makeCommaInt(number: Int): String {
+    val comma = DecimalFormat("#,###")
+    return "${comma.format(number)}"
+}
+
+fun makeCommaRank(number: Int): String {
+    val comma = DecimalFormat("#,###")
+    return "${comma.format(number)}위"
 }
 
 fun convertToMobileUrl(url: String): String {

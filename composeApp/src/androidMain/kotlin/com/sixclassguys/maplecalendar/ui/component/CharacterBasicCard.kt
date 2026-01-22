@@ -29,13 +29,22 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.domain.model.CharacterBasic
+import com.sixclassguys.maplecalendar.domain.model.CharacterDojangRanking
+import com.sixclassguys.maplecalendar.domain.model.CharacterRanking
+import com.sixclassguys.maplecalendar.domain.model.CharacterUnion
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.MapleWorld
+import com.sixclassguys.maplecalendar.utils.makeCommaInt
+import com.sixclassguys.maplecalendar.utils.makeCommaRank
 
 @Composable
 fun CharacterBasicCard(
-    basic: CharacterBasic
+    basic: CharacterBasic,
+    dojangRanking: CharacterDojangRanking,
+    overallRanking: CharacterRanking,
+    serverRanking: CharacterRanking,
+    union: CharacterUnion
 ) {
     val worldMark = MapleWorld.getWorld(basic.worldName)?.iconRes ?: R.drawable.ic_world_scania
 
@@ -127,11 +136,26 @@ fun CharacterBasicCard(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 // 서버에서 아직 이 정보들을 보내주지 않음
-                CharacterDetailRow("유니온", "10,597")
-                CharacterDetailRow("인기도", "141")
-                CharacterDetailRow("무릉", "100층")
-                CharacterDetailRow("종합", "10,597위")
-                CharacterDetailRow("서버", "141위")
+                CharacterDetailRow(
+                    label = "유니온",
+                    value = makeCommaInt(union.unionLevel)
+                )
+                CharacterDetailRow(
+                    label = "인기도",
+                    value = makeCommaInt(overallRanking.characterPopularity)
+                )
+                CharacterDetailRow(
+                    label = "무릉",
+                    value = "${dojangRanking.dojangBestFloor}층"
+                )
+                CharacterDetailRow(
+                    label = "종합",
+                    value = makeCommaRank(overallRanking.rank)
+                )
+                CharacterDetailRow(
+                    label = "서버",
+                    value = makeCommaRank(serverRanking.rank)
+                )
             }
         }
     }

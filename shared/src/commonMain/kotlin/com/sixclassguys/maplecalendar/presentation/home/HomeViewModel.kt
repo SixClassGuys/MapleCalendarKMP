@@ -61,6 +61,10 @@ class HomeViewModel(
                         onIntent(
                             HomeIntent.LoadCharacterBasicSuccess(
                                 state.data.characterBasic,
+                                state.data.characterDojang,
+                                state.data.characterOverallRanking,
+                                state.data.characterServerRanking,
+                                state.data.characterUnionLevel,
                                 state.data.isGlobalAlarmEnabled
                             )
                         )

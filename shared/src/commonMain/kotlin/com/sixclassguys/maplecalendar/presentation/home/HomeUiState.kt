@@ -1,6 +1,9 @@
 package com.sixclassguys.maplecalendar.presentation.home
 
 import com.sixclassguys.maplecalendar.domain.model.CharacterBasic
+import com.sixclassguys.maplecalendar.domain.model.CharacterDojangRanking
+import com.sixclassguys.maplecalendar.domain.model.CharacterRanking
+import com.sixclassguys.maplecalendar.domain.model.CharacterUnion
 import com.sixclassguys.maplecalendar.domain.model.MapleEvent
 
 data class HomeUiState(
@@ -8,6 +11,10 @@ data class HomeUiState(
     val isAutoLoginFinished: Boolean = false,
     val nexonApiKey: String? = null,
     val characterBasic: CharacterBasic? = null,
+    val characterDojangRanking: CharacterDojangRanking? = null,
+    val characterOverallRanking: CharacterRanking? = null,
+    val characterServerRanking: CharacterRanking? = null,
+    val characterUnion: CharacterUnion? = null,
     val isGlobalAlarmEnabled: Boolean = false,
     val events: List<MapleEvent> = emptyList(),
     val isNavigateToLogin: Boolean = false,
