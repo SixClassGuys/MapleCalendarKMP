@@ -12,3 +12,7 @@ val iosNetworkModule = module {
     single<NativeConfig> { IosNativeConfig() }
     single(named("nexonApiKey")) { get<NativeConfig>().nexonApiKey }
 }
+
+val iosPermissionModule = module {
+    single { PermissionChecker() }
+}
