@@ -92,7 +92,7 @@ val viewModelModule = module {
     // ViewModel (화면마다 생명주기를 관리하기 위해 factory 사용)
     viewModel { HomeViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { LoginViewModel(get(), get(), get(), get(), get()) }
-    viewModel { SettingViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { SettingViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { NotificationViewModel(get(), get(), get(), get()) }
     viewModel { CalendarViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 

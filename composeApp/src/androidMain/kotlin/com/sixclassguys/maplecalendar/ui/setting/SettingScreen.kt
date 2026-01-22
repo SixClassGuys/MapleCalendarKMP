@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,9 +36,17 @@ import org.koin.compose.viewmodel.koinViewModel
 fun SettingScreen(
     viewModel: SettingViewModel = koinViewModel(),
     homeViewModel: HomeViewModel,
+    snackbarHostState: SnackbarHostState,
     onNavigateToLogin: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(uiState.errorMessage) {
+        val message = uiState.errorMessage
+        if (message != null) {
+            snackbarHostState.showSnackbar(message = message)
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -52,7 +62,7 @@ fun SettingScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         // 💡 로그인 상태에 따른 UI 분기
-        if (uiState.nexonApiKey == null) {
+        if (!uiState.isLoginSuccess) {
             MapleButton(
                 text = "로그인",
                 onClick = onNavigateToLogin,

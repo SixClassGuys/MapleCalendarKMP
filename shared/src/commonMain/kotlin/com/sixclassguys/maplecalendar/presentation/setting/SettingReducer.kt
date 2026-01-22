@@ -11,7 +11,7 @@ class SettingReducer {
 
         is SettingIntent.FetchNexonOpenApiKeySuccess -> {
             currentState.copy(
-                isLoading = false,
+                isLoading = true,
                 nexonApiKey = intent.key
             )
         }
@@ -19,6 +19,21 @@ class SettingReducer {
         is SettingIntent.FetchNexonOpenApiKeyFailed -> {
             currentState.copy(
                 isLoading = false,
+                errorMessage = intent.message
+            )
+        }
+
+        is SettingIntent.FetchCharacterBasicSuccess -> {
+            currentState.copy(
+                isLoading = false,
+                isLoginSuccess = true
+            )
+        }
+
+        is SettingIntent.FetchCharacterBasicFailed -> {
+            currentState.copy(
+                isLoading = false,
+                isLoginSuccess = false,
                 errorMessage = intent.message
             )
         }

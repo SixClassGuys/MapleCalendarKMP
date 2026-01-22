@@ -8,6 +8,10 @@ sealed class SettingIntent {
 
     data class FetchNexonOpenApiKeyFailed(val message: String) : SettingIntent()
 
+    data class FetchCharacterBasicSuccess(val isLoginSuccess: Boolean) : SettingIntent()
+
+    data class FetchCharacterBasicFailed(val message: String) : SettingIntent()
+
     data object FetchGlobalAlarmStatus : SettingIntent()
 
     data class FetchGlobalAlarmStatusSuccess(val isEnabled: Boolean) : SettingIntent()

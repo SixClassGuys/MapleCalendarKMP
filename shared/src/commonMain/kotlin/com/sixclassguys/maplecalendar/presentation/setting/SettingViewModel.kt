@@ -3,7 +3,9 @@ package com.sixclassguys.maplecalendar.presentation.setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sixclassguys.maplecalendar.domain.model.ApiState
+import com.sixclassguys.maplecalendar.domain.usecase.AutoLoginUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetApiKeyUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.GetFcmTokenUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetGlobalAlarmStatusUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetSavedFcmTokenUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.LogoutUseCase
@@ -17,6 +19,8 @@ import kotlinx.coroutines.launch
 class SettingViewModel(
     private val reducer: SettingReducer,
     private val getApiKeyUseCase: GetApiKeyUseCase,
+    private val getFcmTokenUseCase: GetFcmTokenUseCase,
+    private val autoLoginUseCase: AutoLoginUseCase,
     private val getSavedFcmTokenUseCase: GetSavedFcmTokenUseCase,
     private val getGlobalAlarmStatusUseCase: GetGlobalAlarmStatusUseCase,
     private val toggleGlobalAlarmStatusUseCase: ToggleGlobalAlarmStatusUseCase,
@@ -43,6 +47,27 @@ class SettingViewModel(
 
                     is ApiState.Error -> {
                         onIntent(SettingIntent.FetchNexonOpenApiKeyFailed(state.message))
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun getCharacterBasic(apiKey: String) {
+        viewModelScope.launch {
+            val fcmToken = getFcmTokenUseCase() ?: ""
+            autoLoginUseCase(apiKey, fcmToken).collect { state ->
+                when (state) {
+                    is ApiState.Success -> {
+                        onIntent(
+                            SettingIntent.FetchCharacterBasicSuccess(true)
+                        )
+                    }
+
+                    is ApiState.Error -> {
+                        onIntent(SettingIntent.FetchCharacterBasicFailed(state.message))
                     }
 
                     else -> {}
@@ -149,6 +174,10 @@ class SettingViewModel(
         when (intent) {
             is SettingIntent.FetchNexonOpenApiKey -> {
                 getNexonOpenApiKey()
+            }
+
+            is SettingIntent.FetchNexonOpenApiKeySuccess -> {
+                getCharacterBasic(intent.key)
             }
 
             is SettingIntent.FetchFcmToken -> {
