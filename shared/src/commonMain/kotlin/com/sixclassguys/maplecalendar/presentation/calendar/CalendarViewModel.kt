@@ -158,7 +158,7 @@ class CalendarViewModel(
         }
     }
 
-    private fun getTodayDate(): LocalDate = reducer.getTodayDate()
+    fun getTodayDate(): LocalDate = reducer.getTodayDate()
 
     fun getLocalDateByOffset(offset: Int): LocalDate = reducer.getLocalDateByOffset(offset)
 
@@ -183,7 +183,7 @@ class CalendarViewModel(
             }
 
             is CalendarIntent.FetchNexonOpenApiKeySuccess -> {
-                onIntent(CalendarIntent.ChangeMonth(0))
+                onIntent(CalendarIntent.ChangeMonth(_uiState.value.monthOffset))
             }
 
             is CalendarIntent.ChangeMonth -> {
@@ -196,12 +196,7 @@ class CalendarViewModel(
                 val monthKey = "${targetDate.year}-${targetDate.monthNumber}"
 
                 if (!_uiState.value.eventsMapByDay.containsKey(dayKey)) {
-                    fetchEventsByDay(
-                        targetDate.year,
-                        targetDate.monthNumber,
-                        targetDate.dayOfMonth,
-                        dayKey
-                    )
+                    fetchEventsByDay(year, month, day, dayKey)
                 }
 
                 // 해당 월 데이터가 없을 때만 서버에서 가져옴

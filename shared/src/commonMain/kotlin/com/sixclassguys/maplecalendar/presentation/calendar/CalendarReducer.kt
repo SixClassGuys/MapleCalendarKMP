@@ -83,7 +83,7 @@ class CalendarReducer {
                 currentState.copy(
                     isLoading = false,
                     isGlobalAlarmEnabled = intent.isEnabled,
-                    selectedDate = getTodayDate()
+                    selectedDate = currentState.selectedDate ?: getTodayDate()
                 )
             }
 
@@ -98,6 +98,7 @@ class CalendarReducer {
                 val targetDate = getLocalDateByOffset(intent.offset)
                 currentState.copy(
                     isLoading = true, // 달이 바뀌면 로딩 표시
+                    monthOffset = intent.offset,
                     year = targetDate.year,
                     month = targetDate.month,
                     days = generateDays(targetDate.year, targetDate.month),

@@ -10,6 +10,7 @@ data class CalendarUiState(
     val nexonApiKey: String? = null,
     val isGlobalAlarmEnabled: Boolean = false,
     val isRefreshing: Boolean = false,
+    val monthOffset: Int = 0,
     val year: Int = 0,
     val month: Month = Month.JANUARY,
     val days: List<LocalDate?> = emptyList(),

@@ -108,14 +108,12 @@ fun MapleEventDetailScreen(
         containerColor = Color.White
     ) { padding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
                 .padding(bottom = padding.calculateBottomPadding())
                 .nestedScroll(nestedScrollConnection) // 👈 핵심: 스크롤 연결
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
                     .offset { IntOffset(0, (expandedHeightPx + toolbarOffsetHeightPx).toInt()) }
                     .verticalScroll(scrollState) // 전체 스크롤 허용
             ) {

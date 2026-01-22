@@ -14,14 +14,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarIntent
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarViewModel
@@ -29,9 +24,6 @@ import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.CalendarCard
 import com.sixclassguys.maplecalendar.ui.component.CarouselEventRow
 import com.sixclassguys.maplecalendar.ui.component.EmptyEventScreen
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,12 +33,6 @@ fun MapleCalendarScreen(
     onNavigateToEventDetail: (Long) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    // 현재 몇 번째 달을 보고 있는지 추적 (ViewModel의 offset 연동용)
-    var monthOffset by remember { mutableIntStateOf(0) }
-
-    // 오늘 날짜 (선택 초기값 및 '오늘' 표시용)
-    val today = remember { Clock.System.todayIn(TimeZone.currentSystemDefault()) }
 
     Scaffold(
         containerColor = Color.White
@@ -71,17 +57,15 @@ fun MapleCalendarScreen(
                     CalendarCard(
                         uiState = uiState,
                         onPreviousMonth = {
-                            monthOffset--
-                            viewModel.onIntent(CalendarIntent.ChangeMonth(monthOffset))
+                            viewModel.onIntent(CalendarIntent.ChangeMonth(uiState.monthOffset - 1))
                         },
                         onNextMonth = {
-                            monthOffset++
-                            viewModel.onIntent(CalendarIntent.ChangeMonth(monthOffset))
+                            viewModel.onIntent(CalendarIntent.ChangeMonth(uiState.monthOffset + 1))
                         },
                         onDateClick = { date ->
                             viewModel.onIntent(CalendarIntent.SelectDate(date))
                         },
-                        today = today
+                        today = uiState.selectedDate ?: viewModel.getTodayDate()
                     )
                 }
 
@@ -98,9 +82,9 @@ fun MapleCalendarScreen(
                     )
 
                     // 해당 월의 이벤트 중 선택된 날짜가 포함된 이벤트 필터링
-                    val year = uiState.selectedDate?.year ?: today.year
-                    val month = uiState.selectedDate?.monthNumber ?: today.monthNumber
-                    val day = uiState.selectedDate?.dayOfMonth ?: today.dayOfMonth
+                    val year = uiState.selectedDate?.year ?: viewModel.getTodayDate().year
+                    val month = uiState.selectedDate?.monthNumber ?: viewModel.getTodayDate().monthNumber
+                    val day = uiState.selectedDate?.dayOfMonth ?: viewModel.getTodayDate().dayOfMonth
                     val currentKey = "${year}-${month}-${day}"
                     val nowEvents = uiState.eventsMapByDay[currentKey] ?: emptyList()
 
