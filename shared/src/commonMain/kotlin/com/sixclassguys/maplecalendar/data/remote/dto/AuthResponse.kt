@@ -33,7 +33,23 @@ data class AutoLoginResponse(
     @SerialName("characterBasic")
     val characterBasic: CharacterBasicResponse? = null,
 
-    val isGlobalAlarmEnabled: Boolean
+    @SerialName("isGlobalAlarmEnabled")
+    val isGlobalAlarmEnabled: Boolean,
+
+    @SerialName("characterPopularity")
+    val characterPopularity: Int? = null,
+
+    @SerialName("characterOverallRanking")
+    val characterOverallRanking: RankingResponse? = null,
+
+    @SerialName("characterServerRanking")
+    val characterServerRanking: RankingResponse? = null,
+
+    @SerialName("characterUnionLevel")
+    val characterUnionLevel: UnionResponse? = null,
+
+    @SerialName("characterDojang")
+    val characterDojang: DojangRankingResponse? = null
 )
 
 fun LoginResponse.toDomain(): LoginResult {
@@ -58,6 +74,11 @@ fun AccountCharacterResponse.toDomain(): AccountCharacter {
 fun AutoLoginResponse.toDomain(): Member {
     return Member(
         isGlobalAlarmEnabled = this.isGlobalAlarmEnabled,
-        characterBasic = this.characterBasic?.toDomain()
+        characterBasic = this.characterBasic?.toDomain(),
+        characterPopularity = this.characterPopularity ?: 0,
+        characterOverallRanking = this.characterOverallRanking?.toDomain(),
+        characterServerRanking = this.characterServerRanking?.toDomain(),
+        characterUnionLevel = characterUnionLevel?.toDomain(),
+        characterDojang = characterDojang?.toDomain(),
     )
 }
