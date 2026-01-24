@@ -38,7 +38,8 @@ fun NavHost(
     navController: NavHostController,
     startDestination: String,
     snackbarHostState: SnackbarHostState,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    calendarViewModel: CalendarViewModel
 ) {
     val activity = LocalContext.current as ComponentActivity
 
@@ -87,19 +88,17 @@ fun NavHost(
             route = "calendar_flow"
         ) {
             composable(Navigation.Calendar.destination) {
-                val calendarViewModel: CalendarViewModel = koinViewModel(viewModelStoreOwner = activity)
                 MapleCalendarScreen(
                     viewModel = calendarViewModel,
                     onNavigateToEventDetail = {
-                        calendarViewModel.onIntent(CalendarIntent.FetchNexonOpenApiKey)
-                        calendarViewModel.onIntent(CalendarIntent.FetchGlobalAlarmStatus)
+                        // calendarViewModel.onIntent(CalendarIntent.FetchNexonOpenApiKey)
+                        // calendarViewModel.onIntent(CalendarIntent.FetchGlobalAlarmStatus)
                         navController.navigate(Navigation.EventDetail.destination)
                     }
                 )
             }
 
             composable(Navigation.EventDetail.destination) {
-                val calendarViewModel: CalendarViewModel = koinViewModel(viewModelStoreOwner = activity)
                 MapleEventDetailScreen(viewModel = calendarViewModel) {
                     calendarViewModel.onIntent(CalendarIntent.ClearSelectedEvent)
                     navController.navigateUp()
