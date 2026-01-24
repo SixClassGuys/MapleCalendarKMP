@@ -37,11 +37,20 @@ class LoginViewModel(
             doLoginWithApiKeyUseCase(_uiState.value.nexonApiKey).collect { apiState ->
                 when (apiState) {
                     is ApiState.Success -> {
+                        val characters = apiState.data.characters
                         val ocid = apiState.data.representativeOcid
-                        if (ocid == null) {
-                            onIntent(LoginIntent.SelectRepresentativeCharacter(apiState.data.characters))
-                        } else {
-                            onIntent(LoginIntent.SetOpenApiKey)
+                        when {
+                            (ocid == null) && (characters.isEmpty()) -> {
+                                onIntent(LoginIntent.SelectRepresentativeCharacter(apiState.data.characters))
+                            }
+
+                            (ocid == null) && (characters.isNotEmpty()) -> {
+                                onIntent(LoginIntent.FetchApiKeyWithEmptyCharacters("캐릭터가 없어요."))
+                            }
+
+                            (ocid != null) -> {
+                                onIntent(LoginIntent.SetOpenApiKey)
+                            }
                         }
                     }
 

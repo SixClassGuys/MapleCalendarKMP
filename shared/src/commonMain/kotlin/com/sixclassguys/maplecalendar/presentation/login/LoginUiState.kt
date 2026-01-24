@@ -6,6 +6,7 @@ data class LoginUiState(
     val isLoading: Boolean = false,
     val nexonApiKey: String = "",
     val isLoginSuccess: Boolean = false,
+    val isEmptyCharacter: Boolean = false,
     val characters: Map<String, List<AccountCharacter>> = emptyMap(),
     val characterImages: Map<String, String?> = emptyMap(),
     val isWorldSheetOpen: Boolean = false, // BottomSheet 열림 상태

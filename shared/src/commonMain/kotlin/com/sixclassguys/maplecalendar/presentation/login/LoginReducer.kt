@@ -22,11 +22,20 @@ class LoginReducer {
             )
         }
 
+        is LoginIntent.FetchApiKeyWithEmptyCharacters -> {
+            currentState.copy(
+                isLoading = false,
+                isEmptyCharacter = true,
+                errorMessage = intent.message
+            )
+        }
+
         is LoginIntent.SelectRepresentativeCharacter -> {
             val defaultWorld = intent.characters.keys.firstOrNull() ?: "스카니아"
 
             currentState.copy(
                 isLoading = false,
+                isEmptyCharacter = false,
                 characters = intent.characters,
                 selectedWorld = defaultWorld,
                 navigateToSelection = true

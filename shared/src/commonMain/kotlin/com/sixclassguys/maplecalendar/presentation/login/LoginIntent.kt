@@ -10,6 +10,8 @@ sealed class LoginIntent {
 
     data object ClickLogin : LoginIntent()
 
+    data class FetchApiKeyWithEmptyCharacters(val message: String) : LoginIntent()
+
     data class SelectRepresentativeCharacter(val characters: Map<String, List<AccountCharacter>>) :
         LoginIntent()
 

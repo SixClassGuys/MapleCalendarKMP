@@ -71,8 +71,7 @@ fun LoginScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
             .background(MapleWhite)
             .statusBarsPadding() // 상태바 겹침 방지
             .padding(horizontal = 16.dp)
@@ -141,8 +140,7 @@ fun LoginScreen(
         // 4. 로그인 버튼
         Button(
             onClick = { viewModel.onIntent(LoginIntent.ClickLogin) },
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
                 .height(64.dp),
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
