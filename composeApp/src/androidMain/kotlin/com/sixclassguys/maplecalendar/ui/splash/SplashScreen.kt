@@ -53,7 +53,7 @@ fun SplashScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_logo),
+                painter = painterResource(id = R.drawable.bottomnav_calendar),
                 contentDescription = "App Logo",
                 modifier = Modifier.size(160.dp)
             )

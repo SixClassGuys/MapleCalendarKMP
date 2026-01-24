@@ -37,7 +37,7 @@ fun HomeAppBar(
         ) {
             // 1. Vector 로고 이미지
             Image(
-                painter = painterResource(id = R.drawable.ic_logo),
+                painter = painterResource(id = R.drawable.ic_home_logo),
                 contentDescription = "Maplendar Logo",
                 modifier = Modifier.height(32.dp) // 로고 높이에 맞춰 자동 조절 (비율 유지)
                     .wrapContentWidth(),
