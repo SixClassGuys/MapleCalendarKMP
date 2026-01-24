@@ -224,7 +224,9 @@ fun MapleEventDetailScreen(
                 currentHeightPx = expandedHeightPx + toolbarOffsetHeightPx,
                 scrollPercentage = scrollPercentage,
                 onBack = onBack,
-                onShare = { /* 공유 */ }
+                onShare = {
+                    Toast.makeText(context, "준비중인 기능이에요.", Toast.LENGTH_SHORT).show()
+                }
             )
         }
     }

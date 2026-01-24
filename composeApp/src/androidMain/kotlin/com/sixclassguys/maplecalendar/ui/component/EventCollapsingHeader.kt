@@ -62,8 +62,7 @@ fun EventCollapsingHeader(
     val elevation = if (scrollPercentage > 0.95f) 4.dp else 0.dp
 
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
             .height(currentHeightDp),
         color = Color.White,
         tonalElevation = if (scrollPercentage > 0.9f) 2.dp else 0.dp,
