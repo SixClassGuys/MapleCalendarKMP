@@ -55,7 +55,9 @@ class CalendarReducer {
 
             is CalendarIntent.FetchNexonOpenApiKey -> {
                 currentState.copy(
-                    isLoading = true
+                    isLoading = true,
+                    monthOffset = 0,
+                    selectedDate = getTodayDate()
                 )
             }
 
@@ -82,8 +84,7 @@ class CalendarReducer {
             is CalendarIntent.FetchGlobalAlarmStatusSuccess -> {
                 currentState.copy(
                     isLoading = false,
-                    isGlobalAlarmEnabled = intent.isEnabled,
-                    selectedDate = currentState.selectedDate ?: getTodayDate()
+                    isGlobalAlarmEnabled = intent.isEnabled
                 )
             }
 

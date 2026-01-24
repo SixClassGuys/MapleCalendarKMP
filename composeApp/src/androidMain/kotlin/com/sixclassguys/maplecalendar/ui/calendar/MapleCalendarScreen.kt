@@ -38,6 +38,11 @@ fun MapleCalendarScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    LaunchedEffect(Unit) {
+        viewModel.onIntent(CalendarIntent.FetchNexonOpenApiKey)
+        viewModel.onIntent(CalendarIntent.FetchGlobalAlarmStatus)
+    }
+
     LaunchedEffect(uiState.errorMessage) {
         val message = uiState.errorMessage
         if (message != null) {
@@ -67,16 +72,13 @@ fun MapleCalendarScreen(
 
                     CalendarCard(
                         uiState = uiState,
-                        onPreviousMonth = {
-                            viewModel.onIntent(CalendarIntent.ChangeMonth(uiState.monthOffset - 1))
-                        },
-                        onNextMonth = {
-                            viewModel.onIntent(CalendarIntent.ChangeMonth(uiState.monthOffset + 1))
+                        onMonthChanged = { newOffset ->
+                            viewModel.onIntent(CalendarIntent.ChangeMonth(newOffset))
                         },
                         onDateClick = { date ->
                             viewModel.onIntent(CalendarIntent.SelectDate(date))
                         },
-                        today = uiState.selectedDate ?: viewModel.getTodayDate()
+                        today = viewModel.getTodayDate()
                     )
                 }
 

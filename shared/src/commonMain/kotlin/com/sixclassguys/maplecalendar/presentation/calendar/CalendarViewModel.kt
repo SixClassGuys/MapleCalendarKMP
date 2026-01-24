@@ -11,6 +11,7 @@ import com.sixclassguys.maplecalendar.domain.usecase.GetMonthlyEventsUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetTodayEventsUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.SubmitEventAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleEventAlarmUseCase
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -183,11 +184,12 @@ class CalendarViewModel(
             }
 
             is CalendarIntent.FetchNexonOpenApiKeySuccess -> {
-                onIntent(CalendarIntent.ChangeMonth(_uiState.value.monthOffset))
+                onIntent(CalendarIntent.ChangeMonth(0))
             }
 
             is CalendarIntent.ChangeMonth -> {
                 val selectedDate = _uiState.value.selectedDate
+                Napier.d("$selectedDate")
                 val year = selectedDate?.year ?: getTodayDate().year
                 val month = selectedDate?.monthNumber ?: getTodayDate().monthNumber
                 val day = selectedDate?.dayOfMonth ?: getTodayDate().dayOfMonth
@@ -200,9 +202,9 @@ class CalendarViewModel(
                 }
 
                 // 해당 월 데이터가 없을 때만 서버에서 가져옴
-                if (!_uiState.value.eventsMapByMonth.containsKey(monthKey)) {
-                    fetchEventsByMonth(targetDate.year, targetDate.monthNumber, monthKey)
-                }
+//                if (!_uiState.value.eventsMapByMonth.containsKey(monthKey)) {
+//                    fetchEventsByMonth(targetDate.year, targetDate.monthNumber, monthKey)
+//                }
             }
 
             is CalendarIntent.SelectDate -> {

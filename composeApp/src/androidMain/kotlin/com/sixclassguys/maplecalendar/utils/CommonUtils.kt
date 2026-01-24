@@ -2,9 +2,14 @@ package com.sixclassguys.maplecalendar.utils
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.Month
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.todayIn
 import java.text.DecimalFormat
 import java.time.format.DateTimeFormatter
 
@@ -57,3 +62,35 @@ fun LocalDate.plusMonths(months: Int): LocalDate {
 }
 
 fun LocalDate.minusMonths(months: Int) = plusMonths(-months)
+
+// CalendarCard.kt 하단 혹은 Utils.kt
+@RequiresApi(Build.VERSION_CODES.O)
+fun generateDaysForMonth(year: Int, month: Month): List<LocalDate?> {
+    val days = mutableListOf<LocalDate?>()
+    val firstDayOfMonth = LocalDate(year, month, 1)
+
+    // 해당 월의 마지막 날짜 구하기
+    val daysInMonth = when (month) {
+        Month.FEBRUARY -> if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) 29 else 28
+        Month.APRIL, Month.JUNE, Month.SEPTEMBER, Month.NOVEMBER -> 30
+        else -> 31
+    }
+
+    // 1일이 무슨 요일인지 계산 (1: 월, ..., 7: 일)
+    val firstDayOfWeek = firstDayOfMonth.dayOfWeek.isoDayNumber
+
+    // 일요일(7) 시작이 아니라면 그만큼 앞을 null로 채움 (일요일 시작 달력 기준)
+    val paddingDays = if (firstDayOfWeek == 7) 0 else firstDayOfWeek
+
+    repeat(paddingDays) { days.add(null) }
+    for (day in 1..daysInMonth) {
+        days.add(LocalDate(year, month, day))
+    }
+
+    // 주 단위(7일)를 맞추기 위해 뒤를 null로 채움
+    while (days.size % 7 != 0) {
+        days.add(null)
+    }
+
+    return days
+}
