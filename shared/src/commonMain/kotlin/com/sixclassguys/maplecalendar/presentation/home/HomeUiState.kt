@@ -20,6 +20,7 @@ data class HomeUiState(
     val characterUnion: CharacterUnion? = null,
     val isGlobalAlarmEnabled: Boolean = false,
     val events: List<MapleEvent> = emptyList(),
+    val bossSchedules: List<Boolean> = emptyList(),
     val isNavigateToLogin: Boolean = false,
     val errorMessage: String? = null
 )
