@@ -10,11 +10,13 @@ interface AuthRepository {
 
     suspend fun loginWithApiKey(apiKey: String): Flow<ApiState<LoginInfo>>
 
-    suspend fun autoLogin(apiKey: String, fcmToken: String): Flow<ApiState<Member>>
+    suspend fun autoLogin(fcmToken: String): Flow<ApiState<LoginResult>>
 
     suspend fun loginWithGoogle(
         provider: String,
         idToken: String,
         fcmToken: String
     ): Flow<ApiState<LoginResult>>
+
+    suspend fun reissueJwtToken(): Flow<ApiState<Unit>>
 }

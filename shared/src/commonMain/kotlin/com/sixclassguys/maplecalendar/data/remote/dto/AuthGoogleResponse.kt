@@ -29,6 +29,9 @@ data class AuthGoogleResponse(
     @SerialName("accessToken")
     val accessToken: String,
 
+    @SerialName("refreshToken")
+    val refreshToken: String,
+
     @SerialName("isNewMember")
     val isNewMember: Boolean,
 
@@ -69,7 +72,8 @@ data class AuthGoogleResponse(
                 characterDojang = characterDojang?.toDomain(),
             ),
             isNewMember = this.isNewMember,
-            accessToken = this.accessToken
+            accessToken = this.accessToken,
+            refreshToken = this.refreshToken
         )
     }
 }

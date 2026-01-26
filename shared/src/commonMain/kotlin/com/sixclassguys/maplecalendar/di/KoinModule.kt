@@ -24,8 +24,10 @@ import com.sixclassguys.maplecalendar.domain.usecase.GetGlobalAlarmStatusUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetMonthlyEventsUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetSavedFcmTokenUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetTodayEventsUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.GoogleLoginUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.LogoutUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.RegisterTokenUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.ReissueJwtTokenUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.SetCharacterOcidUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.SetOpenApiKeyUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.SubmitEventAlarmUseCase
@@ -33,6 +35,8 @@ import com.sixclassguys.maplecalendar.domain.usecase.SubmitRepresentativeCharact
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleEventAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleGlobalAlarmStatusUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.UnregisterTokenUseCase
+import com.sixclassguys.maplecalendar.presentation.boss.BossReducer
+import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
 import com.sixclassguys.maplecalendar.presentation.notification.NotificationViewModel
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarReducer
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarViewModel
@@ -67,7 +71,9 @@ val repositoryModule = module {
 
 val useCaseModule = module {
     // UseCase 객체 생성
+    single<GoogleLoginUseCase> { GoogleLoginUseCase(get()) }
     single<AutoLoginUseCase> { AutoLoginUseCase(get()) }
+    single<ReissueJwtTokenUseCase> { ReissueJwtTokenUseCase(get()) }
     single<DoLoginWithApiKeyUseCase> { DoLoginWithApiKeyUseCase(get()) }
     single<SubmitRepresentativeCharacterUseCase> { SubmitRepresentativeCharacterUseCase(get()) }
     single<GetApiKeyUseCase> { GetApiKeyUseCase(get()) }
@@ -90,11 +96,12 @@ val useCaseModule = module {
 
 val viewModelModule = module {
     // ViewModel (화면마다 생명주기를 관리하기 위해 factory 사용)
-    viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { LoginViewModel(get(), get(), get(), get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { LoginViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { SettingViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { NotificationViewModel(get(), get(), get(), get()) }
     viewModel { CalendarViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { BossViewModel(get()) }
 
     // Reducer
     single { HomeReducer() }
@@ -102,6 +109,7 @@ val viewModelModule = module {
     single { SettingReducer() }
     single { CalendarReducer() }
     single { NotificationReducer() }
+    single { BossReducer() }
 }
 
 // 공통 초기화 함수: 안드로이드와 iOS 앱 시작 시 호출됨
