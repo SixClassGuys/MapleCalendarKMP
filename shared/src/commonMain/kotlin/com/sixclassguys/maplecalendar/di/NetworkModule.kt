@@ -6,6 +6,8 @@ import com.sixclassguys.maplecalendar.data.remote.datasource.AuthDataSource
 import com.sixclassguys.maplecalendar.data.remote.datasource.AuthDataSourceImpl
 import com.sixclassguys.maplecalendar.data.remote.datasource.EventDataSource
 import com.sixclassguys.maplecalendar.data.remote.datasource.EventDataSourceImpl
+import com.sixclassguys.maplecalendar.data.remote.datasource.MapleCharacterDataSource
+import com.sixclassguys.maplecalendar.data.remote.datasource.MapleCharacterDataSourceImpl
 import com.sixclassguys.maplecalendar.data.remote.datasource.MemberDataSource
 import com.sixclassguys.maplecalendar.data.remote.datasource.MemberDataSourceImpl
 import com.sixclassguys.maplecalendar.data.remote.datasource.NexonOpenApiDataSource
@@ -54,22 +56,20 @@ val networkModule = module {
                 }
             }
 
-            // 추가 설정
             defaultRequest {
-                // 본인 IP 작성하기(서버 배포가 아직 안 됨)
-                // url("http://[본인 IP]:8080/api/")
-                // 지원 IP
-                url("http://192.168.0.14:8080/api/")
-                contentType(ContentType.Application.Json)
+                url("http://52.78.54.150:8080/api/")
             }
         }
     }
 
     single(named("NexonClient")) {
-        val apiKey: String = try { get(named("nexonApiKey")) } catch (e: Exception) { "" }
+        val apiKey: String = try {
+            get(named("nexonApiKey"))
+        } catch (e: Exception) {
+            "Exception: ${e.message}"
+        }
 
-        HttpClient { // 실제 엔진(OkHttp, Darwin 등)은 Ktor가 선택
-            // JSON 직렬화 설정
+        HttpClient {
             install(ContentNegotiation) {
                 json(Json {
                     prettyPrint = true
@@ -78,14 +78,12 @@ val networkModule = module {
                 })
             }
 
-            // 응답 대기 시간 설정
             install(HttpTimeout) {
                 requestTimeoutMillis = 60_000   // 전체 요청 시간 (60초)
                 connectTimeoutMillis = 10_000   // 서버 연결 대기 시간 (10초)
                 socketTimeoutMillis = 60_000    // 데이터 전송 간격 대기 시간 (60초)
             }
 
-            // 로깅 설정 (디버깅 시 필수)
             install(Logging) {
                 level = LogLevel.ALL
                 logger = object : Logger {
@@ -95,10 +93,8 @@ val networkModule = module {
                 }
             }
 
-            // 추가 설정
             defaultRequest {
                 url("https://open.api.nexon.com/maplestory/v1/")
-                // API Key가 있을 때만 헤더 추가
                 if (apiKey.isNotEmpty()) {
                     header("x-nxopen-api-key", apiKey)
                 }
@@ -121,6 +117,9 @@ val networkModule = module {
 
     // Event DataSource 객체 주입
     single<EventDataSource> { EventDataSourceImpl(get(named("BackendClient"))) }
+
+    // MapleCharacter DataSource 객체 주입
+    single<MapleCharacterDataSource> { MapleCharacterDataSourceImpl(get(named("BackendClient"))) }
 
     // 넥슨 Open API와 통신하는 DataSource 객체 주입
     single<NexonOpenApiDataSource> { NexonOpenApiDataSourceImpl(get(named("NexonClient"))) }

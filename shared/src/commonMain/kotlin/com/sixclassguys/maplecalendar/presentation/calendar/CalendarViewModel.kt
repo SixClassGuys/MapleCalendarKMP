@@ -11,6 +11,7 @@ import com.sixclassguys.maplecalendar.domain.usecase.GetMonthlyEventsUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetTodayEventsUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.SubmitEventAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleEventAlarmUseCase
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -158,7 +159,7 @@ class CalendarViewModel(
         }
     }
 
-    private fun getTodayDate(): LocalDate = reducer.getTodayDate()
+    fun getTodayDate(): LocalDate = reducer.getTodayDate()
 
     fun getLocalDateByOffset(offset: Int): LocalDate = reducer.getLocalDateByOffset(offset)
 
@@ -188,6 +189,7 @@ class CalendarViewModel(
 
             is CalendarIntent.ChangeMonth -> {
                 val selectedDate = _uiState.value.selectedDate
+                Napier.d("$selectedDate")
                 val year = selectedDate?.year ?: getTodayDate().year
                 val month = selectedDate?.monthNumber ?: getTodayDate().monthNumber
                 val day = selectedDate?.dayOfMonth ?: getTodayDate().dayOfMonth
@@ -196,18 +198,13 @@ class CalendarViewModel(
                 val monthKey = "${targetDate.year}-${targetDate.monthNumber}"
 
                 if (!_uiState.value.eventsMapByDay.containsKey(dayKey)) {
-                    fetchEventsByDay(
-                        targetDate.year,
-                        targetDate.monthNumber,
-                        targetDate.dayOfMonth,
-                        dayKey
-                    )
+                    fetchEventsByDay(year, month, day, dayKey)
                 }
 
                 // 해당 월 데이터가 없을 때만 서버에서 가져옴
-                if (!_uiState.value.eventsMapByMonth.containsKey(monthKey)) {
-                    fetchEventsByMonth(targetDate.year, targetDate.monthNumber, monthKey)
-                }
+//                if (!_uiState.value.eventsMapByMonth.containsKey(monthKey)) {
+//                    fetchEventsByMonth(targetDate.year, targetDate.monthNumber, monthKey)
+//                }
             }
 
             is CalendarIntent.SelectDate -> {

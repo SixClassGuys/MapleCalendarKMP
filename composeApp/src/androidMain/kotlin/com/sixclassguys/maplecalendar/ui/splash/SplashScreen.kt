@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,6 +26,7 @@ import com.sixclassguys.maplecalendar.theme.MapleWhite
 @Composable
 fun SplashScreen(
     viewModel: HomeViewModel,
+    snackbarHostState: SnackbarHostState,
     onNavigateToHome: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -32,6 +34,13 @@ fun SplashScreen(
     LaunchedEffect(uiState.isAutoLoginFinished) {
         if (uiState.isAutoLoginFinished) {
             onNavigateToHome()
+        }
+    }
+
+    LaunchedEffect(uiState.errorMessage) {
+        val message = uiState.errorMessage
+        if (message != null) {
+            snackbarHostState.showSnackbar(message = message)
         }
     }
 
@@ -44,7 +53,7 @@ fun SplashScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_logo),
+                painter = painterResource(id = R.drawable.bottomnav_calendar),
                 contentDescription = "App Logo",
                 modifier = Modifier.size(160.dp)
             )

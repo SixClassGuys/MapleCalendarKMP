@@ -43,7 +43,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,6 +55,7 @@ import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
 import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.minusMonths
 import com.sixclassguys.maplecalendar.utils.plusMonths
 import kotlinx.datetime.Clock
@@ -152,10 +152,9 @@ fun AlarmSettingDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
                 .pointerInput(Unit) {
-                    // 이 부분이 'Initial' 패스를 사용하여 자식보다 먼저 터치를 감지합니다.
+                    // 이 부분이 'Initial' 패스를 사용하여 자식보다 먼저 터치를 감지
                     awaitPointerEventScope {
                         while (true) {
                             val event = awaitPointerEvent(PointerEventPass.Initial)
@@ -167,20 +166,19 @@ fun AlarmSettingDialog(
                 },
             contentAlignment = Alignment.Center
         ) {
+            // 키보드 내리기용 Box(화면 티치 시 이 Box로 포커스 이동)
             Box(
-                modifier = Modifier
-                    .size(0.dp)
+                modifier = Modifier.size(0.dp)
                     .focusRequester(dummyFocusRequester)
                     .focusable()
             )
 
             Surface(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
+                modifier = Modifier.fillMaxWidth(0.9f)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
-                    ) { clearFocusAll() }, // 🚀 몸체 클릭 시에도 실행
+                    ) { clearFocusAll() }, // 몸체 클릭 시에도 실행
                 shape = RoundedCornerShape(16.dp),
                 color = MapleStatBackground
             ) {
@@ -190,11 +188,8 @@ fun AlarmSettingDialog(
                 ) {
                     Text(
                         text = "ALARM SETTING",
-                        style = TextStyle(
-                            color = MapleStatTitle,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
-                        ),
+                        style = Typography.titleMedium,
+                        color = MapleStatTitle,
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -206,8 +201,7 @@ fun AlarmSettingDialog(
                         color = MapleWhite
                     ) {
                         Column(
-                            modifier = Modifier
-                                .padding(16.dp)
+                            modifier = Modifier.padding(16.dp)
                                 .clickable(
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = null
@@ -216,8 +210,7 @@ fun AlarmSettingDialog(
                         ) {
                             // 💡 탭 메뉴 (선택 / 주기)
                             Row(
-                                modifier = Modifier
-                                    .width(144.dp) // 전체 너비 제한 (작게 설정)
+                                modifier = Modifier.width(144.dp) // 전체 너비 제한 (작게 설정)
                                     .height(28.dp) // 높이도 조금 더 컴팩트하게 조절
                                     .align(Alignment.Start) // 부모 Column 내에서 왼쪽으로 배치
                                     .clip(RoundedCornerShape(20.dp)) // 전체를 캡슐 모양으로 깎음
@@ -225,8 +218,7 @@ fun AlarmSettingDialog(
                             ) {
                                 // 1. 선택 탭
                                 Box(
-                                    modifier = Modifier
-                                        .weight(1f)
+                                    modifier = Modifier.weight(1f)
                                         .fillMaxHeight()
                                         .background(if (selectedTab == 0) MapleOrange else Color.Transparent) // 선택 시 오렌지색
                                         .clickable { selectedTab = 0 },
@@ -234,18 +226,14 @@ fun AlarmSettingDialog(
                                 ) {
                                     Text(
                                         text = "선택",
-                                        style = TextStyle(
-                                            color = if (selectedTab == 0) MapleWhite else MapleBlack, // 선택 시 흰색, 아닐 때 검정
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 16.sp
-                                        )
+                                        style = Typography.bodyLarge,
+                                        color = if (selectedTab == 0) MapleWhite else MapleBlack
                                     )
                                 }
 
                                 // 2. 주기 탭
                                 Box(
-                                    modifier = Modifier
-                                        .weight(1f)
+                                    modifier = Modifier.weight(1f)
                                         .fillMaxHeight()
                                         .background(if (selectedTab == 1) MapleOrange else Color.Transparent) // 선택 시 오렌지색
                                         .clickable { selectedTab = 1 },
@@ -253,11 +241,8 @@ fun AlarmSettingDialog(
                                 ) {
                                     Text(
                                         text = "주기",
-                                        style = TextStyle(
-                                            color = if (selectedTab == 1) MapleWhite else MapleBlack, // 선택 시 흰색, 아닐 때 검정
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 16.sp
-                                        )
+                                        style = Typography.bodyLarge,
+                                        color = if (selectedTab == 1) MapleWhite else MapleBlack
                                     )
                                 }
                             }
@@ -318,17 +303,15 @@ fun AlarmSettingDialog(
                             // 💡 알림 시간 추가 리스트 (FlowRow로 태그 형태 구현)
                             Text(
                                 text = "알림 시간 추가",
+                                style = Typography.bodyLarge,
                                 color = MapleWhite,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 8.dp),
-                                style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(bottom = 8.dp)
                             )
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth()
                                     .height(48.dp) // Chip 높이에 맞게 적절히 조절
-                                    .horizontalScroll(rememberScrollState()), // 🚀 수평 스크롤 활성화
+                                    .horizontalScroll(rememberScrollState()), // 수평 스크롤 활성화
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {

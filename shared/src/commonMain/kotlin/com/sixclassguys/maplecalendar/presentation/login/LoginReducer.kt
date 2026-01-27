@@ -9,6 +9,48 @@ class LoginReducer {
             )
         }
 
+        is LoginIntent.ClickGoogleLogin -> {
+            currentState.copy(
+                isLoading = true
+            )
+        }
+
+        is LoginIntent.GoogleLoginSuccess -> {
+            currentState.copy(
+                isLoading = false,
+                isLoginSuccess = true,
+                member = intent.member,
+                showRegistrationDialog = intent.isNewMember
+            )
+        }
+
+        is LoginIntent.GoogleLoginFailed -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = intent.message
+            )
+        }
+
+        is LoginIntent.ClickAppleLogin -> {
+            currentState.copy(
+                isLoading = true
+            )
+        }
+
+        is LoginIntent.AppleLoginSuccess -> {
+            currentState.copy(
+                isLoading = false,
+
+            )
+        }
+
+        is LoginIntent.AppleLoginFailed -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = intent.message
+            )
+        }
+
         is LoginIntent.UpdateApiKey -> {
             currentState.copy(
                 isLoading = false,
@@ -22,11 +64,20 @@ class LoginReducer {
             )
         }
 
+        is LoginIntent.FetchApiKeyWithEmptyCharacters -> {
+            currentState.copy(
+                isLoading = false,
+                isEmptyCharacter = true,
+                errorMessage = intent.message
+            )
+        }
+
         is LoginIntent.SelectRepresentativeCharacter -> {
             val defaultWorld = intent.characters.keys.firstOrNull() ?: "스카니아"
 
             currentState.copy(
                 isLoading = false,
+                isEmptyCharacter = false,
                 characters = intent.characters,
                 selectedWorld = defaultWorld,
                 navigateToSelection = true

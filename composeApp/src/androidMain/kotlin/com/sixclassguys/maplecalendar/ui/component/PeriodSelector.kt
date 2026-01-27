@@ -27,14 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.Typography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,11 +49,8 @@ fun PeriodSelector(
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = "날짜",
-            style = TextStyle(
-                color = MapleBlack,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
-            )
+            style = Typography.bodyLarge,
+            color = MapleBlack
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -74,7 +69,8 @@ fun PeriodSelector(
             ) {
                 Text(
                     text = intervals[selectedIdx],
-                    style = TextStyle(color = MapleBlack, fontSize = 15.sp)
+                    style = Typography.bodyMedium,
+                    color = MapleBlack
                 )
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,

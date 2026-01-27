@@ -13,11 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.theme.MapleGray
+import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
 fun EmptyEventScreen(
@@ -37,9 +36,8 @@ fun EmptyEventScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = message,
-            color = MapleGray,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium
+            style = Typography.bodyMedium,
+            color = MapleGray
         )
     }
 }

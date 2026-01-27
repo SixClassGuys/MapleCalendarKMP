@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,19 +18,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.R
-import com.sixclassguys.maplecalendar.domain.model.AccountCharacter
+import com.sixclassguys.maplecalendar.domain.model.CharacterSummary
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
 fun CharacterItemCard(
-    character: AccountCharacter,
+    character: CharacterSummary,
     characterImage: String,
     isSelected: Boolean,
     onClick: () -> Unit
@@ -57,8 +55,8 @@ fun CharacterItemCard(
                 contentDescription = "캐릭터 이미지",
                 modifier = Modifier.fillMaxWidth().weight(1f),
                 contentScale = ContentScale.Fit,
-                placeholder = painterResource(R.drawable.ic_profile_default),
-                error = painterResource(R.drawable.ic_profile_default)
+                placeholder = painterResource(R.drawable.ic_character_silhouette),
+                error = painterResource(R.drawable.ic_character_silhouette)
             )
         } else {
             AsyncImage(
@@ -77,8 +75,20 @@ fun CharacterItemCard(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text(text = character.characterName, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-        Text(text = "Lv.${character.characterLevel}", color = MapleGray, fontSize = 12.sp)
-        Text(text = character.characterClass, color = MapleGray, fontSize = 12.sp)
+        Text(
+            text = character.characterName,
+            style = Typography.bodyLarge,
+            maxLines = 1
+        )
+        Text(
+            text = "Lv.${character.characterLevel}",
+            style = Typography.bodySmall,
+            color = MapleGray
+        )
+        Text(
+            text = character.characterClass,
+            style = Typography.bodySmall,
+            color = MapleGray
+        )
     }
 }

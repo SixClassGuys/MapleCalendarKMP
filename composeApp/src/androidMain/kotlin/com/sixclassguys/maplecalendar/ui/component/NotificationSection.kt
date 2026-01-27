@@ -1,5 +1,7 @@
 package com.sixclassguys.maplecalendar.ui.component
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,9 +31,12 @@ import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.PretendardFamily
+import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.toMapleNotificationString
 import kotlinx.datetime.LocalDateTime
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NotificationSection(
     isEnabled: Boolean,
@@ -49,6 +54,7 @@ fun NotificationSection(
         ) {
             Text(
                 text = "알림 설정",
+                fontFamily = PretendardFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
@@ -83,6 +89,7 @@ fun NotificationSection(
 
         Text(
             text = "다음 알림 시간",
+            fontFamily = PretendardFamily,
             color = MapleBlack,
             fontWeight = FontWeight.SemiBold
         )
@@ -91,6 +98,7 @@ fun NotificationSection(
         if (notificationTimes.isEmpty()) {
             Text(
                 text = "예약된 알림이 없어요.",
+                style = Typography.bodyMedium,
                 modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
                 textAlign = TextAlign.Center,
                 color = MapleGray
@@ -108,9 +116,9 @@ fun NotificationSection(
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
-                        text = time.toMapleNotificationString(), // 💡 2026년 1월 13일 22시 19분
+                        text = time.toMapleNotificationString(),
+                        style = Typography.bodyMedium,
                         modifier = Modifier.padding(start = 8.dp),
-                        fontSize = 14.sp,
                         color = Color.DarkGray
                     )
                 }

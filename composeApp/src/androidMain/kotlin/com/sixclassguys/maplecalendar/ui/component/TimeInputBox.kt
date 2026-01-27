@@ -35,6 +35,7 @@ import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.PretendardFamily
 
 @Composable
 fun TimeInputRow(
@@ -61,6 +62,7 @@ fun TimeInputRow(
         )
         Text(
             text = " 시 ",
+            fontFamily = PretendardFamily,
             color = MapleBlack,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 4.dp)
@@ -75,6 +77,7 @@ fun TimeInputRow(
         )
         Text(
             text = " 분 ",
+            fontFamily = PretendardFamily,
             color = MapleBlack,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 4.dp)
@@ -94,7 +97,12 @@ fun TimeInputRow(
             shape = RoundedCornerShape(18.dp),
             contentPadding = PaddingValues(horizontal = 20.dp)
         ) {
-            Text("추가", color = MapleWhite, fontWeight = FontWeight.Bold)
+            Text(
+                text = "추가",
+                fontFamily = PretendardFamily,
+                color = MapleWhite,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
@@ -128,6 +136,7 @@ fun HourTextField(
             .background(MapleGray, CircleShape),
         textStyle = TextStyle(
             textAlign = TextAlign.Center,
+            fontFamily = PretendardFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
             color = MapleBlack
@@ -177,6 +186,7 @@ fun MinuteTextField(
             .background(MapleGray, CircleShape),
         textStyle = TextStyle(
             textAlign = TextAlign.Center,
+            fontFamily = PretendardFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
             color = MapleBlack

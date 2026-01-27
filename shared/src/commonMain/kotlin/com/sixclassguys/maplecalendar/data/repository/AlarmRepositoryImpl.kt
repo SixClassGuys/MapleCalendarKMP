@@ -6,7 +6,9 @@ import com.sixclassguys.maplecalendar.data.remote.dto.toDomain
 import com.sixclassguys.maplecalendar.domain.model.ApiState
 import com.sixclassguys.maplecalendar.domain.model.MapleEvent
 import com.sixclassguys.maplecalendar.domain.repository.AlarmRepository
+import com.sixclassguys.maplecalendar.util.ApiException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
 class AlarmRepositoryImpl(
@@ -32,6 +34,12 @@ class AlarmRepositoryImpl(
         val event = response.toDomain()
 
         emit(ApiState.Success(event))
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
     }
 
     override suspend fun toggleEventAlarm(
@@ -44,5 +52,11 @@ class AlarmRepositoryImpl(
         val event = response.toDomain()
 
         emit(ApiState.Success(event))
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
     }
 }

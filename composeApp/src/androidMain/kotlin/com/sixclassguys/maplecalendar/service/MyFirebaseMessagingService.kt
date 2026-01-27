@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.sixclassguys.maplecalendar.MainActivity
+import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.data.local.AppPreferences
 import com.sixclassguys.maplecalendar.domain.repository.NotificationEventBus
 import com.sixclassguys.maplecalendar.domain.repository.NotificationRepository
@@ -41,8 +42,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
         CoroutineScope(Dispatchers.IO).launch {
             val isEnabled = dataStore.isNotificationMode.first()
 
-            super.onMessageReceived(message)
-
             // 데이터에서 eventId 추출
             val eventIdStr = message.data["eventId"]
             val eventId = eventIdStr?.toLongOrNull()
@@ -51,19 +50,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
             eventBus.emitEvent(eventId ?: 0L)
 
             if (isEnabled) {
-                super.onMessageReceived(message)
-
                 val title = message.notification?.title ?: message.data["title"] ?: "알림"
                 val body = message.notification?.body ?: message.data["body"] ?: "내용이 없습니다."
 
-                showNotification(title, body)
+                showNotification(title, body, eventId ?: 0L)
             } else {
                 Napier.d("알림이 꺼져 있습니다.")
             }
         }
     }
 
-    private fun showNotification(title: String?, body: String?) {
+    private fun showNotification(title: String?, body: String?, eventId: Long) {
         val channelId = "MAPLE_CALENDAR_HIGH_V3" // 채널명
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
@@ -94,7 +91,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
         )
 
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setSmallIcon(R.drawable.bottomnav_calendar)
             .setContentTitle(title)
             .setContentText(body)
             .setAutoCancel(true)
@@ -102,6 +99,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
             .setDefaults(NotificationCompat.DEFAULT_ALL)   // 소리, 진동 필수
             .setContentIntent(pendingIntent)
 
-        notificationManager.notify(System.currentTimeMillis().toInt(), notificationBuilder.build())
+        notificationManager.notify(eventId.toInt(), notificationBuilder.build())
     }
 }

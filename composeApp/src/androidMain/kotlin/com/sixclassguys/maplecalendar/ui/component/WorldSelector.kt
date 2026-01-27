@@ -25,12 +25,14 @@ import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.utils.MapleWorld
 
 @Composable
 fun WorldSelector(
     selectedWorld: String,
-    onWorldClick: () -> Unit
+    onWorldClick: () -> Unit,
+    isIconOnly: Boolean = false
 ) {
     val worldMark = MapleWorld.getWorld(selectedWorld)?.iconRes ?: R.drawable.ic_world_scania
 
@@ -52,11 +54,14 @@ fun WorldSelector(
                 modifier = Modifier.size(20.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = selectedWorld.ifEmpty { "월드 선택" },
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            )
+            if (!isIconOnly) {
+                Text(
+                    text = selectedWorld.ifEmpty { "월드 선택" },
+                    fontFamily = PretendardFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                )
+            }
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
                 contentDescription = null,

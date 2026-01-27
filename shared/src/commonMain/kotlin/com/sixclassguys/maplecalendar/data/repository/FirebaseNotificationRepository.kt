@@ -2,10 +2,11 @@ package com.sixclassguys.maplecalendar.data.repository
 
 import com.sixclassguys.maplecalendar.data.local.AppPreferences
 import com.sixclassguys.maplecalendar.data.remote.datasource.NotificationDataSource
-import com.sixclassguys.maplecalendar.data.remote.dto.TokenRequest
+import com.sixclassguys.maplecalendar.data.remote.dto.FcmTokenRequest
 import com.sixclassguys.maplecalendar.domain.model.ApiState
 import com.sixclassguys.maplecalendar.domain.repository.NotificationRepository
 import com.sixclassguys.maplecalendar.getPlatform
+import com.sixclassguys.maplecalendar.util.ApiException
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.messaging.messaging
 import io.github.aakira.napier.Napier
@@ -13,6 +14,7 @@ import io.ktor.http.isSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -28,6 +30,12 @@ class FirebaseNotificationRepository(
         val isNotificationMode = dataStore.isNotificationMode.first()
 
         emit(ApiState.Success(isNotificationMode))
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
     }
 
     override suspend fun getSavedFcmToken(): Flow<ApiState<String?>> = flow {
@@ -36,6 +44,12 @@ class FirebaseNotificationRepository(
         val apiKey = dataStore.lastSentToken.first()
 
         emit(ApiState.Success(apiKey))
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
     }
 
     override suspend fun getFcmToken(): String? {
@@ -56,7 +70,7 @@ class FirebaseNotificationRepository(
         if (lastToken != token) {
             try {
                 val response = notificationDataSource.registerToken(
-                    TokenRequest(
+                    FcmTokenRequest(
                         token = token,
                         platform = getPlatform().name
                     )
@@ -66,7 +80,7 @@ class FirebaseNotificationRepository(
                     dataStore.saveToken(token) // 성공했을 경우에만 DataStore에 저장
                     emit(ApiState.Success(Unit)) // 성공 알림
                 } else {
-                    emit(ApiState.Error("서버 에러: ${response.status}")) // 서버 측 에러
+                    emit(ApiState.Error("알림 토큰 등록에 실패했어요.")) // 서버 측 에러
                 }
             } catch (e: Exception) {
                 emit(ApiState.Error(e.message ?: "알 수 없는 에러")) // 네트워크 에러 등
@@ -75,6 +89,12 @@ class FirebaseNotificationRepository(
             Napier.d("같은 토큰이 있음")
             emit(ApiState.Success(Unit)) // 토큰이 같으면 서버에 전송할 필요 없음
         }
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
     }.flowOn(Dispatchers.IO)
 
     override suspend fun unregisterToken(apiKey: String, token: String): Flow<ApiState<Unit>> = flow {
@@ -82,7 +102,7 @@ class FirebaseNotificationRepository(
 
         val response = notificationDataSource.unregisterToken(
             apiKey = apiKey,
-            request = TokenRequest(
+            request = FcmTokenRequest(
                 token = token,
                 platform = getPlatform().name
             )
@@ -92,7 +112,13 @@ class FirebaseNotificationRepository(
             dataStore.deleteToken()
             emit(ApiState.Success(Unit)) // 성공 알림
         } else {
-            emit(ApiState.Error("서버 에러: ${response.status}")) // 서버 측 에러
+            emit(ApiState.Error("알림 토큰 제거에 실패했어요.")) // 서버 측 에러
         }
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
     }
 }

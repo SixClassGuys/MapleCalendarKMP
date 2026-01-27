@@ -16,7 +16,7 @@ class MapleCalendarApplication : Application() {
         Napier.base(DebugAntilog())
 
         // Koin 시작
-        initKoin(listOf(androidNetworkModule)) {
+        initKoin(listOf(androidNetworkModule, androidPermissionModule)) {
             androidContext(this@MapleCalendarApplication)
         }
     }

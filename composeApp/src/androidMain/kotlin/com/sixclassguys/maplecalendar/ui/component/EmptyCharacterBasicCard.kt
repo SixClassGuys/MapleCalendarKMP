@@ -17,9 +17,9 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
 fun EmptyCharacterBasicCard(
@@ -54,8 +54,8 @@ fun EmptyCharacterBasicCard(
             )
             Text(
                 text = "로그인하여 캐릭터의 정보를 확인하세요!",
-                color = MapleOrange,
-                fontWeight = FontWeight.Medium
+                style = Typography.titleSmall,
+                color = MapleOrange
             )
         }
     }

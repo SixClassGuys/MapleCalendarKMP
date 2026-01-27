@@ -1,5 +1,7 @@
 package com.sixclassguys.maplecalendar.ui.calendar
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -9,27 +11,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarIntent
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarViewModel
+import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.CalendarCard
 import com.sixclassguys.maplecalendar.ui.component.CarouselEventRow
 import com.sixclassguys.maplecalendar.ui.component.EmptyEventScreen
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapleCalendarScreen(
@@ -37,12 +36,14 @@ fun MapleCalendarScreen(
     onNavigateToEventDetail: (Long) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    // 현재 몇 번째 달을 보고 있는지 추적 (ViewModel의 offset 연동용)
-    var monthOffset by remember { mutableIntStateOf(0) }
-
-    // 오늘 날짜 (선택 초기값 및 '오늘' 표시용)
-    val today = remember { Clock.System.todayIn(TimeZone.currentSystemDefault()) }
+    LaunchedEffect(uiState.errorMessage) {
+        val message = uiState.errorMessage
+        if (message != null) {
+            snackbarHostState.showSnackbar(message = message)
+        }
+    }
 
     Scaffold(
         containerColor = Color.White
@@ -60,25 +61,19 @@ fun MapleCalendarScreen(
                 item {
                     Text(
                         text = "캘린더",
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = Typography.titleLarge,
                         modifier = Modifier.padding(16.dp)
                     )
 
                     CalendarCard(
                         uiState = uiState,
-                        onPreviousMonth = {
-                            monthOffset--
-                            viewModel.onIntent(CalendarIntent.ChangeMonth(monthOffset))
-                        },
-                        onNextMonth = {
-                            monthOffset++
-                            viewModel.onIntent(CalendarIntent.ChangeMonth(monthOffset))
+                        onMonthChanged = { newOffset ->
+                            viewModel.onIntent(CalendarIntent.ChangeMonth(newOffset))
                         },
                         onDateClick = { date ->
                             viewModel.onIntent(CalendarIntent.SelectDate(date))
                         },
-                        today = today
+                        today = viewModel.getTodayDate()
                     )
                 }
 
@@ -90,15 +85,14 @@ fun MapleCalendarScreen(
 
                     Text(
                         text = if (selectedDateText == null) "날짜를 선택해주세요!" else "$selectedDateText 진행중인 이벤트",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        style = Typography.titleMedium,
                         modifier = Modifier.padding(16.dp)
                     )
 
                     // 해당 월의 이벤트 중 선택된 날짜가 포함된 이벤트 필터링
-                    val year = uiState.selectedDate?.year ?: today.year
-                    val month = uiState.selectedDate?.monthNumber ?: today.monthNumber
-                    val day = uiState.selectedDate?.dayOfMonth ?: today.dayOfMonth
+                    val year = uiState.selectedDate?.year ?: viewModel.getTodayDate().year
+                    val month = uiState.selectedDate?.monthNumber ?: viewModel.getTodayDate().monthNumber
+                    val day = uiState.selectedDate?.dayOfMonth ?: viewModel.getTodayDate().dayOfMonth
                     val currentKey = "${year}-${month}-${day}"
                     val nowEvents = uiState.eventsMapByDay[currentKey] ?: emptyList()
 
@@ -123,8 +117,7 @@ fun MapleCalendarScreen(
                     Spacer(modifier = Modifier.height(24.dp))
                     Text(
                         text = "오늘의 보스 일정",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        style = Typography.titleMedium,
                         modifier = Modifier.padding(16.dp)
                     )
 

@@ -17,17 +17,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
-fun CharacterStepIndicator() {
+fun CharacterStepIndicator(
+    currentStep: Int,
+    modifier: Modifier
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
@@ -40,17 +43,17 @@ fun CharacterStepIndicator() {
             Icon(
                 painter = painterResource(R.drawable.ic_nexon_authentication),
                 contentDescription = null,
-                tint = MapleGray,
-                modifier = Modifier
-                    .padding(horizontal = 24.dp) // 화살표 양옆 간격을 더 넓게 (기존 8dp -> 24dp)
+                tint = if (currentStep == 1) MapleOrange else MapleGray,
+                modifier = Modifier.padding(horizontal = 24.dp) // 화살표 양옆 간격을 더 넓게 (기존 8dp -> 24dp)
                     .size(28.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "NEXON ID\n인증",
-                fontSize = 16.sp,
+                style = Typography.bodyLarge,
+                fontStyle = FontStyle.Normal,
                 textAlign = TextAlign.Center,
-                color = MapleGray
+                color = if (currentStep == 1) MapleOrange else MapleGray
             )
         }
 
@@ -68,18 +71,16 @@ fun CharacterStepIndicator() {
             Icon(
                 Icons.Default.PersonAdd,
                 contentDescription = null,
-                tint = MapleOrange,
-                modifier = Modifier
-                    .padding(horizontal = 24.dp) // 화살표 양옆 간격을 더 넓게 (기존 8dp -> 24dp)
+                tint = if (currentStep == 2) MapleOrange else MapleGray,
+                modifier = Modifier.padding(horizontal = 24.dp) // 화살표 양옆 간격을 더 넓게 (기존 8dp -> 24dp)
                     .size(28.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "대표 캐릭터\n선택",
-                fontSize = 16.sp,
+                text = "캐릭터\n등록하기",
+                style = Typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                color = MapleOrange,
-                fontWeight = FontWeight.Bold
+                color = if (currentStep == 2) MapleOrange else MapleGray
             )
         }
     }

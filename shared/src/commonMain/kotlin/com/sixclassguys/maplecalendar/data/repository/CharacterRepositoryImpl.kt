@@ -2,11 +2,12 @@ package com.sixclassguys.maplecalendar.data.repository
 
 import com.sixclassguys.maplecalendar.data.local.AppPreferences
 import com.sixclassguys.maplecalendar.data.remote.datasource.NexonOpenApiDataSource
-import com.sixclassguys.maplecalendar.data.remote.dto.toDomain
 import com.sixclassguys.maplecalendar.domain.model.ApiState
 import com.sixclassguys.maplecalendar.domain.model.CharacterBasic
 import com.sixclassguys.maplecalendar.domain.repository.CharacterRepository
+import com.sixclassguys.maplecalendar.util.ApiException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 
@@ -21,10 +22,16 @@ class CharacterRepositoryImpl(
         val ocid = dataStore.characterOcid.first()
         
         if (ocid == null) {
-            emit(ApiState.Error("No OCID found"))
+            emit(ApiState.Success(""))
         } else {
             emit(ApiState.Success(ocid))
         }
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
     }
 
     override fun setCharacterOcid(ocid: String): Flow<ApiState<Unit>> = flow {
@@ -36,6 +43,12 @@ class CharacterRepositoryImpl(
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "Unknown error"))
         }
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
     }
 
     override suspend fun getOpenApiKey(): Flow<ApiState<String>> = flow {
@@ -44,10 +57,16 @@ class CharacterRepositoryImpl(
         val apiKey = dataStore.openApiKey.first()
 
         if (apiKey == null) {
-            emit(ApiState.Error("No API Key found"))
+            emit(ApiState.Success(""))
         } else {
             emit(ApiState.Success(apiKey))
         }
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
     }
 
     override fun setOpenApiKey(apiKey: String): Flow<ApiState<Unit>> = flow {
@@ -59,6 +78,12 @@ class CharacterRepositoryImpl(
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "Unknown error"))
         }
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
     }
 
     override suspend fun getCharacterBasic(ocid: String): Flow<ApiState<CharacterBasic>> = flow {
@@ -74,5 +99,11 @@ class CharacterRepositoryImpl(
 
             emit(ApiState.Error(e.message ?: "Unknown error"))
         }
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
     }
 }

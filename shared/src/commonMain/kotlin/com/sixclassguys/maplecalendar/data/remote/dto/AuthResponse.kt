@@ -1,7 +1,7 @@
 package com.sixclassguys.maplecalendar.data.remote.dto
 
 import com.sixclassguys.maplecalendar.domain.model.AccountCharacter
-import com.sixclassguys.maplecalendar.domain.model.LoginResult
+import com.sixclassguys.maplecalendar.domain.model.LoginInfo
 import com.sixclassguys.maplecalendar.domain.model.Member
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -33,11 +33,27 @@ data class AutoLoginResponse(
     @SerialName("characterBasic")
     val characterBasic: CharacterBasicResponse? = null,
 
-    val isGlobalAlarmEnabled: Boolean
+    @SerialName("isGlobalAlarmEnabled")
+    val isGlobalAlarmEnabled: Boolean,
+
+    @SerialName("characterPopularity")
+    val characterPopularity: Int? = null,
+
+    @SerialName("characterOverallRanking")
+    val characterOverallRanking: RankingResponse? = null,
+
+    @SerialName("characterServerRanking")
+    val characterServerRanking: RankingResponse? = null,
+
+    @SerialName("characterUnionLevel")
+    val characterUnionLevel: UnionResponse? = null,
+
+    @SerialName("characterDojang")
+    val characterDojang: DojangRankingResponse? = null
 )
 
-fun LoginResponse.toDomain(): LoginResult {
-    return LoginResult(
+fun LoginResponse.toDomain(): LoginInfo {
+    return LoginInfo(
         representativeOcid = this.representativeOcid,
         characters = this.characters.mapValues { entry ->
             entry.value.map { it.toDomain() }
@@ -57,7 +73,15 @@ fun AccountCharacterResponse.toDomain(): AccountCharacter {
 
 fun AutoLoginResponse.toDomain(): Member {
     return Member(
+        email = "",
+        nickname = "",
+        profileImageUrl = "",
         isGlobalAlarmEnabled = this.isGlobalAlarmEnabled,
-        characterBasic = this.characterBasic?.toDomain()
+        characterBasic = this.characterBasic?.toDomain(),
+        characterPopularity = this.characterPopularity ?: 0,
+        characterOverallRanking = this.characterOverallRanking?.toDomain(),
+        characterServerRanking = this.characterServerRanking?.toDomain(),
+        characterUnionLevel = characterUnionLevel?.toDomain(),
+        characterDojang = characterDojang?.toDomain(),
     )
 }

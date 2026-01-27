@@ -1,5 +1,6 @@
 package com.sixclassguys.maplecalendar.ui.component
 
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -47,6 +49,7 @@ fun BottomNavigationBar(
     navController: NavController,
     onCalendarClicked: () -> Unit
 ) {
+    val context = LocalContext.current
     val navItems = listOf(
         Navigation.Home, Navigation.Playlist, Navigation.Board, Navigation.Setting
     )
@@ -118,9 +121,24 @@ fun BottomNavigationBar(
                     item = item,
                     isSelected = currentRoute == item.destination,
                     onClick = {
-                        navController.navigate(item.destination) {
-                            popUpTo(navController.graph.startDestinationId)
-                            launchSingleTop = true
+                        // BGM 플레이리스트와 게시판 기능은 준비중
+                        if ((item == Navigation.Playlist) || (item == Navigation.Board)) {
+                            Toast.makeText(context, "준비중입니다.", Toast.LENGTH_SHORT).show()
+                        } else {
+//                            navController.navigate(item.destination) {
+//                                popUpTo(navController.graph.startDestinationId)
+//                                launchSingleTop = true
+//                            }
+                            if (currentRoute != item.destination) {
+                                navController.navigate(item.destination) {
+                                    // 💡 핵심: 현재 스택에 있는 모든 화면을 제거하고 이동합니다.
+                                    // 이렇게 하면 항상 스택에는 현재 화면 '딱 하나'만 남게 됩니다.
+                                    popUpTo(navController.graph.id) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            }
                         }
                     }
                 )
@@ -133,8 +151,7 @@ fun BottomNavigationBar(
             containerColor = MapleOrange,
             contentColor = MapleWhite,
             shape = CircleShape,
-            modifier = Modifier
-                .size(60.dp)
+            modifier = Modifier.size(60.dp)
                 .align(Alignment.TopCenter)
                 // FAB 위치는 고정 (시스템 바 패딩에 영향받지 않도록)
                 .offset(y = (-10).dp)
@@ -181,8 +198,7 @@ fun MapleBottomNavItem(
 
         // [핵심] 선택 표시 인디케이터 (밑줄 모양)
         Box(
-            modifier = Modifier
-                .width(20.dp)
+            modifier = Modifier.width(20.dp)
                 .height(3.dp)
                 .background(
                     color = if (isSelected) Color.White else Color.Transparent,

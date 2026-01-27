@@ -1,5 +1,7 @@
 package com.sixclassguys.maplecalendar.ui.component
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,47 +35,48 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarUiState
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.Typography
+import com.sixclassguys.maplecalendar.utils.generateDaysForMonth
 import com.sixclassguys.maplecalendar.utils.plusMonths
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CalendarCard(
     uiState: CalendarUiState,
-    onPreviousMonth: () -> Unit,
-    onNextMonth: () -> Unit,
+    onMonthChanged: (Int) -> Unit,
     onDateClick: (LocalDate) -> Unit,
     today: LocalDate
 ) {
-    // 💡 1. 페이지 개수를 고정하고 중앙에서 시작합니다.
     val pageCount = 2000
     val initialPage = pageCount / 2
-    val pagerState = rememberPagerState(initialPage = initialPage) { pageCount }
+    val pagerState =
+        rememberPagerState(initialPage = initialPage + uiState.monthOffset) { pageCount }
     val scope = rememberCoroutineScope()
 
-    // 💡 2. [핵심] 사용자의 수동 스와이프가 끝났을 때만 뷰모델 업데이트
-    // isScrollInProgress를 체크하여 프로그래밍적인 이동(animateScroll)과 수동 스와이프를 구분합니다.
-    LaunchedEffect(pagerState.targetPage) {
-        // targetPage가 바뀌었을 때, 현재 uiState와 차이가 있다면 그때만 이벤트를 던집니다.
-        val monthOffset = pagerState.targetPage - initialPage
-        val startOfMonth = LocalDate(today.year, today.month, 1)
-        val targetDate = startOfMonth.plusMonths(monthOffset)
+    // 1. [동기화] 사용자가 스와이프하거나 버튼을 눌러 페이지가 안착(Settled)했을 때만 뷰모델 업데이트
+    LaunchedEffect(pagerState.settledPage) {
+        val newOffset = pagerState.settledPage - initialPage
+        if (uiState.monthOffset != newOffset) {
+            onMonthChanged(newOffset)
+        }
+    }
 
-        if (targetDate.year != uiState.year || targetDate.monthNumber != uiState.month.value) {
-            if (pagerState.targetPage > pagerState.currentPage) {
-                onNextMonth()
-            } else if (pagerState.targetPage < pagerState.currentPage) {
-                onPreviousMonth()
-            }
+    // 2. [초기화/외부변경 대응] 뷰모델의 offset이 변경되면 Pager를 해당 위치로 이동 (ex: 초기 로딩 시)
+    LaunchedEffect(uiState.monthOffset) {
+        val targetPage = initialPage + uiState.monthOffset
+        if (pagerState.currentPage != targetPage) {
+            pagerState.scrollToPage(targetPage) // 즉시 이동하여 반응성 확보
         }
     }
 
     Card(
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier
+            .padding(16.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = MapleWhite),
@@ -81,9 +85,20 @@ fun CalendarCard(
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxWidth(),
-            // 💡 스와이프 감도 조절 (너무 휙휙 넘어가지 않게)
+            // 스와이프 감도 조절 (너무 휙휙 넘어가지 않게)
             flingBehavior = PagerDefaults.flingBehavior(state = pagerState)
-        ) {
+        ) { page ->
+            // 💡 [핵심] 각 페이지는 uiState가 아닌 자신의 page 인덱스로 날짜를 스스로 계산합니다.
+            // 이렇게 하면 스와이프 중에 연/월 텍스트가 uiState를 기다리지 않고 즉시 보입니다.
+            val monthOffset = page - initialPage
+            val displayDate = remember(monthOffset) {
+                // Reducer의 로직을 활용하여 해당 페이지의 날짜 객체 생성
+                getLocalDateByPageOffset(today, monthOffset)
+            }
+            val daysForThisPage = remember(displayDate) {
+                generateDaysForMonth(displayDate.year, displayDate.month)
+            }
+
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
@@ -95,7 +110,6 @@ fun CalendarCard(
                 ) {
                     IconButton(
                         onClick = {
-                            onPreviousMonth()
                             scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) }
                         }
                     ) {
@@ -106,14 +120,12 @@ fun CalendarCard(
                         )
                     }
                     Text(
-                        text = "${uiState.year}년 ${uiState.month.value}월",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
+                        text = "${displayDate.year}년 ${displayDate.month.value}월",
+                        style = Typography.titleMedium,
                         color = MapleOrange
                     )
                     IconButton(
                         onClick = {
-                            onNextMonth()
                             scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
                         }
                     ) {
@@ -127,28 +139,30 @@ fun CalendarCard(
 
                 // 요일 표시
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(vertical = 8.dp)
                 ) {
                     val daysOfWeek = listOf("일", "월", "화", "수", "목", "금", "토")
                     daysOfWeek.forEach { day ->
                         Text(
                             text = day,
-                            modifier = Modifier.weight(1f),
+                            style = Typography.bodyMedium,
                             textAlign = TextAlign.Center,
-                            fontSize = 14.sp,
-                            color = if (day == "일") Color.Red else if (day == "토") Color.Blue else Color.Gray
+                            color = if (day == "일") Color.Red else if (day == "토") Color.Blue else Color.Gray,
+                            modifier = Modifier.weight(1f)
                         )
                     }
                 }
 
                 // 날짜 그리드 (Reducer에서 생성한 42개 혹은 35개 리스트 활용)
-                val chunkedDays = uiState.days.chunked(7)
+                val chunkedDays = daysForThisPage.chunked(7)
                 chunkedDays.forEach { week ->
                     Row(modifier = Modifier.fillMaxWidth()) {
                         week.forEach { date ->
                             Box(
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier
+                                    .weight(1f)
                                     .aspectRatio(1f)
                                     .padding(2.dp)
                                     .clip(CircleShape)
@@ -168,6 +182,7 @@ fun CalendarCard(
 
                                             else -> Color.Black
                                         },
+                                        style = Typography.bodySmall,
                                         fontWeight = if (date == uiState.selectedDate || date == today) FontWeight.Bold else FontWeight.Normal
                                     )
                                 }
@@ -178,4 +193,17 @@ fun CalendarCard(
             }
         }
     }
+}
+
+// 헬퍼 함수: 페이지 오프셋 기준 LocalDate 계산
+fun getLocalDateByPageOffset(today: LocalDate, offset: Int): LocalDate {
+    var targetMonth = today.monthNumber + offset
+    var targetYear = today.year
+    while (targetMonth > 12) {
+        targetMonth -= 12; targetYear++
+    }
+    while (targetMonth < 1) {
+        targetMonth += 12; targetYear--
+    }
+    return LocalDate(targetYear, targetMonth, 1)
 }

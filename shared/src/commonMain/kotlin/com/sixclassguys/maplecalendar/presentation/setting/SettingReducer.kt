@@ -11,7 +11,7 @@ class SettingReducer {
 
         is SettingIntent.FetchNexonOpenApiKeySuccess -> {
             currentState.copy(
-                isLoading = false,
+                isLoading = true,
                 nexonApiKey = intent.key
             )
         }
