@@ -1,11 +1,19 @@
 package com.sixclassguys.maplecalendar.presentation.boss
 
+import com.sixclassguys.maplecalendar.domain.model.BossParty
+import com.sixclassguys.maplecalendar.domain.model.BossPartyDetail
 import com.sixclassguys.maplecalendar.domain.model.CharacterSummary
 import com.sixclassguys.maplecalendar.util.Boss
 import com.sixclassguys.maplecalendar.util.BossDifficulty
 import com.sixclassguys.maplecalendar.util.BossPartyTab
 
 sealed class BossIntent {
+
+    data object FetchBossParties : BossIntent()
+
+    data class FetchBossPartiesSuccess(val bossParties: List<BossParty>) : BossIntent()
+
+    data class FetchBossPartiesFailed(val message: String) : BossIntent()
 
     data class FetchCharacters(val allWorldNames: List<String>) : BossIntent()
 
@@ -29,6 +37,16 @@ sealed class BossIntent {
     data class UpdateBossPartyDescription(val description: String) : BossIntent()
 
     data object CreateBossParty : BossIntent()
+
+    data class CreateBossPartySuccess(val bossPartyId: Long) : BossIntent()
+
+    data class CreateBossPartyFailed(val message: String) : BossIntent()
+
+    data class FetchBossPartyDetail(val bossPartyId: Long) : BossIntent()
+
+    data class FetchBossPartyDetailSuccess(val bossPartyDetail: BossPartyDetail) : BossIntent()
+
+    data class FetchBossPartyDetailFailed(val message: String) : BossIntent()
 
     data class SelectBossPartyDetailMenu(val selectedBossPartyDetailMenu: BossPartyTab) : BossIntent()
 }

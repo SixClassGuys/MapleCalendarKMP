@@ -1,12 +1,30 @@
 package com.sixclassguys.maplecalendar.presentation.boss
 
-import com.sixclassguys.maplecalendar.domain.model.BossPartyAlbum
-import com.sixclassguys.maplecalendar.domain.model.BossPartyChat
 import com.sixclassguys.maplecalendar.domain.model.CharacterSummary
 
 class BossReducer {
 
     fun reduce(currentState: BossUiState, intent: BossIntent): BossUiState = when (intent) {
+        is BossIntent.FetchBossParties -> {
+            currentState.copy(
+                isLoading = true
+            )
+        }
+
+        is BossIntent.FetchBossPartiesSuccess -> {
+            currentState.copy(
+                isLoading = false,
+                bossParties = intent.bossParties
+            )
+        }
+
+        is BossIntent.FetchBossPartiesFailed -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = intent.message
+            )
+        }
+
         is BossIntent.FetchCharacters -> {
             currentState.copy(
                 isLoading = true
@@ -23,93 +41,10 @@ class BossReducer {
                     }
                 }
                 .sortedByDescending { it.second.characterLevel } // 4. 레벨(Pair의 second) 기준 역순 정렬
-            val chats = listOf(
-                BossPartyChat(
-                    characterSummary = characters[0].second,
-                    content = "파장님 계속 그렇게 하실거면\n" +
-                            "저 나갈게요 그냥",
-                    isMine = false
-                ),
-                BossPartyChat(
-                    characterSummary = characters[1].second,
-                    content = "파장님 계속 그렇게 사세요\n" +
-                            "스펙사기로 인벤 박제할게요",
-                    isMine = false
-                ),
-                BossPartyChat(
-                    characterSummary = characters[2].second,
-                    content = "좆까",
-                    isMine = true
-                ),
-                BossPartyChat(
-                    characterSummary = characters[0].second,
-                    content = "파장님 계속 그렇게 하실거면\n" +
-                            "저 나갈게요 그냥",
-                    isMine = false
-                ),
-                BossPartyChat(
-                    characterSummary = characters[1].second,
-                    content = "파장님 계속 그렇게 사세요\n" +
-                            "스펙사기로 인벤 박제할게요",
-                    isMine = false
-                ),
-                BossPartyChat(
-                    characterSummary = characters[2].second,
-                    content = "니면상",
-                    isMine = true
-                ),
-                BossPartyChat(
-                    characterSummary = characters[0].second,
-                    content = "파장님 계속 그렇게 하실거면\n" +
-                            "저 나갈게요 그냥",
-                    isMine = false
-                ),
-                BossPartyChat(
-                    characterSummary = characters[1].second,
-                    content = "파장님 계속 그렇게 사세요\n" +
-                            "스펙사기로 인벤 박제할게요",
-                    isMine = false
-                ),
-                BossPartyChat(
-                    characterSummary = characters[0].second,
-                    content = "파장님 계속 그렇게 하실거면\n" +
-                            "저 나갈게요 그냥",
-                    isMine = false
-                ),
-                BossPartyChat(
-                    characterSummary = characters[1].second,
-                    content = "파장님 계속 그렇게 사세요\n" +
-                            "스펙사기로 인벤 박제할게요",
-                    isMine = false
-                )
-            )
-            val albums = listOf(
-                BossPartyAlbum(
-                    id = 1L,
-                    imageUrl = "https://i.ytimg.com/vi/k2yeIH_kVGU/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLC5szSZMvHMUforEoZyI8b0TpnEdQ",
-                    author = characters[0].second,
-                    content = "앙 기모링 ㅋㅋ",
-                    date = "2026-01-30",
-                    likeCount = 0,
-                    dislikeCount = 2
-                ),
-                BossPartyAlbum(
-                    id = 2L,
-                    imageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2lYWhtv1chNTZb8QFE4pzodnkGH874S8dUw&s",
-                    author = characters[1].second,
-                    content = "아아앙 ㅋㅋ",
-                    date = "2026-01-29",
-                    likeCount = 0,
-                    dislikeCount = 2
-                )
-            )
 
             currentState.copy(
                 isLoading = false,
-                characters = characters,
-                bossPartyMembers = characters,
-                bossPartyChats = chats,
-                bossPartyAlbums = albums
+                characters = characters
             )
         }
 
@@ -169,6 +104,40 @@ class BossReducer {
         is BossIntent.CreateBossParty -> {
             currentState.copy(
                 isLoading = true
+            )
+        }
+
+        is BossIntent.CreateBossPartySuccess -> {
+            currentState.copy(
+                isLoading = true,
+                showCreateDialog = false
+            )
+        }
+
+        is BossIntent.CreateBossPartyFailed -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = intent.message
+            )
+        }
+
+        is BossIntent.FetchBossPartyDetail -> {
+            currentState.copy(
+                isLoading = true
+            )
+        }
+
+        is BossIntent.FetchBossPartyDetailSuccess -> {
+            currentState.copy(
+                isLoading = false,
+                selectedBossParty = intent.bossPartyDetail
+            )
+        }
+
+        is BossIntent.FetchBossPartyDetailFailed -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = intent.message
             )
         }
 
