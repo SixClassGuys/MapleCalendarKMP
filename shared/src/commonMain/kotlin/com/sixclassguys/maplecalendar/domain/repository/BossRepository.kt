@@ -3,6 +3,7 @@ package com.sixclassguys.maplecalendar.domain.repository
 import com.sixclassguys.maplecalendar.domain.model.ApiState
 import com.sixclassguys.maplecalendar.domain.model.BossParty
 import com.sixclassguys.maplecalendar.domain.model.BossPartyChat
+import com.sixclassguys.maplecalendar.domain.model.BossPartyChatHistory
 import com.sixclassguys.maplecalendar.domain.model.BossPartyDetail
 import com.sixclassguys.maplecalendar.util.Boss
 import com.sixclassguys.maplecalendar.util.BossDifficulty
@@ -22,9 +23,11 @@ interface BossRepository {
 
     suspend fun getBossPartyDetail(bossPartyId: Long): Flow<ApiState<BossPartyDetail>>
 
-    suspend fun connect(partyId: String, token: String): Flow<ApiState<Unit>>
+    suspend fun getChatMessage(bossPartyId: Long, page: Int): Flow<ApiState<BossPartyChatHistory>>
 
-    fun observeMessages(): Flow<BossPartyChat>
+    suspend fun connect(partyId: String): Flow<ApiState<Unit>>
+
+    fun observeMessages(): Flow<ApiState<BossPartyChat>>
 
     suspend fun sendMessage(partyId: Long, message: BossPartyChat): ApiState<Unit>
 

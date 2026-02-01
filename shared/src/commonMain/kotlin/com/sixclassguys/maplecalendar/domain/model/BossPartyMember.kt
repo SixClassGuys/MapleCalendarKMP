@@ -10,5 +10,6 @@ data class BossPartyMember(
     val characterLevel: Long,
     val characterImage: String,
     val role: BossPartyRole,
+    val isMyCharacter: Boolean,
     val joinedAt: String
 )
