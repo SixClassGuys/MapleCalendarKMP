@@ -13,6 +13,7 @@ data class BossPartyMemberDetailResponse(
     val characterLevel: Long? = null,
     val characterImage: String? = null,
     val role: BossPartyRole? = null,
+    val isMyCharacter: Boolean = false,
     val joinedAt: String? = null
 ) {
     
@@ -25,6 +26,7 @@ data class BossPartyMemberDetailResponse(
             characterLevel = this.characterLevel ?: 0L,
             characterImage = this.characterImage ?: "",
             role = this.role ?: BossPartyRole.MEMBER,
+            isMyCharacter = this.isMyCharacter,
             joinedAt = this.joinedAt ?: "1970-01-01"
         )
     }
