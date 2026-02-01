@@ -1,6 +1,8 @@
 package com.sixclassguys.maplecalendar.presentation.boss
 
 import com.sixclassguys.maplecalendar.domain.model.BossParty
+import com.sixclassguys.maplecalendar.domain.model.BossPartyChat
+import com.sixclassguys.maplecalendar.domain.model.BossPartyChatHistory
 import com.sixclassguys.maplecalendar.domain.model.BossPartyDetail
 import com.sixclassguys.maplecalendar.domain.model.CharacterSummary
 import com.sixclassguys.maplecalendar.util.Boss
@@ -28,7 +30,7 @@ sealed class BossIntent {
 
     data class SelectBossDifficulty(val selectedBossDifficulty: BossDifficulty) : BossIntent()
 
-    data object DismissDialog : BossIntent()
+    data object DismissBossPartyCreateDialog : BossIntent()
 
     data class SelectBossPartyCharacter(val character: CharacterSummary) : BossIntent()
 
@@ -47,6 +49,28 @@ sealed class BossIntent {
     data class FetchBossPartyDetailSuccess(val bossPartyDetail: BossPartyDetail) : BossIntent()
 
     data class FetchBossPartyDetailFailed(val message: String) : BossIntent()
+
+    data object ConnectBossPartyChat : BossIntent()
+
+    data class ReceiveRealTimeChat(val bossPartyChat: BossPartyChat) : BossIntent()
+
+    data class ConnectBossPartyChatFailed(val message: String) : BossIntent()
+
+    data class UpdateBossPartyChatMessage(val bossPartyChatMessage: String) : BossIntent()
+
+    data object SendBossPartyChatMessage : BossIntent()
+
+    data object SendBossPartyChatMessageSuccess : BossIntent()
+
+    data class SendBossPartyChatMessageFailed(val message: String) : BossIntent()
+
+    data object FetchBossPartyChatHistory : BossIntent()
+
+    data class FetchBossPartyChatHistorySuccess(val bossPartyChatHistory: BossPartyChatHistory) : BossIntent()
+
+    data class FetchBossPartyChatHistoryFailed(val message: String) : BossIntent()
+
+    data object DisconnectBossPartyChat : BossIntent()
 
     data class SelectBossPartyDetailMenu(val selectedBossPartyDetailMenu: BossPartyTab) : BossIntent()
 }

@@ -1,6 +1,7 @@
 package com.sixclassguys.maplecalendar.presentation.boss
 
 import com.sixclassguys.maplecalendar.domain.model.CharacterSummary
+import io.github.aakira.napier.Napier
 
 class BossReducer {
 
@@ -76,7 +77,7 @@ class BossReducer {
             )
         }
 
-        is BossIntent.DismissDialog -> {
+        is BossIntent.DismissBossPartyCreateDialog -> {
             currentState.copy(
                 selectedBossDifficulty = null,
                 showCreateDialog = false
@@ -139,6 +140,96 @@ class BossReducer {
                 isLoading = false,
                 errorMessage = intent.message
             )
+        }
+
+        is BossIntent.ConnectBossPartyChat -> {
+            currentState.copy(
+                isLoading = true
+            )
+        }
+
+        is BossIntent.ReceiveRealTimeChat -> {
+            val newMessage = intent.bossPartyChat
+
+            // 💡 1. 기존 리스트에서 새 메시지 ID와 같은 녀석을 완전히 필터링
+            val filteredList = currentState.bossPartyChats.filterNot { it.id == newMessage.id }
+
+            // 💡 2. 새 메시지를 맨 앞에 추가 (순서 보장)
+            val updatedList = listOf(newMessage) + filteredList
+            Napier.d("BossReducer - ReceiveRealTimeChat: $updatedList")
+
+            currentState.copy(
+                isLoading = false,
+                bossPartyChats = updatedList
+            )
+        }
+
+        is BossIntent.ConnectBossPartyChatFailed -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = intent.message
+            )
+       }
+
+        is BossIntent.UpdateBossPartyChatMessage -> {
+            currentState.copy(
+                bossPartyChatMessage = intent.bossPartyChatMessage
+            )
+        }
+
+        is BossIntent.SendBossPartyChatMessage -> {
+            currentState.copy(
+                isLoading = true
+            )
+        }
+
+        is BossIntent.SendBossPartyChatMessageSuccess -> {
+            currentState.copy(
+                isLoading = false,
+                bossPartyChatMessage = ""
+            )
+        }
+
+        is BossIntent.SendBossPartyChatMessageFailed -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = intent.message
+            )
+        }
+
+        is BossIntent.FetchBossPartyChatHistory -> {
+            currentState.copy(
+                isLoading = true
+            )
+        }
+
+        is BossIntent.FetchBossPartyChatHistorySuccess -> {
+            val history = intent.bossPartyChatHistory
+
+            // 💡 핵심: 기존 데이터와 새 데이터를 합친 후, ID를 기준으로 중복 제거
+            // distinctBy는 먼저 나타나는 요소를 유지하므로,
+            // 새로운 데이터(history)를 앞에 두거나 리스트를 합친 후 정렬/필터링합니다.
+            val combinedChats = (currentState.bossPartyChats + history.messages)
+                .distinctBy { it.id } // ID가 중복되면 뒤에 오는 데이터는 무시함
+                .sortedByDescending { it.id } // ID 내림차순 정렬 (최신이 위로)
+
+            currentState.copy(
+                isLoading = false,
+                bossPartyChats = combinedChats,
+                isBossPartyChatLastPage = history.isLastPage,
+                bossPartyChatPage = currentState.bossPartyChatPage + 1
+            )
+        }
+
+        is BossIntent.FetchBossPartyChatHistoryFailed -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = intent.message
+            )
+        }
+
+        is BossIntent.DisconnectBossPartyChat -> {
+            currentState
         }
 
         is BossIntent.SelectBossPartyDetailMenu -> {

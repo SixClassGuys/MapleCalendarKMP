@@ -24,15 +24,10 @@ data class BossUiState(
     val selectedBossParty: BossPartyDetail? = null,
     val selectedBossPartyDetailMenu: BossPartyTab = BossPartyTab.ALARM,
     val isBossPartyDetailAlarmOn: Boolean = true,
-    val bossPartyAlarmTimes: List<BossPartyAlarmTime> = listOf(
-        BossPartyAlarmTime(
-            date = "2026년 1월 31일 토요일",
-            time = "19:00",
-            message = "5분 내로 안 오면 추방함",
-            isEnabled = true
-        )
-    ),
+    val bossPartyAlarmTimes: List<BossPartyAlarmTime> = emptyList(),
     val bossPartyChats: List<BossPartyChat> = emptyList(),
+    val bossPartyChatPage: Int = 0,
+    val isBossPartyChatLastPage: Boolean = false,
     val bossPartyChatMessage: String = "",
     val bossPartyAlbums: List<BossPartyAlbum> = emptyList(),
     val errorMessage: String? = null
