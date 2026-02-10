@@ -101,12 +101,14 @@ class BossReducer {
 
         is BossIntent.SelectRegion -> {
             currentState.copy(
+                isLoading = false,
                 selectedRegion = intent.selectedRegion,
             )
         }
 
         is BossIntent.SelectBoss -> {
             currentState.copy(
+                isLoading = false,
                 selectedBoss = intent.selectedBoss,
                 selectedBossDifficulty = null
             )
@@ -114,6 +116,7 @@ class BossReducer {
 
         is BossIntent.SelectBossDifficulty -> {
             currentState.copy(
+                isLoading = false,
                 selectedBossDifficulty = intent.selectedBossDifficulty,
                 showCreateDialog = true,
                 bossPartyCreateCharacter = currentState.characters.firstOrNull()?.second
@@ -122,6 +125,7 @@ class BossReducer {
 
         is BossIntent.DismissBossPartyCreateDialog -> {
             currentState.copy(
+                isLoading = false,
                 selectedBossDifficulty = null,
                 showCreateDialog = false
             )
@@ -129,18 +133,21 @@ class BossReducer {
 
         is BossIntent.SelectBossPartyCharacter -> {
             currentState.copy(
+                isLoading = false,
                 bossPartyCreateCharacter = intent.character
             )
         }
 
         is BossIntent.UpdateBossPartyTitle -> {
             currentState.copy(
+                isLoading = false,
                 bossPartyCreateTitle = intent.title
             )
         }
 
         is BossIntent.UpdateBossPartyDescription -> {
             currentState.copy(
+                isLoading = false,
                 bossPartyCreateDescription = intent.description
             )
         }
@@ -189,36 +196,42 @@ class BossReducer {
 
         is BossIntent.ShowAlarmCreateDialog -> {
             currentState.copy(
+                isLoading = false,
                 showBossAlarmDialog = true
             )
         }
 
         is BossIntent.DismissAlarmCreateDialog -> {
             currentState.copy(
+                isLoading = false,
                 showBossAlarmDialog = false
             )
         }
 
         is BossIntent.UpdateAlarmTimeHour -> {
             currentState.copy(
+                isLoading = false,
                 selectedHour = intent.hour
             )
         }
 
         is BossIntent.UpdateAlarmTimeMinute -> {
             currentState.copy(
+                isLoading = false,
                 selectedMinute = intent.minute
             )
         }
 
         is BossIntent.UpdateAlarmMessage -> {
             currentState.copy(
+                isLoading = false,
                 alarmMessage = intent.message
             )
         }
 
         is BossIntent.UpdateAlarmTimeSelectMode -> {
             currentState.copy(
+                isLoading = false,
                 selectedAlarmDate = intent.date
             )
         }
@@ -252,12 +265,14 @@ class BossReducer {
 
         is BossIntent.UpdateAlarmTimePeriodMode -> {
             currentState.copy(
+                isLoading = false,
                 selectedDayOfWeek = intent.dayOfWeek
             )
         }
 
         is BossIntent.UpdateThisWeekPeriodMode -> {
             currentState.copy(
+                isLoading = false,
                 isImmediatelyAlarm = intent.isImmediatelyAlarm
             )
         }
@@ -345,6 +360,7 @@ class BossReducer {
 
         is BossIntent.UpdateBossPartyChatMessage -> {
             currentState.copy(
+                isLoading = false,
                 bossPartyChatMessage = intent.bossPartyChatMessage
             )
         }
@@ -384,6 +400,8 @@ class BossReducer {
             val combinedChats = (currentState.bossPartyChats + history.messages)
                 .distinctBy { it.id } // ID가 중복되면 뒤에 오는 데이터는 무시함
                 .sortedByDescending { it.id } // ID 내림차순 정렬 (최신이 위로)
+
+            Napier.d("Chats: $combinedChats")
 
             currentState.copy(
                 isLoading = false,
@@ -433,11 +451,14 @@ class BossReducer {
         }
 
         is BossIntent.DisconnectBossPartyChat -> {
-            currentState
+            currentState.copy(
+                isLoading = false
+            )
         }
 
         is BossIntent.SelectBossPartyDetailMenu -> {
             currentState.copy(
+                isLoading = false,
                 selectedBossPartyDetailMenu = intent.selectedBossPartyDetailMenu
             )
         }

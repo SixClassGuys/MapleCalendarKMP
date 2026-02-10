@@ -166,8 +166,7 @@ fun BossPartyDetailScreen(
         containerColor = MapleWhite
     ) { padding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
                 .nestedScroll(nestedScrollConnection)
         ) {
             // 메인 컨텐츠 (알림, 파티원, 채팅, 게시판)

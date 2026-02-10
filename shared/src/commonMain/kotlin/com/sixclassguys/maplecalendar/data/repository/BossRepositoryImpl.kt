@@ -267,6 +267,7 @@ class BossRepositoryImpl(
             val accessToken = dataStore.accessToken.first()
             val response = dataSource.getChatMessages(accessToken, bossPartyId, page)
             val messages = response.content.map { it.toDomain() }
+            Napier.d("Response: $response")
 
             emit(ApiState.Success(
                 BossPartyChatHistory(

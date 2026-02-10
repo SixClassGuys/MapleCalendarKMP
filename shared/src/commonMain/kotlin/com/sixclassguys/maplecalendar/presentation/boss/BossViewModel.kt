@@ -21,6 +21,7 @@ import com.sixclassguys.maplecalendar.domain.usecase.ToggleBossPartyAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.UpdateBossPartyPeriodUseCase
 import com.sixclassguys.maplecalendar.util.Boss
 import com.sixclassguys.maplecalendar.util.BossDifficulty
+import com.sixclassguys.maplecalendar.util.BossPartyTab
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

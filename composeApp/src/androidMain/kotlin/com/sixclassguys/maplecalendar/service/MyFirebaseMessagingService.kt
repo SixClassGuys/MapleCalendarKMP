@@ -46,7 +46,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
 //            }
 
             // 1. 공통 데이터 추출
-            val title = message.notification?.title ?: message.data["title"] ?: "⚔️ 보스 파티 알림"
+            val title = message.notification?.title ?: message.data["title"] ?: "Maplendar"
             val body = message.notification?.body ?: message.data["body"] ?: "내용이 없습니다."
             val type = message.data["type"] // BOSS, EVENT 등
             val targetId = message.data["targetId"]?.toLongOrNull() ?: 0L
@@ -58,6 +58,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                     // 보스 파티 전용 알림 표시
                     eventBus.emitBossPartyId(bossPartyId)
                     showBossNotification(title, body, bossPartyId)
+                }
+
+                "BOSSCHAT" -> {
+                    showBossChatNotification(title, body, bossPartyId)
                 }
 
                 "REFRESH_BOSS_ALARM" -> {
@@ -84,6 +88,49 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "보스 파티 예약 시간 알림"
+                enableLights(true)
+                enableVibration(true)
+            }
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        // 클릭 시 파티 상세 화면 등으로 보낼 정보 설정
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+            // putExtra("navigate_to", "BOSS_DETAIL")
+            // putExtra("partyId", partyId)
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            partyId.toInt(), // 알람마다 고유 ID 부여
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val builder = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.bottomnav_calendar) // 보스용 아이콘이 있다면 교체
+            .setContentTitle(title)
+            .setContentText(body)
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setContentIntent(pendingIntent)
+
+        notificationManager.notify(partyId.toInt(), builder.build())
+    }
+
+    private fun showBossChatNotification(title: String, body: String, partyId: Long) {
+        val channelId = "BOSS_CHAT_ALARM_V1" // 보스 전용 채널
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+        // 채널 생성 (중복 호출되어도 안전함)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelId, "보스 파티 채팅 알림",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "보스 파티 채팅 알림"
                 enableLights(true)
                 enableVibration(true)
             }

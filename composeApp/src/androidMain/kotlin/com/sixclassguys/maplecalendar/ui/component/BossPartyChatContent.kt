@@ -51,6 +51,7 @@ import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.util.BossPartyChatMessageType
 import com.sixclassguys.maplecalendar.util.BossPartyChatUiItem
 import com.sixclassguys.maplecalendar.utils.formatToYmd
+import io.github.aakira.napier.Napier
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -71,6 +72,8 @@ fun BossPartyChatContent(
             val layoutInfo = internalScrollState.layoutInfo
             val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
 
+            Napier.d("isLoading: $isLoading, isLastPage: $isLastPage, lastVisibleItemIndex: $lastVisibleItemIndex, layoutInfo.totalItemsCount: ${layoutInfo.totalItemsCount}")
+
             // reverseLayout = true이므로, lastVisibleItemIndex가 커질수록 "과거" 데이터입니다.
             // 즉, 전체 개수에 도달했을 때(리스트 최상단) 로드해야 합니다.
             !isLoading && !isLastPage && chats.isNotEmpty() &&
@@ -79,6 +82,7 @@ fun BossPartyChatContent(
     }
 
     LaunchedEffect(shouldLoadMore.value) {
+        Napier.d("LoadMore: ${shouldLoadMore.value}")
         if (shouldLoadMore.value) {
             onLoadMore()
         }
@@ -273,8 +277,8 @@ fun UserChatBubble(
                 Surface(
                     color = if (chat.isMine) MapleOrange else MapleGray,
                     shape = RoundedCornerShape(
-                        topStart = if (chat.isMine || !showProfile) 16.dp else 4.dp,
-                        topEnd = if (!chat.isMine || !showProfile) 16.dp else 4.dp,
+                        topStart = if (chat.isMine) 16.dp else 4.dp,
+                        topEnd = if (!chat.isMine) 16.dp else 4.dp,
                         bottomStart = 16.dp,
                         bottomEnd = 16.dp
                     ),
