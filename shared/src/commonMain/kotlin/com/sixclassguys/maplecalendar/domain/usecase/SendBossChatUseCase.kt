@@ -26,6 +26,7 @@ class SendBossChatUseCase(
             isMine = true,
             messageType = BossPartyChatMessageType.TEXT,
             senderWorld = "",
+            isHidden = false,
             isDeleted = false
         )
 

@@ -341,7 +341,9 @@ class BossReducer {
             val filteredList = currentState.bossPartyChats.filterNot { it.id == newMessage.id }
 
             // 💡 2. 새 메시지를 맨 앞에 추가 (순서 보장)
-            val updatedList = listOf(newMessage) + filteredList
+            val updatedList = (listOf(newMessage) + filteredList)
+                .distinctBy { it.id } // ID가 중복되면 뒤에 오는 데이터는 무시함
+                .sortedByDescending { it.id } // ID 내림차순 정렬 (최신이 위로)
             Napier.d("BossReducer - ReceiveRealTimeChat: $updatedList")
 
             currentState.copy(
@@ -413,6 +415,28 @@ class BossReducer {
         }
 
         is BossIntent.FetchBossPartyChatHistoryFailed -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = intent.message
+            )
+        }
+
+        is BossIntent.HideBossPartyChatMessage -> {
+            currentState.copy(
+                isLoading = true
+            )
+        }
+
+        is BossIntent.HideBossPartyChatMessageSuccess -> {
+            val newBossChats = currentState.bossPartyChats
+            currentState.copy(
+                isLoading = false,
+                bossPartyChats = newBossChats,
+                bossPartyChatUiItems = transformToUiItems(newBossChats)
+            )
+        }
+
+        is BossIntent.HideBossPartyChatMessageFailed -> {
             currentState.copy(
                 isLoading = false,
                 errorMessage = intent.message

@@ -334,6 +334,25 @@ class BossRepositoryImpl(
         }
     }
 
+    override suspend fun hideMessage(bossPartyId: Long, chatId: Long): Flow<ApiState<Unit>> = flow {
+        emit(ApiState.Loading)
+
+        try {
+            val accessToken = dataStore.accessToken.first()
+            val response = dataSource.hideMessage(accessToken, bossPartyId, chatId)
+
+            emit(ApiState.Success(Unit))
+        } catch (e: Exception) {
+            emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
+        }
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
+    }
+
     override suspend fun deleteMessage(bossPartyId: Long, chatId: Long): Flow<ApiState<Unit>> = flow {
         emit(ApiState.Loading)
 

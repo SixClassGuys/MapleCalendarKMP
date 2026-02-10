@@ -15,6 +15,7 @@ import com.sixclassguys.maplecalendar.domain.usecase.GetBossPartyAlarmTimesUseCa
 import com.sixclassguys.maplecalendar.domain.usecase.GetBossPartyChatHistoryUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetBossPartyDetailUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetCharactersUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.HideBossPartyChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ObserveBossChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.SendBossChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleBossPartyAlarmUseCase
@@ -49,6 +50,7 @@ class BossViewModel(
     private val connectBossChatUseCase: ConnectBossChatUseCase,
     private val observeBossChatUseCase: ObserveBossChatUseCase,
     private val sendBossChatUseCase: SendBossChatUseCase,
+    private val hideBossPartyChatUseCase: HideBossPartyChatUseCase,
     private val deleteBossPartyChatUseCase: DeleteBossPartyChatUseCase,
     private val disconnectBossPartyChatUseCase: DisconnectBossPartyChatUseCase
 ) : ViewModel() {
@@ -282,6 +284,25 @@ class BossViewModel(
         }
     }
 
+    private fun hideMessage(chatId: Long) {
+        val bossPartyId = _uiState.value.selectedBossParty?.id ?: return
+        viewModelScope.launch {
+            hideBossPartyChatUseCase(bossPartyId, chatId).collect { state ->
+                when (state) {
+                    is ApiState.Success -> {
+                        onIntent(BossIntent.HideBossPartyChatMessageSuccess(chatId))
+                    }
+
+                    is ApiState.Error -> {
+                        onIntent(BossIntent.HideBossPartyChatMessageFailed(state.message))
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
     private fun deleteMessage(chatId: Long) {
         val bossPartyId = _uiState.value.selectedBossParty?.id ?: return
         viewModelScope.launch {
@@ -383,6 +404,10 @@ class BossViewModel(
 
             is BossIntent.SendBossPartyChatMessage -> {
                 sendMessage(_uiState.value.bossPartyChatMessage)
+            }
+
+            is BossIntent.HideBossPartyChatMessage -> {
+                hideMessage(intent.bossPartyChatId)
             }
 
             is BossIntent.DeleteBossPartyChatMessage -> {

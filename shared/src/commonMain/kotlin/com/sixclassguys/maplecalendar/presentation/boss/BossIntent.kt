@@ -110,6 +110,12 @@ sealed class BossIntent {
 
     data class FetchBossPartyChatHistoryFailed(val message: String) : BossIntent()
 
+    data class HideBossPartyChatMessage(val bossPartyChatId: Long) : BossIntent()
+
+    data class HideBossPartyChatMessageSuccess(val bossPartyChatId: Long) : BossIntent()
+
+    data class HideBossPartyChatMessageFailed(val message: String) : BossIntent()
+
     data class DeleteBossPartyChatMessage(val bossPartyChatId: Long) : BossIntent()
 
     data class DeleteBossPartyChatMessageSuccess(val bossPartyChatId: Long) : BossIntent()

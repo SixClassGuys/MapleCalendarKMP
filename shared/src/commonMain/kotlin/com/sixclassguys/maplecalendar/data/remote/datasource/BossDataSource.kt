@@ -60,6 +60,8 @@ interface BossDataSource {
 
     suspend fun sendMessage(request: BossPartyChatMessageRequest)
 
+    suspend fun hideMessage(accessToken: String, bossPartyId: Long, messageId: Long)
+
     suspend fun deleteMessage(accessToken: String, bossPartyId: Long, messageId: Long)
 
     fun observeMessages(): Flow<Frame>

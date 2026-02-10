@@ -238,8 +238,12 @@ fun BossPartyDetailScreen(
                                 chats = uiState.bossPartyChats,
                                 chatUiItems = uiState.bossPartyChatUiItems,
                                 isLastPage = uiState.isBossPartyChatLastPage,
+                                isLeader = uiState.selectedBossParty?.isLeader ?: false,
                                 isLoading = uiState.isLoading,
                                 onLoadMore = { viewModel.onIntent(BossIntent.FetchBossPartyChatHistory) },
+                                onHide = { bossPartyChatId ->
+                                    viewModel.onIntent(BossIntent.HideBossPartyChatMessage(bossPartyChatId))
+                                },
                                 onDelete = { bossPartyChatId ->
                                     viewModel.onIntent(BossIntent.DeleteBossPartyChatMessage(bossPartyChatId))
                                 },

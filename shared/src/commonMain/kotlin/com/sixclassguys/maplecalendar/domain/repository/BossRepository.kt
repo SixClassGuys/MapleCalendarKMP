@@ -60,6 +60,8 @@ interface BossRepository {
 
     suspend fun sendMessage(partyId: Long, message: BossPartyChat): ApiState<Unit>
 
+    suspend fun hideMessage(bossPartyId: Long, chatId: Long): Flow<ApiState<Unit>>
+
     suspend fun deleteMessage(bossPartyId: Long, chatId: Long): Flow<ApiState<Unit>>
 
     suspend fun disconnect()

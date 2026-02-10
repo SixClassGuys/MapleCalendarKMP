@@ -12,5 +12,6 @@ data class BossPartyChat(
     val messageType: BossPartyChatMessageType,
     val isMine: Boolean,
     val isDeleted: Boolean,
+    val isHidden: Boolean,
     val createdAt: String
 )

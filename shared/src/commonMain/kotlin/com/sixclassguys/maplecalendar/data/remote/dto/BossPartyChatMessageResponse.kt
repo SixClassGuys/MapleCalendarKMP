@@ -15,6 +15,7 @@ data class BossPartyChatMessageResponse(
     val messageType: BossPartyChatMessageType? = null,
     val isMine: Boolean = false, // 조회하는 사람의 ID와 비교하여 서버에서 계산해서 전달
     val isDeleted: Boolean = false,
+    val isHidden: Boolean = false,
     val createdAt: String? = null,
 ) {
     
@@ -29,6 +30,7 @@ data class BossPartyChatMessageResponse(
             messageType = this.messageType ?: BossPartyChatMessageType.TEXT,
             isMine = this.isMine,
             isDeleted = this.isDeleted,
+            isHidden = isHidden,
             createdAt = this.createdAt ?: "1970-01-01"
         )
     }

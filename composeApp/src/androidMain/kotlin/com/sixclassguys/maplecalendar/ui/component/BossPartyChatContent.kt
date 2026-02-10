@@ -59,8 +59,10 @@ fun BossPartyChatContent(
     chats: List<BossPartyChat>,
     chatUiItems: List<BossPartyChatUiItem>,
     isLastPage: Boolean,            // 추가: 마지막 페이지 여부
+    isLeader: Boolean,
     isLoading: Boolean,             // 추가: 로딩 상태 (상단 인디케이터용)
     onLoadMore: () -> Unit,         // 추가: 페이지 로드 콜백
+    onHide: (Long) -> Unit,
     onDelete: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -169,7 +171,9 @@ fun BossPartyChatContent(
                         when (item) {
                             is BossPartyChatUiItem.Message -> ChatBubble(
                                 chat = item.chat,
+                                isLeader = isLeader,
                                 showProfile = item.showProfile,
+                                onHide = onHide,
                                 onDelete = onDelete
                             )
 
@@ -186,7 +190,9 @@ fun BossPartyChatContent(
 @Composable
 fun ChatBubble(
     chat: BossPartyChat,
+    isLeader: Boolean,
     showProfile: Boolean,
+    onHide: (Long) -> Unit,
     onDelete: (Long) -> Unit
 ) {
     when (chat.messageType) {
@@ -194,12 +200,16 @@ fun ChatBubble(
             SystemChatBubble(chat)
         }
         else -> {
-            if (chat.isDeleted) {
-                SystemChatBubble(chat)
-            } else {
-                UserChatBubble(
+            when {
+                chat.isHidden -> SystemChatBubble(chat.copy(content = "가려진 메시지입니다."))
+
+                chat.isDeleted -> SystemChatBubble(chat)
+
+                else -> UserChatBubble(
                     chat = chat,
+                    isLeader = isLeader,
                     showProfile = showProfile,
+                    onHide = onHide,
                     onDelete = onDelete
                 )
             }
@@ -233,7 +243,9 @@ fun SystemChatBubble(chat: BossPartyChat) {
 @Composable
 fun UserChatBubble(
     chat: BossPartyChat,
+    isLeader: Boolean,
     showProfile: Boolean,
+    onHide: (Long) -> Unit,
     onDelete: (Long) -> Unit
 ) {
     var isMenuExpanded by remember { mutableStateOf(false) }
@@ -304,9 +316,30 @@ fun UserChatBubble(
                     containerColor = MapleWhite,
                     onDismissRequest = { isMenuExpanded = false }
                 ) {
+                    if (isLeader) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = "가리기",
+                                    style = Typography.bodySmall
+                                )
+                            },
+                            onClick = {
+                                onHide(chat.id)
+                                isMenuExpanded = false
+                            }
+                        )
+                    }
                     if (chat.isMine) {
                         DropdownMenuItem(
-                            text = { Text("삭제하기", color = Color.Red) },
+                            text = {
+                                Text(
+                                    text = "삭제하기",
+                                    style = Typography.bodySmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Red
+                                )
+                            },
                             onClick = {
                                 onDelete(chat.id)
                                 isMenuExpanded = false
