@@ -17,12 +17,13 @@ import com.sixclassguys.maplecalendar.domain.usecase.GetBossPartyDetailUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetCharactersUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.HideBossPartyChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ObserveBossChatUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.ReportBossPartyChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.SendBossChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleBossPartyAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.UpdateBossPartyPeriodUseCase
 import com.sixclassguys.maplecalendar.util.Boss
 import com.sixclassguys.maplecalendar.util.BossDifficulty
-import com.sixclassguys.maplecalendar.util.BossPartyTab
+import com.sixclassguys.maplecalendar.util.ReportReason
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,7 +53,8 @@ class BossViewModel(
     private val sendBossChatUseCase: SendBossChatUseCase,
     private val hideBossPartyChatUseCase: HideBossPartyChatUseCase,
     private val deleteBossPartyChatUseCase: DeleteBossPartyChatUseCase,
-    private val disconnectBossPartyChatUseCase: DisconnectBossPartyChatUseCase
+    private val disconnectBossPartyChatUseCase: DisconnectBossPartyChatUseCase,
+    private val reportBossPartyChatUseCase: ReportBossPartyChatUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<BossUiState>(BossUiState())
@@ -328,6 +330,24 @@ class BossViewModel(
         }
     }
 
+    private fun reportChat(chatId: Long, reason: ReportReason, reasonDetail: String?) {
+        viewModelScope.launch {
+            reportBossPartyChatUseCase(chatId, reason, reasonDetail).collect { state ->
+                when (state) {
+                    is ApiState.Success -> {
+                        onIntent(BossIntent.ReportBossPartyChatMessageSuccess)
+                    }
+
+                    is ApiState.Error -> {
+                        onIntent(BossIntent.ReportBossPartyChatMessageFailed(state.message))
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
     private fun getSavedCharacters(allWorldNames: List<String>) {
         viewModelScope.launch {
             getCharactersUseCase(allWorldNames).collect { state ->
@@ -416,6 +436,10 @@ class BossViewModel(
 
             is BossIntent.DisconnectBossPartyChat -> {
                 disconnectToChat()
+            }
+
+            is BossIntent.ReportBossPartyChatMessage -> {
+                reportChat(intent.chatId, intent.reason, intent.reasonDetail)
             }
 
             else -> {}

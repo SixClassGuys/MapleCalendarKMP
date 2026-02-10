@@ -9,6 +9,7 @@ import com.sixclassguys.maplecalendar.domain.model.CharacterSummary
 import com.sixclassguys.maplecalendar.util.Boss
 import com.sixclassguys.maplecalendar.util.BossDifficulty
 import com.sixclassguys.maplecalendar.util.BossPartyTab
+import com.sixclassguys.maplecalendar.util.ReportReason
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -68,7 +69,8 @@ sealed class BossIntent {
 
     data object CreateBossPartyAlarm : BossIntent()
 
-    data class CreateBossPartyAlarmSuccess(val bossPartyAlarmTimes: List<BossPartyAlarmTime>) : BossIntent()
+    data class CreateBossPartyAlarmSuccess(val bossPartyAlarmTimes: List<BossPartyAlarmTime>) :
+        BossIntent()
 
     data class CreateBossPartyAlarmFailed(val message: String) : BossIntent()
 
@@ -78,13 +80,15 @@ sealed class BossIntent {
 
     data object UpdateBossPartyAlarmPeriod : BossIntent()
 
-    data class UpdateBossPartyAlarmPeriodSuccess(val bossPartyAlarmTimes: List<BossPartyAlarmTime>) : BossIntent()
+    data class UpdateBossPartyAlarmPeriodSuccess(val bossPartyAlarmTimes: List<BossPartyAlarmTime>) :
+        BossIntent()
 
     data class UpdateBossPartyAlarmPeriodFailed(val message: String) : BossIntent()
 
     data class DeleteBossPartyAlarm(val alarmId: Long) : BossIntent()
 
-    data class DeleteBossPartyAlarmSuccess(val bossPartyAlarmTimes: List<BossPartyAlarmTime>) : BossIntent()
+    data class DeleteBossPartyAlarmSuccess(val bossPartyAlarmTimes: List<BossPartyAlarmTime>) :
+        BossIntent()
 
     data class DeleteBossPartyAlarmFailed(val message: String) : BossIntent()
 
@@ -104,9 +108,24 @@ sealed class BossIntent {
 
     data class SendBossPartyChatMessageFailed(val message: String) : BossIntent()
 
+    data class ShowBossPartyChatReportDialog(val chat: BossPartyChat) : BossIntent()
+
+    data object DismissBossPartyChatReportDialog : BossIntent()
+
+    data class ReportBossPartyChatMessage(
+        val chatId: Long,
+        val reason: ReportReason,
+        val reasonDetail: String?
+    ) : BossIntent()
+
+    data object ReportBossPartyChatMessageSuccess : BossIntent()
+
+    data class ReportBossPartyChatMessageFailed(val message: String) : BossIntent()
+
     data object FetchBossPartyChatHistory : BossIntent()
 
-    data class FetchBossPartyChatHistorySuccess(val bossPartyChatHistory: BossPartyChatHistory) : BossIntent()
+    data class FetchBossPartyChatHistorySuccess(val bossPartyChatHistory: BossPartyChatHistory) :
+        BossIntent()
 
     data class FetchBossPartyChatHistoryFailed(val message: String) : BossIntent()
 
@@ -124,5 +143,6 @@ sealed class BossIntent {
 
     data object DisconnectBossPartyChat : BossIntent()
 
-    data class SelectBossPartyDetailMenu(val selectedBossPartyDetailMenu: BossPartyTab) : BossIntent()
+    data class SelectBossPartyDetailMenu(val selectedBossPartyDetailMenu: BossPartyTab) :
+        BossIntent()
 }

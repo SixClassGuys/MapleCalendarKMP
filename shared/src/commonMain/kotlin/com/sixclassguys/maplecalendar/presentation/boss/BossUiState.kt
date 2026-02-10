@@ -40,6 +40,8 @@ data class BossUiState(
     val bossPartyChatPage: Int = 0,
     val isBossPartyChatLastPage: Boolean = false,
     val bossPartyChatMessage: String = "",
+    val showBossPartyChatReport: Boolean = false,
+    val selectBossPartyChatToReport: BossPartyChat? = null,
     val bossPartyAlbums: List<BossPartyAlbum> = emptyList(),
     val errorMessage: String? = null
 )

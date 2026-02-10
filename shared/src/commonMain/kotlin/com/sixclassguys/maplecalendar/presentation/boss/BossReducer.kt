@@ -387,6 +387,40 @@ class BossReducer {
             )
         }
 
+        is BossIntent.ShowBossPartyChatReportDialog -> {
+            currentState.copy(
+                showBossPartyChatReport = true,
+                selectBossPartyChatToReport = intent.chat
+            )
+        }
+
+        is BossIntent.DismissBossPartyChatReportDialog -> {
+            currentState.copy(
+                showBossPartyChatReport = false,
+                selectBossPartyChatToReport = null
+            )
+        }
+
+        is BossIntent.ReportBossPartyChatMessage -> {
+            currentState.copy(
+                isLoading = true
+            )
+        }
+
+        is BossIntent.ReportBossPartyChatMessageSuccess -> {
+            currentState.copy(
+                isLoading = false,
+                showBossPartyChatReport = false
+            )
+        }
+
+        is BossIntent.ReportBossPartyChatMessageFailed -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = intent.message
+            )
+        }
+
         is BossIntent.FetchBossPartyChatHistory -> {
             currentState.copy(
                 isLoading = true
