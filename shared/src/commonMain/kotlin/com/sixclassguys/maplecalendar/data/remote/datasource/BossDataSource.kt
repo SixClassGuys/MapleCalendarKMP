@@ -9,6 +9,7 @@ import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyCreateRequest
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyCreateResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyDetailResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyResponse
+import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyScheduleResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.SliceResponse
 import io.ktor.websocket.Frame
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +24,13 @@ interface BossDataSource {
     ): BossPartyCreateResponse
 
     suspend fun getBossPartyDetail(accessToken: String, bossPartyId: Long): BossPartyDetailResponse
+
+    suspend fun getBossPartySchedules(
+        accessToken: String,
+        year: Int,
+        month: Int,
+        day: Int
+    ): List<BossPartyScheduleResponse>
 
     suspend fun getBossPartyAlarmTimes(
         accessToken: String,

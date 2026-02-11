@@ -6,6 +6,7 @@ import com.sixclassguys.maplecalendar.domain.model.BossPartyAlarmTime
 import com.sixclassguys.maplecalendar.domain.model.BossPartyChat
 import com.sixclassguys.maplecalendar.domain.model.BossPartyChatHistory
 import com.sixclassguys.maplecalendar.domain.model.BossPartyDetail
+import com.sixclassguys.maplecalendar.domain.model.BossPartySchedule
 import com.sixclassguys.maplecalendar.util.Boss
 import com.sixclassguys.maplecalendar.util.BossDifficulty
 import kotlinx.coroutines.flow.Flow
@@ -25,6 +26,12 @@ interface BossRepository {
     ): Flow<ApiState<Long>>
 
     suspend fun getBossPartyDetail(bossPartyId: Long): Flow<ApiState<BossPartyDetail>>
+
+    suspend fun getBossPartySchedules(
+        year: Int,
+        month: Int,
+        day: Int
+    ): Flow<ApiState<List<BossPartySchedule>>>
 
     suspend fun getBossPartyAlarmTimes(bossPartyId: Long): Flow<ApiState<List<BossPartyAlarmTime>>>
 
