@@ -82,6 +82,11 @@ fun NavHost(
                     },
                     onNavigateToCharacterList = {
                         navController.navigate("character_flow")
+                    },
+                    onNavigateToBossDetail = { bossPartyId ->
+                        // BossViewModel에 해당 파티 정보를 불러오라고 시킨 뒤 이동
+                        bossViewModel.onIntent(BossIntent.FetchBossPartyDetail(bossPartyId))
+                        navController.navigate(Navigation.BossPartyDetail.destination)
                     }
                 )
             }
@@ -100,6 +105,11 @@ fun NavHost(
                     viewModel = calendarViewModel,
                     onNavigateToEventDetail = {
                         navController.navigate(Navigation.EventDetail.destination)
+                    },
+                    onNavigateToBossDetail = { bossPartyId ->
+                        // BossViewModel에 해당 파티 정보를 불러오라고 시킨 뒤 이동
+                        bossViewModel.onIntent(BossIntent.FetchBossPartyDetail(bossPartyId))
+                        navController.navigate(Navigation.BossPartyDetail.destination)
                     }
                 )
             }
