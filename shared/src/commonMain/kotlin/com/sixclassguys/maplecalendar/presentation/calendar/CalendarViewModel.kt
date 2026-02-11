@@ -83,8 +83,7 @@ class CalendarViewModel(
 
     private fun fetchEventsByDay(year: Int, month: Int, day: Int, key: String) {
         viewModelScope.launch {
-            val nexonApiKey = _uiState.value.nexonApiKey ?: ""
-            getTodayEventsUseCase(year, month, day, nexonApiKey).collect { apiState ->
+            getTodayEventsUseCase(year, month, day).collect { apiState ->
                 onIntent(CalendarIntent.SaveEventsByDay(key, apiState))
             }
         }
@@ -100,8 +99,7 @@ class CalendarViewModel(
 
     private fun fetchEvent(eventId: Long) {
         viewModelScope.launch {
-            val apiKey = _uiState.value.nexonApiKey ?: ""
-            getEventDetailUseCase(apiKey, eventId).collect { state ->
+            getEventDetailUseCase(eventId).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
                         onIntent(CalendarIntent.SelectEventSuccess(state.data))
@@ -119,9 +117,8 @@ class CalendarViewModel(
 
     private fun toggleEventAlarm() {
         viewModelScope.launch {
-            val apiKey = _uiState.value.nexonApiKey ?: ""
             val eventId = _uiState.value.selectedEvent?.id ?: 0L
-            toggleEventAlarmUseCase(apiKey, eventId).collect { state ->
+            toggleEventAlarmUseCase(eventId).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
                         onIntent(CalendarIntent.ToggleNotificationSuccess(state.data))
@@ -139,11 +136,10 @@ class CalendarViewModel(
 
     private fun submitEventAlarm(dates: List<LocalDateTime>) {
         viewModelScope.launch {
-            val apiKey = _uiState.value.nexonApiKey ?: ""
             val eventId = _uiState.value.selectedEvent?.id ?: 0L
             val isEnabled = _uiState.value.isNotificationEnabled
             val alarmTimes = dates.map { it.toString() }
-            submitEventAlarmUseCase(apiKey, eventId, isEnabled, alarmTimes).collect { state ->
+            submitEventAlarmUseCase(eventId, isEnabled, alarmTimes).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
                         onIntent(CalendarIntent.SubmitNotificationTimesSuccess(state.data))

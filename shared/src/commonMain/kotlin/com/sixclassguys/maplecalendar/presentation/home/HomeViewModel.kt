@@ -197,8 +197,7 @@ class HomeViewModel(
             getTodayEventsUseCase(
                 today.year,
                 today.monthNumber,
-                today.dayOfMonth,
-                _uiState.value.nexonApiKey ?: ""
+                today.dayOfMonth
             ).collect { state ->
                 when (state) {
                     is ApiState.Success -> {

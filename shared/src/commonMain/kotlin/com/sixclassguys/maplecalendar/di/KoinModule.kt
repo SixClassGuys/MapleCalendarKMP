@@ -96,8 +96,8 @@ val repositoryModule = module {
     single<MapleCharacterRepository> { MapleCharacterRepositoryImpl(get(), get()) }
     // NotificationRepository 인터페이스 요청 시 FirebaseNotificationRepository 인스턴스를 싱글톤으로 주입
     single<NotificationRepository> { FirebaseNotificationRepository(get(), get()) }
-    single<EventRepository> { EventRepositoryImpl(get()) }
-    single<AlarmRepository> { AlarmRepositoryImpl(get()) }
+    single<EventRepository> { EventRepositoryImpl(get(), get()) }
+    single<AlarmRepository> { AlarmRepositoryImpl(get(), get()) }
     single<BossRepository> { BossRepositoryImpl(get(), get()) }
     single<ReportRepository> { ReportRepositoryImpl(get(), get()) }
 }
