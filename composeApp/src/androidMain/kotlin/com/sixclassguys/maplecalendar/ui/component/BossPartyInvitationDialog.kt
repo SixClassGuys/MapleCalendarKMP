@@ -1,5 +1,6 @@
 package com.sixclassguys.maplecalendar.ui.component
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,17 +28,23 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.domain.model.BossParty
+import com.sixclassguys.maplecalendar.domain.repository.NotificationEventBus
+import com.sixclassguys.maplecalendar.presentation.boss.BossIntent
+import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleOrange
@@ -50,14 +57,38 @@ import com.sixclassguys.maplecalendar.utils.badgeBackground
 import com.sixclassguys.maplecalendar.utils.badgeOutline
 import com.sixclassguys.maplecalendar.utils.badgeText
 import com.sixclassguys.maplecalendar.utils.entryBackgroundRes
+import org.koin.compose.getKoin
 
 @Composable
 fun BossPartyInvitationDialog(
-    invitations: List<BossParty>,
+    viewModel: BossViewModel,
     onAccept: (Long) -> Unit,
     onReject: (Long) -> Unit,
     onDismiss: () -> Unit
 ) {
+    val context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val eventBus = getKoin().get<NotificationEventBus>()
+
+    LaunchedEffect(Unit) {
+        eventBus.invitedPartyId.collect { acceptedId ->
+            if (acceptedId != null) {
+                viewModel.onIntent(BossIntent.FetchBossParties)
+                eventBus.emitInvitedPartyId(null)
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        eventBus.kickedPartyId.collect { kickedId ->
+            if (kickedId != null) {
+                viewModel.onIntent(BossIntent.FetchBossParties)
+                Toast.makeText(context, "파티에서 추방되었어요.", Toast.LENGTH_SHORT).show()
+                eventBus.emitKickedPartyId(null)
+            }
+        }
+    }
+
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             modifier = Modifier.fillMaxWidth()
@@ -82,9 +113,9 @@ fun BossPartyInvitationDialog(
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
-                    color = Color.White
+                    color = MapleWhite
                 ) {
-                    if (invitations.isEmpty()) {
+                    if (uiState.bossPartiesInvited.isEmpty()) {
                         EmptyEventScreen("초대받은 보스 파티가 없어요.")
                     } else {
                         // 초대 목록 (최대 높이를 제한하여 리스트가 길어질 경우 스크롤 가능하게 처리)
@@ -92,7 +123,7 @@ fun BossPartyInvitationDialog(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.heightIn(max = 500.dp)
                         ) {
-                            items(invitations) { invitation ->
+                            items(uiState.bossPartiesInvited) { invitation ->
                                 InvitationCard(
                                     invitation = invitation,
                                     onAccept = { onAccept(invitation.id) },

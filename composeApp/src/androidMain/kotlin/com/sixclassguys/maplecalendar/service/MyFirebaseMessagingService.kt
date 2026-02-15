@@ -58,13 +58,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                     // 보스 파티 전용 알림 표시
                     eventBus.emitBossPartyId(contentId)
                     showBossNotification(title, body, contentId)
+
+                    val acceptIntent = message.data["acceptIntent"]
+                    if (acceptIntent == "GO_TO_BOSS_PARTY") {
+                        eventBus.emitAcceptedPartyId(contentId)
+                    }
                 }
 
                 "BOSSCHAT" -> {
                     showBossChatNotification(title, body, contentId)
                 }
 
-                "BOSS_INVITATION" -> {
+                "BOSS_INVITATION", "INVITATION_DECLINED" -> {
+                    eventBus.emitInvitedPartyId(contentId)
                     showBossNotification(title, body, contentId, type)
                 }
 
@@ -72,8 +78,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                     eventBus.emitBossPartyId(contentId)
                 }
 
-                "YOU_ARE_KICKED" -> {
-                    // TODO: 추방 대상자는 즉시 onBack() 호출 및 보스 파티 리스트 갱신
+                "YOU_ARE_KICKED", "YOU_ARE_LEAVED" -> {
                     eventBus.emitKickedPartyId(contentId)
                     showBossNotification(title, body, 0L, type)
                 }
@@ -172,6 +177,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
             .setContentIntent(pendingIntent)
 
         notificationManager.notify(partyId.toInt(), builder.build())
+
+        Napier.d("채팅: ${title}: $body")
     }
 
     private fun showEventNotification(title: String?, body: String?, eventId: Long) {

@@ -56,10 +56,29 @@ fun BossPartyListScreen(
     val eventBus = getKoin().get<NotificationEventBus>()
 
     LaunchedEffect(Unit) {
+        eventBus.invitedPartyId.collect { invitedId ->
+            if (invitedId != null) {
+                viewModel.onIntent(BossIntent.FetchBossParties)
+                eventBus.emitInvitedPartyId(null)
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        eventBus.acceptedPartyId.collect { acceptedId ->
+            if (acceptedId != null) {
+                onPartyClick(acceptedId)
+                Toast.makeText(context, "파티에 초대되었어요.", Toast.LENGTH_SHORT).show()
+                eventBus.emitAcceptedPartyId(null)
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
         eventBus.kickedPartyId.collect { kickedId ->
             if (kickedId != null) {
                 viewModel.onIntent(BossIntent.FetchBossParties)
-                Toast.makeText(context, "파티에서 추방되었어요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "파티를 떠났어요.", Toast.LENGTH_SHORT).show()
                 eventBus.emitKickedPartyId(null)
             }
         }
@@ -168,7 +187,7 @@ fun BossPartyListScreen(
     
     if (uiState.showBossInvitationDialog) {
         BossPartyInvitationDialog(
-            invitations = uiState.bossPartiesInvited,
+            viewModel = viewModel,
             onAccept = { bossPartyId ->
                 viewModel.onIntent(BossIntent.AcceptBossPartyInvitation(bossPartyId))
             },

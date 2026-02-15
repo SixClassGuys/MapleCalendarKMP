@@ -85,8 +85,10 @@ class BossViewModel(
     init {
         viewModelScope.launch {
             eventBus.bossPartyId.collect { bossPartyId ->
-                // 💡 알림이 오면 즉시 데이터 갱신
-                onIntent(BossIntent.FetchBossPartyDetail(bossPartyId))
+                // 알림이 오면 즉시 데이터 갱신
+                if (_uiState.value.selectedBossParty?.id == bossPartyId) {
+                    onIntent(BossIntent.RefreshBossPartyDetail(bossPartyId))
+                }
             }
         }
     }
@@ -174,7 +176,7 @@ class BossViewModel(
             declineBossPartyInvitationUseCase(bossPartyId).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(BossIntent.DeclineBossPartyInvitationSuccess)
+                        onIntent(BossIntent.DeclineBossPartyInvitationSuccess(state.data))
                     }
 
                     is ApiState.Error -> {
@@ -197,6 +199,24 @@ class BossViewModel(
 
                     is ApiState.Error -> {
                         onIntent(BossIntent.FetchBossPartyDetailFailed(state.message))
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun refreshBossPartyDetail(bossPartyId: Long) {
+        viewModelScope.launch {
+            getBossPartyDetailUseCase(bossPartyId).collect { state ->
+                when (state) {
+                    is ApiState.Success -> {
+                        onIntent(BossIntent.RefreshBossPartyDetailSuccess(state.data))
+                    }
+
+                    is ApiState.Error -> {
+                        onIntent(BossIntent.RefreshBossPartyDetailFailed(state.message))
                     }
 
                     else -> {}
@@ -433,7 +453,8 @@ class BossViewModel(
                 when (state) {
                     is ApiState.Success -> {
                         // 2. 연결 성공 시, 메시지 관찰(구독) 시작
-                        Napier.d("연결 성공: ${bossPartyId}")
+                        Napier.d("연결 성공: $bossPartyId")
+                        onIntent(BossIntent.ConnectBossPartyChatSuccess)
                         observeRealTimeMessages()
                     }
 
@@ -679,6 +700,10 @@ class BossViewModel(
 
             is BossIntent.FetchBossPartyDetail -> {
                 getBossPartyDetail(intent.bossPartyId)
+            }
+
+            is BossIntent.RefreshBossPartyDetail -> {
+                refreshBossPartyDetail(intent.bossPartyId)
             }
             
             is BossIntent.CreateBossPartyAlarm -> {

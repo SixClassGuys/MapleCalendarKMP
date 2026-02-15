@@ -119,6 +119,7 @@ class BossReducer {
         is BossIntent.AcceptBossPartyInvitationSuccess -> {
             currentState.copy(
                 isLoading = false,
+                showBossInvitationDialog = false
             )
         }
 
@@ -138,6 +139,8 @@ class BossReducer {
         is BossIntent.DeclineBossPartyInvitationSuccess -> {
             currentState.copy(
                 isLoading = false,
+                bossParties = intent.bossParties.filter { it.joinStatus == JoinStatus.ACCEPTED },
+                bossPartiesInvited = intent.bossParties.filter { it.joinStatus == JoinStatus.INVITED },
             )
         }
 
@@ -313,6 +316,32 @@ class BossReducer {
                 isLoading = false,
                 errorMessage = intent.message,
                 createdPartyId = null
+            )
+        }
+
+        is BossIntent.RefreshBossPartyDetail -> {
+            currentState.copy(
+                isLoading = true
+            )
+        }
+
+        is BossIntent.RefreshBossPartyDetailSuccess -> {
+            currentState.copy(
+                isLoading = false,
+                selectedBossParty = intent.bossPartyDetail,
+                selectedBossPartyDetailMenu = BossPartyTab.ALARM,
+                isBossPartyDetailAlarmOn = intent.bossPartyDetail.isPartyAlarmEnabled,
+                bossPartyAlarmTimes = intent.bossPartyDetail.alarms,
+                selectedDayOfWeek = intent.bossPartyDetail.alarmDayOfWeek,
+                isBossPartyChatAlarmOn = intent.bossPartyDetail.isChatAlarmEnabled,
+                createdPartyId = null
+            )
+        }
+
+        is BossIntent.RefreshBossPartyDetailFailed -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = intent.message
             )
         }
 
@@ -543,6 +572,7 @@ class BossReducer {
         is BossIntent.InviteBossPartyMemberSuccess -> {
             currentState.copy(
                 isLoading = false,
+                showCharacterInvitationDialog = false,
                 createdPartyId = null
             )
         }
@@ -587,7 +617,8 @@ class BossReducer {
         is BossIntent.LeaveBossPartySuccess -> {
             currentState.copy(
                 isLoading = false,
-                bossParties = intent.newBossParties,
+                bossParties = intent.newBossParties.filter { it.joinStatus == JoinStatus.ACCEPTED },
+                bossPartiesInvited = intent.newBossParties.filter { it.joinStatus == JoinStatus.INVITED },
                 createdPartyId = null
             )
         }
@@ -652,8 +683,16 @@ class BossReducer {
             )
         }
 
+        is BossIntent.ConnectBossPartyChatSuccess -> {
+            currentState.copy(
+                isLoading = false,
+                createdPartyId = null
+            )
+        }
+
         is BossIntent.ReceiveRealTimeChat -> {
             val newMessage = intent.bossPartyChat
+            Napier.d("ReceiveRealTimeChat: ${newMessage}")
 
             // 💡 1. 기존 리스트에서 새 메시지 ID와 같은 녀석을 완전히 필터링
             val filteredList = currentState.bossPartyChats.filterNot { it.id == newMessage.id }
@@ -662,7 +701,6 @@ class BossReducer {
             val updatedList = (listOf(newMessage) + filteredList)
                 .distinctBy { it.id } // ID가 중복되면 뒤에 오는 데이터는 무시함
                 .sortedByDescending { it.id } // ID 내림차순 정렬 (최신이 위로)
-            Napier.d("BossReducer - ReceiveRealTimeChat: $updatedList")
 
             currentState.copy(
                 isLoading = false,

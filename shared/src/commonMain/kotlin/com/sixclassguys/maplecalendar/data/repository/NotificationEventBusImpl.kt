@@ -13,8 +13,14 @@ class NotificationEventBusImpl : NotificationEventBus {
     private val _bossPartyId = MutableSharedFlow<Long>(extraBufferCapacity = 1)
     override val bossPartyId = _bossPartyId.asSharedFlow()
 
+    private val _invitedPartyId = MutableSharedFlow<Long?>(extraBufferCapacity = 1)
+    override val invitedPartyId = _invitedPartyId.asSharedFlow()
+
     private val _kickedPartyId = MutableSharedFlow<Long?>(extraBufferCapacity = 1)
     override val kickedPartyId = _kickedPartyId.asSharedFlow()
+
+    private val _acceptedPartyId = MutableSharedFlow<Long?>(extraBufferCapacity = 1)
+    override val acceptedPartyId = _acceptedPartyId.asSharedFlow()
 
     override suspend fun emitEvent(eventId: Long) {
         _events.emit(eventId)
@@ -24,7 +30,15 @@ class NotificationEventBusImpl : NotificationEventBus {
         _bossPartyId.emit(bossPartyId)
     }
 
+    override suspend fun emitInvitedPartyId(partyId: Long?) {
+        _invitedPartyId.emit(partyId)
+    }
+
     override suspend fun emitKickedPartyId(partyId: Long?) {
         _kickedPartyId.emit(partyId)
+    }
+
+    override suspend fun emitAcceptedPartyId(bossPartyId: Long?) {
+        _acceptedPartyId.emit(bossPartyId)
     }
 }

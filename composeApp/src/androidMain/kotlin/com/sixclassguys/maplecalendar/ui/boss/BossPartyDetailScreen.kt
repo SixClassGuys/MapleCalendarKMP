@@ -154,10 +154,28 @@ fun BossPartyDetailScreen(
     val eventBus = getKoin().get<NotificationEventBus>()
 
     LaunchedEffect(Unit) {
+        eventBus.invitedPartyId.collect { invitedId ->
+            if (invitedId == uiState.selectedBossParty?.id && invitedId != null) {
+                viewModel.onIntent(BossIntent.FetchBossPartyDetail(invitedId))
+                eventBus.emitInvitedPartyId(null)
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        eventBus.invitedPartyId.collect { acceptedId ->
+            if (acceptedId == uiState.selectedBossParty?.id) {
+                viewModel.onIntent(BossIntent.FetchBossParties)
+                eventBus.emitInvitedPartyId(null)
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
         eventBus.kickedPartyId.collect { kickedId ->
             if (kickedId == uiState.selectedBossParty?.id) {
                 viewModel.onIntent(BossIntent.FetchBossParties)
-                Toast.makeText(context, "파티에서 추방되었어요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "파티를 떠났어요.", Toast.LENGTH_SHORT).show()
                 eventBus.emitKickedPartyId(null)
                 onBack()
             }
@@ -229,6 +247,7 @@ fun BossPartyDetailScreen(
                             BossPartyAlarmContent(
                                 alarms = uiState.bossPartyAlarmTimes,
                                 isAlarmOn = uiState.isBossPartyDetailAlarmOn,
+                                isLeader = uiState.selectedBossParty?.isLeader ?: false,
                                 snackbarHostState = snackbarHostState,
                                 onToggleAlarm = {
                                     viewModel.onIntent(BossIntent.ToggleBossPartyAlarm)
@@ -248,7 +267,20 @@ fun BossPartyDetailScreen(
                             BossPartyMemberContent(
                                 isLeader = uiState.selectedBossParty?.isLeader ?: false,
                                 members = uiState.selectedBossParty?.members ?: emptyList(),
-                                onAddMember = { viewModel.onIntent(BossIntent.ShowCharacterInviteDialog) },
+                                onAddMember = {
+                                    val nowMember = uiState.selectedBossParty?.members?.size ?: 0
+                                    val boss = uiState.selectedBossParty?.boss
+                                    val bossDifficulty = uiState.selectedBossParty?.difficulty
+                                    val difficultyIndex = boss?.difficulties?.indexOf(bossDifficulty) ?: 0
+                                    val maxMember = uiState.selectedBossParty?.boss?.memberCounts[difficultyIndex] ?: 0
+                                    if (uiState.selectedBossParty?.isLeader == false) {
+                                        Toast.makeText(context, "파티장만 초대가 가능해요.", Toast.LENGTH_SHORT).show()
+                                    } else if (nowMember >= maxMember) {
+                                        Toast.makeText(context, "입장 인원 수가 최대에요.", Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        viewModel.onIntent(BossIntent.ShowCharacterInviteDialog)
+                                    }
+                                },
                                 onTransferLeader = { characterId ->
                                     viewModel.onIntent(BossIntent.TransferBossPartyLeader(characterId))
                                 },
@@ -319,8 +351,7 @@ fun BossPartyDetailScreen(
                                 onDislike = { postId ->
                                     viewModel.onIntent(BossIntent.DislikeBossPartyBoardPost(postId))
                                 },
-                                modifier = Modifier
-                                    .fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth()
                                     .height(availableHeight)
                             )
                         }
@@ -391,7 +422,7 @@ fun BossPartyDetailScreen(
                 scrollPercentage = scrollPercentage,
                 onBack = onBack,
                 onShare = { /* 공유 로직 */ },
-                onDelete = { viewModel.onIntent(BossIntent.LeaveBossParty) }
+                onLeave = { viewModel.onIntent(BossIntent.LeaveBossParty) }
             )
         }
     }
@@ -421,7 +452,7 @@ fun BossPartyDetailScreen(
     if (uiState.showBossAlarmDialog) {
         BossPartyAlarmSettingDialog(
             viewModel = viewModel,
-            onDismiss = { viewModel.onIntent(BossIntent.DismissBossPartyCreateDialog) }
+            onDismiss = { viewModel.onIntent(BossIntent.DismissAlarmCreateDialog) }
         )
     }
 

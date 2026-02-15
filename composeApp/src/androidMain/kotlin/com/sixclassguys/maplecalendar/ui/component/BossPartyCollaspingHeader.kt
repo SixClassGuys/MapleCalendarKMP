@@ -55,7 +55,7 @@ fun BossPartyCollapsingHeader(
     scrollPercentage: Float, // 0.0 ~ 1.0
     onBack: () -> Unit,
     onShare: () -> Unit,
-    onDelete: () -> Unit
+    onLeave: () -> Unit
 ) {
     val bossParty = uiState.selectedBossParty ?: return
     val density = LocalDensity.current
@@ -174,7 +174,7 @@ fun BossPartyCollapsingHeader(
 
                     // 확장 시에만 제목 옆에 휴지통 배치
                     if (scrollPercentage < 0.2f) {
-                        IconButton(onClick = onDelete, modifier = Modifier.size(24.dp)) {
+                        IconButton(onClick = onLeave, modifier = Modifier.size(24.dp)) {
                             Icon(Icons.Default.Delete, null, tint = MapleBlack)
                         }
                     }

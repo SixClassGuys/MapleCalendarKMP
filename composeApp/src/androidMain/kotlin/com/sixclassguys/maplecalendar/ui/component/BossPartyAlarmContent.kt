@@ -46,8 +46,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.domain.model.BossPartyAlarmTime
-import com.sixclassguys.maplecalendar.presentation.home.HomeIntent
-import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
@@ -61,6 +59,7 @@ import kotlinx.coroutines.launch
 fun BossPartyAlarmContent(
     alarms: List<BossPartyAlarmTime>,
     isAlarmOn: Boolean,
+    isLeader: Boolean,
     snackbarHostState: SnackbarHostState,
     onToggleAlarm: () -> Unit,
     onAddAlarm: () -> Unit,
@@ -135,9 +134,11 @@ fun BossPartyAlarmContent(
                         checkedTrackColor = MapleOrange
                     )
                 )
-                Spacer(modifier = Modifier.width(12.dp))
-                IconButton(onClick = onAddAlarm) {
-                    Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
+                if (isLeader) {
+                    Spacer(modifier = Modifier.width(12.dp))
+                    IconButton(onClick = onAddAlarm) {
+                        Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
+                    }
                 }
             }
         }
@@ -161,6 +162,7 @@ fun BossPartyAlarmContent(
             } else {
                 items(alarms) { alarm ->
                     BossPartyDetailAlarmItem(
+                        isLeader = isLeader,
                         date = alarm.date,
                         time = alarm.time,
                         description = alarm.message,
@@ -176,6 +178,7 @@ fun BossPartyAlarmContent(
 // 알림 아이템 컴포넌트
 @Composable
 fun BossPartyDetailAlarmItem(
+    isLeader: Boolean,
     date: String,          // "2026년 1월 31일 토요일"
     time: String,          // "19:00"
     description: String,   // "5분 내로 안 오면 추방함"
@@ -237,12 +240,14 @@ fun BossPartyDetailAlarmItem(
                 )
             } else {
                 // 일반 예약 알람은 삭제 가능
-                IconButton(onClick = onDelete, modifier = Modifier.size(24.dp)) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "삭제",
-                        tint = Color.Black
-                    )
+                if (isLeader) {
+                    IconButton(onClick = onDelete, modifier = Modifier.size(24.dp)) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "삭제",
+                            tint = Color.Black
+                        )
+                    }
                 }
             }
         }

@@ -128,7 +128,7 @@ fun BossPartyBoardUploadDialog(
                                 shape = RoundedCornerShape(16.dp),
                                 colors = CardDefaults.cardColors(containerColor = MapleWhite)
                             ) {
-                                val firstImage = uiState.uploadImage.getOrNull(0) // 💡 인덱스 직접 참조 대신 getOrNull 사용
+                                val firstImage = uiState.uploadImage.getOrNull(0)
 
                                 if (firstImage != null) {
                                     AsyncImage(

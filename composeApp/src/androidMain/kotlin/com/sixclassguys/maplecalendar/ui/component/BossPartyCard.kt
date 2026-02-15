@@ -124,25 +124,6 @@ fun BossPartyCard(
                         color = MapleGray
                     )
                 }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 6.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.AccessTimeFilled,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                        tint = MapleOrange
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "2026년 1월 31일 토요일 19:00",
-                        fontFamily = PretendardFamily,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MapleBlack
-                    )
-                }
             }
         }
     }

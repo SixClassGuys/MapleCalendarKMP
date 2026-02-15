@@ -1,5 +1,6 @@
 package com.sixclassguys.maplecalendar.ui.boss
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,10 +37,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sixclassguys.maplecalendar.domain.repository.NotificationEventBus
 import com.sixclassguys.maplecalendar.presentation.boss.BossIntent
 import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
 import com.sixclassguys.maplecalendar.theme.MapleBlack
@@ -55,6 +58,7 @@ import com.sixclassguys.maplecalendar.util.Boss
 import com.sixclassguys.maplecalendar.util.BossDifficulty
 import com.sixclassguys.maplecalendar.utils.backgroundRes
 import com.sixclassguys.maplecalendar.utils.selectButtonRes
+import org.koin.compose.getKoin
 
 @Composable
 fun BossPartyCreateScreen(
@@ -62,7 +66,9 @@ fun BossPartyCreateScreen(
     onBack: () -> Unit,
     onNavigateToDetail: (Long) -> Unit
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val eventBus = getKoin().get<NotificationEventBus>()
 
     LaunchedEffect(Unit) {
         viewModel.onIntent(BossIntent.InitBossPartyCreate)
@@ -72,6 +78,25 @@ fun BossPartyCreateScreen(
         val newBossPartyId = uiState.createdPartyId
         if (newBossPartyId != null) {
             onNavigateToDetail(newBossPartyId)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        eventBus.invitedPartyId.collect { invitedId ->
+            if (invitedId != null) {
+                viewModel.onIntent(BossIntent.FetchBossParties)
+                eventBus.emitInvitedPartyId(null)
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        eventBus.kickedPartyId.collect { kickedId ->
+            if (kickedId != null) {
+                viewModel.onIntent(BossIntent.FetchBossParties)
+                Toast.makeText(context, "파티를 떠났어요.", Toast.LENGTH_SHORT).show()
+                eventBus.emitKickedPartyId(null)
+            }
         }
     }
 

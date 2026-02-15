@@ -35,7 +35,7 @@ sealed class BossIntent {
 
     data class DeclineBossPartyInvitation(val bossPartyId: Long) : BossIntent()
 
-    data object DeclineBossPartyInvitationSuccess : BossIntent()
+    data class DeclineBossPartyInvitationSuccess(val bossParties: List<BossParty>) : BossIntent()
 
     data class DeclineBossPartyInvitationFailed(val message: String) : BossIntent()
 
@@ -73,6 +73,12 @@ sealed class BossIntent {
     data class FetchBossPartyDetailSuccess(val bossPartyDetail: BossPartyDetail) : BossIntent()
 
     data class FetchBossPartyDetailFailed(val message: String) : BossIntent()
+
+    data class RefreshBossPartyDetail(val bossPartyId: Long) : BossIntent()
+
+    data class RefreshBossPartyDetailSuccess(val bossPartyDetail: BossPartyDetail) : BossIntent()
+
+    data class RefreshBossPartyDetailFailed(val message: String) : BossIntent()
 
     data object ShowAlarmCreateDialog : BossIntent()
 
@@ -158,6 +164,8 @@ sealed class BossIntent {
     data class ToggleBossPartyChatAlarmSuccess(val enabled: Boolean) : BossIntent()
 
     data class ToggleBossPartyChatAlarmFailed(val message: String) : BossIntent()
+
+    data object ConnectBossPartyChatSuccess : BossIntent()
 
     data class ReceiveRealTimeChat(val bossPartyChat: BossPartyChat) : BossIntent()
 
