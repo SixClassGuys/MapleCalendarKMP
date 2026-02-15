@@ -42,12 +42,43 @@ class EventRepositoryImpl(
         emit(errorState)
     }
 
-    override suspend fun getTodayEvents(year: Int, month: Int, day: Int): Flow<ApiState<List<MapleEvent>>> = flow {
+    override suspend fun getTodayEvents(
+        year: Int,
+        month: Int,
+        day: Int
+    ): Flow<ApiState<List<MapleEvent>>> = flow {
         emit(ApiState.Loading)
 
         try {
             val accessToken = dataStore.accessToken.first()
             val response = dataSource.fetchTodayEvents(year, month, day, accessToken)
+            val events = response.map { it.toDomain() }
+
+            if (events.isEmpty()) {
+                emit(ApiState.Error("이벤트 정보를 불러올 수 없어요."))
+            } else {
+                emit(ApiState.Success(events))
+            }
+        } catch (e: Exception) {
+            emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
+        }
+    }.catch { e ->
+        val errorState = when (e) {
+            is ApiException -> ApiState.Error(e.message)
+            else -> ApiState.Error("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+        }
+        emit(errorState)
+    }
+
+    override suspend fun getDailyEvents(
+        year: Int,
+        month: Int,
+        day: Int
+    ): Flow<ApiState<List<MapleEvent>>> = flow {
+        emit(ApiState.Loading)
+
+        try {
+            val response = dataSource.fetchDailyEvents(year, month, day)
             val events = response.map { it.toDomain() }
 
             if (events.isEmpty()) {

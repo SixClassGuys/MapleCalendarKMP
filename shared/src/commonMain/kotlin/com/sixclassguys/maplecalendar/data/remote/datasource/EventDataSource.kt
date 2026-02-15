@@ -13,5 +13,11 @@ interface EventDataSource {
         accessToken: String
     ): List<EventResponse>
 
+    suspend fun fetchDailyEvents(
+        year: Int,
+        month: Int,
+        day: Int
+    ): List<EventResponse>
+
     suspend fun fetchMonthlyEvents(year: Int, month: Int, accessToken: String): List<EventResponse>
 }

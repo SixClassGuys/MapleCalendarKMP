@@ -10,5 +10,7 @@ interface EventRepository {
 
     suspend fun getTodayEvents(year: Int, month: Int, day: Int): Flow<ApiState<List<MapleEvent>>>
 
+    suspend fun getDailyEvents(year: Int, month: Int, day: Int): Flow<ApiState<List<MapleEvent>>>
+
     suspend fun getEvents(year: Int, month: Int): List<MapleEvent>
 }

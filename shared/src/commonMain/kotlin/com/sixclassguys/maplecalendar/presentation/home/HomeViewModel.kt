@@ -7,10 +7,9 @@ import com.sixclassguys.maplecalendar.PermissionChecker
 import com.sixclassguys.maplecalendar.domain.model.ApiState
 import com.sixclassguys.maplecalendar.domain.model.Member
 import com.sixclassguys.maplecalendar.domain.usecase.AutoLoginUseCase
-import com.sixclassguys.maplecalendar.domain.usecase.GetApiKeyUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetDailyBossPartySchedulesUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.GetDailyEventsUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetFcmTokenUseCase
-import com.sixclassguys.maplecalendar.domain.usecase.GetTodayEventsUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ReissueJwtTokenUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleGlobalAlarmStatusUseCase
 import io.github.aakira.napier.Napier
@@ -28,12 +27,11 @@ class HomeViewModel(
     val savedStateHandle: SavedStateHandle,
     private val reducer: HomeReducer,
     private val permissionChecker: PermissionChecker,
-    private val getApiKeyUseCase: GetApiKeyUseCase,
     private val getFcmTokenUseCase: GetFcmTokenUseCase,
     private val autoLoginUseCase: AutoLoginUseCase,
     private val reissueJwtTokenUseCase: ReissueJwtTokenUseCase,
     private val toggleGlobalAlarmStatusUseCase: ToggleGlobalAlarmStatusUseCase,
-    private val getTodayEventsUseCase: GetTodayEventsUseCase,
+    private val getDailyEventsUseCase: GetDailyEventsUseCase,
     private val getDailyBossPartySchedulesUseCase: GetDailyBossPartySchedulesUseCase
 ) : ViewModel() {
 
@@ -97,28 +95,6 @@ class HomeViewModel(
         }
     }
 
-//    private fun getNexonOpenApiKey() {
-//        viewModelScope.launch {
-//            getApiKeyUseCase().collect { state ->
-//                when (state) {
-//                    is ApiState.Success -> {
-//                        if (state.data == "") {
-//                            onIntent(HomeIntent.LoadEmptyApiKey)
-//                        } else {
-//                            onIntent(HomeIntent.LoadCharacterBasic(state.data))
-//                        }
-//                    }
-//
-//                    is ApiState.Error -> {
-//                        onIntent(HomeIntent.LoadApiKeyFailed(state.message))
-//                    }
-//
-//                    else -> {}
-//                }
-//            }
-//        }
-//    }
-//
 //    private fun getCharacterBasic(apiKey: String) {
 //        viewModelScope.launch {
 //            val fcmToken = getFcmTokenUseCase() ?: ""
@@ -165,7 +141,7 @@ class HomeViewModel(
     private fun toggleGlobalAlarmStatus() {
         viewModelScope.launch {
             toggleGlobalAlarmStatusUseCase().collect { state ->
-                Napier.d("통신 상태 변경 감지: $state") // 💡 2. 상태 변화 관찰
+                Napier.d("통신 상태 변경 감지: $state")
                 when (state) {
                     is ApiState.Success -> {
                         Napier.d("알림 수신 여부 변경 성공")
@@ -189,7 +165,7 @@ class HomeViewModel(
             val seoulZone = TimeZone.of("Asia/Seoul")
             val currentLocalDateTime = now.toLocalDateTime(seoulZone)
             val today: LocalDate = currentLocalDateTime.date
-            getTodayEventsUseCase(
+            getDailyEventsUseCase(
                 today.year,
                 today.monthNumber,
                 today.dayOfMonth
@@ -260,16 +236,13 @@ class HomeViewModel(
                 getTodayEvents()
             }
 
+            is HomeIntent.LoginSuccess -> {
+                getTodayEvents()
+                getTodayBossSchedules()
+            }
+
             is HomeIntent.EmptyAccessToken -> {
                 getTodayEvents()
-            }
-
-            is HomeIntent.LoadApiKey -> {
-                // getNexonOpenApiKey()
-            }
-
-            is HomeIntent.LoadCharacterBasic -> {
-                // getCharacterBasic(intent.apiKey)
             }
 
             is HomeIntent.LoadEmptyApiKey -> {
