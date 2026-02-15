@@ -91,13 +91,19 @@ kotlin {
 android {
     namespace = "com.sixclassguys.maplecalendar"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
+    ndkVersion = "25.1.8937393"
 
     defaultConfig {
         applicationId = "com.sixclassguys.maplecalendar"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 5
-        versionName = "0.2.3"
+        versionCode = 9
+        versionName = "0.2.7"
+
+        ndk {
+            // 구글 플레이에서 요구하는 64비트 아키텍처를 포함합니다.
+            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64"))
+        }
     }
     packaging {
         resources {
@@ -106,7 +112,19 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            // 1. 난독화 및 최적화 활성화 (앱 용량 줄이기 위해 권장)
+            isMinifyEnabled = true
+
+            // 2. 기본 프로가드 설정 적용
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
+            // 3. 🚀 네이티브 코드 디버그 기호 포함 (두 번째 경고 해결)
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
         }
     }
     compileOptions {
