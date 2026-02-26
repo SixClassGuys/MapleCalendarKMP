@@ -262,4 +262,6 @@ sealed class BossIntent {
 
     data class SelectBossPartyDetailMenu(val selectedBossPartyDetailMenu: BossPartyTab) :
         BossIntent()
+
+    data object InitErrorMessage : BossIntent()
 }

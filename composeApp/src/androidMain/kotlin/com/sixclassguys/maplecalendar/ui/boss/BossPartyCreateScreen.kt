@@ -27,6 +27,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -63,6 +64,7 @@ import org.koin.compose.getKoin
 @Composable
 fun BossPartyCreateScreen(
     viewModel: BossViewModel,
+    snackbarHostState: SnackbarHostState,
     onBack: () -> Unit,
     onNavigateToDetail: (Long) -> Unit
 ) {
@@ -97,6 +99,14 @@ fun BossPartyCreateScreen(
                 Toast.makeText(context, "파티를 떠났어요.", Toast.LENGTH_SHORT).show()
                 eventBus.emitKickedPartyId(null)
             }
+        }
+    }
+
+    LaunchedEffect(uiState.errorMessage) {
+        val message = uiState.errorMessage
+        if (message != null) {
+            snackbarHostState.showSnackbar(message = message)
+            viewModel.onIntent(BossIntent.InitErrorMessage)
         }
     }
 

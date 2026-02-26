@@ -1,5 +1,7 @@
 package com.sixclassguys.maplecalendar.ui.component
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -35,6 +37,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,6 +61,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -87,6 +91,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.todayIn
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BossPartyAlarmSettingDialog(
     viewModel: BossViewModel,
@@ -140,110 +145,134 @@ fun BossPartyAlarmSettingDialog(
                     shape = RoundedCornerShape(20.dp),
                     color = Color.White
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        TabSwitcher(selectedTab = selectedTab, onTabSelected = { selectedTab = it })
-
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        if (selectedTab == 0) {
-                            // [선택 모드] 캘린더
-                            BossAlarmCalendar(
-                                currentMonthDate = currentMonthDate, // 다이얼로그 내부 state
-                                selectedDate = uiState.selectedAlarmDate,
-                                onDateClick = { date ->
-                                    viewModel.onIntent(BossIntent.UpdateAlarmTimeSelectMode(date))
-                                },
-                                onMonthChange = { offset ->
-                                    currentMonthDate = if (offset > 0) currentMonthDate.plusMonths(1)
-                                    else currentMonthDate.minusMonths(1)
-                                }
-                            )
-                        } else {
-                            // [주기 모드] 요일 선택 및 이번주부터 체크박스
-                            DayOfWeekSelector(
-                                selectedDay = uiState.selectedDayOfWeek,
-                                onDaySelected = {
-                                    viewModel.onIntent(BossIntent.UpdateAlarmTimePeriodMode(it))
-                                }
-                            )
+                    when {
+                        uiState.isLoading -> Box(
+                            modifier = Modifier.fillMaxWidth()
+                                .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                                .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                CircularProgressIndicator(
+                                    color = MapleOrange,
+                                    strokeWidth = 4.dp
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "알람을 예약하는 중이에요...",
+                                    color = MapleWhite,
+                                    style = Typography.bodyLarge
+                                )
+                            }
                         }
 
-                        Spacer(modifier = Modifier.height(20.dp))
+                        else -> {
+                            Column(
+                                modifier = Modifier.padding(16.dp),
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                TabSwitcher(selectedTab = selectedTab, onTabSelected = { selectedTab = it })
 
-                        // 공통 시간 입력 UI
-                        TimeInputSection(
-                            hour = uiState.selectedHour,
-                            onHourChange = { viewModel.onIntent(BossIntent.UpdateAlarmTimeHour(it)) },
-                            minute = uiState.selectedMinute,
-                            onMinuteChange = { viewModel.onIntent(BossIntent.UpdateAlarmTimeMinute(it)) },
-                            // FocusRequester 전달
-                            minuteFocusRequester = minuteFocusRequester,
-                            onHourNext = { minuteFocusRequester.requestFocus() },
-                            onMinuteNext = { messageFocusRequester.requestFocus() },
-                            isPeriodMode = (selectedTab == 1),
-                            isImmediate = uiState.isImmediatelyAlarm,
-                            onImmediateChange = { viewModel.onIntent(BossIntent.UpdateThisWeekPeriodMode(it)) }
-                        )
+                                Spacer(modifier = Modifier.height(20.dp))
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                                if (selectedTab == 0) {
+                                    // [선택 모드] 캘린더
+                                    BossAlarmCalendar(
+                                        currentMonthDate = currentMonthDate, // 다이얼로그 내부 state
+                                        selectedDate = uiState.selectedAlarmDate,
+                                        onDateClick = { date ->
+                                            viewModel.onIntent(BossIntent.UpdateAlarmTimeSelectMode(date))
+                                        },
+                                        onMonthChange = { offset ->
+                                            currentMonthDate = if (offset > 0) currentMonthDate.plusMonths(1)
+                                            else currentMonthDate.minusMonths(1)
+                                        }
+                                    )
+                                } else {
+                                    // [주기 모드] 요일 선택 및 이번주부터 체크박스
+                                    DayOfWeekSelector(
+                                        selectedDay = uiState.selectedDayOfWeek,
+                                        onDaySelected = {
+                                            viewModel.onIntent(BossIntent.UpdateAlarmTimePeriodMode(it))
+                                        }
+                                    )
+                                }
 
-                        Text("알람 메시지", style = Typography.bodyMedium, fontWeight = FontWeight.Bold)
-                        Spacer(modifier = Modifier.height(6.dp))
-                        OutlinedTextField(
-                            value = uiState.alarmMessage,
-                            onValueChange = { viewModel.onIntent(BossIntent.UpdateAlarmMessage(it)) },
-                            placeholder = { Text("알람 메시지 입력", color = Color.Gray) },
-                            modifier = Modifier.fillMaxWidth()
-                                .height(56.dp)
-                                .focusRequester(messageFocusRequester),
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done), // '완료' 버튼
-                            keyboardActions = KeyboardActions(
-                                onDone = {
-                                    softwareKeyboardController?.hide() // 키보드 닫기
-                                    if (isFormValid) {
+                                Spacer(modifier = Modifier.height(20.dp))
+
+                                // 공통 시간 입력 UI
+                                TimeInputSection(
+                                    hour = uiState.selectedHour,
+                                    onHourChange = { viewModel.onIntent(BossIntent.UpdateAlarmTimeHour(it)) },
+                                    minute = uiState.selectedMinute,
+                                    onMinuteChange = { viewModel.onIntent(BossIntent.UpdateAlarmTimeMinute(it)) },
+                                    // FocusRequester 전달
+                                    minuteFocusRequester = minuteFocusRequester,
+                                    onHourNext = { minuteFocusRequester.requestFocus() },
+                                    onMinuteNext = { messageFocusRequester.requestFocus() },
+                                    isPeriodMode = (selectedTab == 1),
+                                    isImmediate = uiState.isImmediatelyAlarm,
+                                    onImmediateChange = { viewModel.onIntent(BossIntent.UpdateThisWeekPeriodMode(it)) }
+                                )
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                Text("알람 메시지", style = Typography.bodyMedium, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.height(6.dp))
+                                OutlinedTextField(
+                                    value = uiState.alarmMessage,
+                                    onValueChange = { viewModel.onIntent(BossIntent.UpdateAlarmMessage(it)) },
+                                    placeholder = { Text("알람 메시지 입력", color = Color.Gray) },
+                                    modifier = Modifier.fillMaxWidth()
+                                        .height(56.dp)
+                                        .focusRequester(messageFocusRequester),
+                                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done), // '완료' 버튼
+                                    keyboardActions = KeyboardActions(
+                                        onDone = {
+                                            softwareKeyboardController?.hide() // 키보드 닫기
+                                            if (isFormValid) {
+                                                if (selectedTab == 0) {
+                                                    viewModel.onIntent(BossIntent.CreateBossPartyAlarm)
+                                                } else if (selectedTab == 1) {
+                                                    viewModel.onIntent(BossIntent.UpdateBossPartyAlarmPeriod)
+                                                }
+                                            }
+                                        }
+                                    ),
+                                    shape = RoundedCornerShape(12.dp),
+                                    // Material 3에서는 OutlinedTextFieldDefaults.colors()를 사용합니다.
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedContainerColor = Color(0xFFE0E0E0),
+                                        unfocusedContainerColor = Color(0xFFE0E0E0),
+                                        disabledContainerColor = Color(0xFFE0E0E0),
+                                        // 테두리 색상을 투명하게 만들어 디자인 가이드에 맞춤
+                                        focusedBorderColor = Color.Transparent,
+                                        unfocusedBorderColor = Color.Transparent,
+                                    )
+                                )
+
+                                Spacer(modifier = Modifier.height(20.dp))
+
+                                Button(
+                                    enabled = isFormValid,
+                                    onClick = {
                                         if (selectedTab == 0) {
                                             viewModel.onIntent(BossIntent.CreateBossPartyAlarm)
                                         } else if (selectedTab == 1) {
                                             viewModel.onIntent(BossIntent.UpdateBossPartyAlarmPeriod)
                                         }
-                                    }
+                                    },
+                                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = if (isFormValid) MapleOrange else MapleGray) // Maple Orange
+                                ) {
+                                    Text(
+                                        text = if (selectedTab == 0) "알람 예약" else "알람 주기 설정",
+                                        style = Typography.bodyMedium,
+                                        color = if (isFormValid) MapleWhite else MapleBlack
+                                    )
                                 }
-                            ),
-                            shape = RoundedCornerShape(12.dp),
-                            // Material 3에서는 OutlinedTextFieldDefaults.colors()를 사용합니다.
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = Color(0xFFE0E0E0),
-                                unfocusedContainerColor = Color(0xFFE0E0E0),
-                                disabledContainerColor = Color(0xFFE0E0E0),
-                                // 테두리 색상을 투명하게 만들어 디자인 가이드에 맞춤
-                                focusedBorderColor = Color.Transparent,
-                                unfocusedBorderColor = Color.Transparent,
-                            )
-                        )
-
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        Button(
-                            enabled = isFormValid,
-                            onClick = {
-                                if (selectedTab == 0) {
-                                    viewModel.onIntent(BossIntent.CreateBossPartyAlarm)
-                                } else if (selectedTab == 1) {
-                                    viewModel.onIntent(BossIntent.UpdateBossPartyAlarmPeriod)
-                                }
-                            },
-                            modifier = Modifier.fillMaxWidth().height(48.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = if (isFormValid) MapleOrange else MapleGray) // Maple Orange
-                        ) {
-                            Text(
-                                text = if (selectedTab == 0) "알람 예약" else "알람 주기 설정",
-                                style = Typography.bodyMedium,
-                                color = if (isFormValid) MapleWhite else MapleBlack
-                            )
+                            }
                         }
                     }
                 }
@@ -544,6 +573,7 @@ fun BossAlarmCalendar(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DayOfWeekSelector(

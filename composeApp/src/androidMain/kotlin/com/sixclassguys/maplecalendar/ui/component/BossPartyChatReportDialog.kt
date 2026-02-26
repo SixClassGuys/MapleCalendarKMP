@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -32,11 +33,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.domain.model.BossPartyChat
+import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleOrange
@@ -48,11 +52,14 @@ import com.sixclassguys.maplecalendar.util.ReportReason
 
 @Composable
 fun BossPartyChatReportDialog(
+    viewModel: BossViewModel,
     chat: BossPartyChat?, // 신고 대상 메시지 정보
     onDismiss: () -> Unit,
     onReportSubmit: (Long, ReportReason, String?) -> Unit
 ) {
     if (chat == null) return
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var expanded by remember { mutableStateOf(false) }
     var selectedReason by remember { mutableStateOf(ReportReason.ABUSE) }
@@ -83,129 +90,153 @@ fun BossPartyChatReportDialog(
                     shape = RoundedCornerShape(20.dp),
                     color = Color.White
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Surface(
-                            color = MapleWhite,
+                    when {
+                        uiState.isLoading -> Box(
                             modifier = Modifier.fillMaxWidth()
+                                .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                                .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
+                            contentAlignment = Alignment.Center
                         ) {
-                            Column {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    // 캐릭터 프로필 (이미지 URL이 있다면 AsyncImage 권장)
-                                    CharacterProfileImage(imageUrl = chat.senderImage, size = 40.dp)
-                                    Spacer(modifier = Modifier.width(12.dp))
-                                    Text(
-                                        text = chat.senderName, // 예: 오한별
-                                        style = Typography.bodyMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MapleBlack
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                                // 채팅 내용 스냅샷 영역
-                                Box(
-                                    modifier = Modifier.fillMaxWidth()
-                                        .background(MapleGray, RoundedCornerShape(9.dp))
-                                        .padding(12.dp)
-                                ) {
-                                    Text(
-                                        text = chat.content,
-                                        color = MapleBlack,
-                                        fontSize = 14.sp
-                                    )
-                                }
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                CircularProgressIndicator(
+                                    color = MapleOrange,
+                                    strokeWidth = 4.dp
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "유저를 신고하는 중이에요...",
+                                    color = MapleWhite,
+                                    style = Typography.bodyLarge
+                                )
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        // 신고 사유 선택 (Dropdown)
-                        Column(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text("신고 사유", color = MapleBlack, fontSize = 14.sp)
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Box(
-                                modifier = Modifier.fillMaxWidth()
-                                    .border(1.dp, MapleBlack, RoundedCornerShape(8.dp))
-                                    .background(MapleWhite, RoundedCornerShape(8.dp))
-                                    .clickable { expanded = true }
-                                    .padding(12.dp)
+                        else -> {
+                            Column(
+                                modifier = Modifier.padding(16.dp),
+                                horizontalAlignment = Alignment.Start
                             ) {
-                                Row(
-                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                Surface(
+                                    color = MapleWhite,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Text(selectedReason.description, color = MapleBlack)
-                                    Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MapleOrange)
-                                }
+                                    Column {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            // 캐릭터 프로필 (이미지 URL이 있다면 AsyncImage 권장)
+                                            CharacterProfileImage(imageUrl = chat.senderImage, size = 40.dp)
+                                            Spacer(modifier = Modifier.width(12.dp))
+                                            Text(
+                                                text = chat.senderName, // 예: 오한별
+                                                style = Typography.bodyMedium,
+                                                fontWeight = FontWeight.Bold,
+                                                color = MapleBlack
+                                            )
+                                        }
 
-                                DropdownMenu(
-                                    expanded = expanded,
-                                    containerColor = MapleWhite,
-                                    onDismissRequest = { expanded = false }
-                                )  {
-                                    ReportReason.entries.forEach { reason ->
-                                        DropdownMenuItem(
-                                            text = { Text(reason.description) },
-                                            onClick = {
-                                                selectedReason = reason
-                                                expanded = false
-                                            }
-                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+
+                                        // 채팅 내용 스냅샷 영역
+                                        Box(
+                                            modifier = Modifier.fillMaxWidth()
+                                                .background(MapleGray, RoundedCornerShape(9.dp))
+                                                .padding(12.dp)
+                                        ) {
+                                            Text(
+                                                text = chat.content,
+                                                color = MapleBlack,
+                                                fontSize = 14.sp
+                                            )
+                                        }
                                     }
                                 }
+
+                                Spacer(modifier = Modifier.height(20.dp))
+
+                                // 신고 사유 선택 (Dropdown)
+                                Column(
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text("신고 사유", color = MapleBlack, fontSize = 14.sp)
+                                    Spacer(modifier = Modifier.height(8.dp))
+
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth()
+                                            .border(1.dp, MapleBlack, RoundedCornerShape(8.dp))
+                                            .background(MapleWhite, RoundedCornerShape(8.dp))
+                                            .clickable { expanded = true }
+                                            .padding(12.dp)
+                                    ) {
+                                        Row(
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            Text(selectedReason.description, color = MapleBlack)
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MapleOrange)
+                                        }
+
+                                        DropdownMenu(
+                                            expanded = expanded,
+                                            containerColor = MapleWhite,
+                                            onDismissRequest = { expanded = false }
+                                        )  {
+                                            ReportReason.entries.forEach { reason ->
+                                                DropdownMenuItem(
+                                                    text = { Text(reason.description) },
+                                                    onClick = {
+                                                        selectedReason = reason
+                                                        expanded = false
+                                                    }
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.height(20.dp))
+
+                                // 신고 사유 작성 (TextField)
+                                Column(
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text("신고 사유 작성", color = MapleBlack, fontSize = 14.sp)
+                                    Spacer(modifier = Modifier.height(8.dp))
+
+                                    TextField(
+                                        value = detailText,
+                                        onValueChange = { detailText = it },
+                                        modifier = Modifier.fillMaxWidth()
+                                            .height(120.dp),
+                                        placeholder = { Text("상세 내용을 입력해주세요.", fontSize = 13.sp) },
+                                        colors = TextFieldDefaults.colors(
+                                            focusedContainerColor = MapleGray,
+                                            unfocusedContainerColor = MapleGray,
+                                            focusedIndicatorColor = Color.Transparent,
+                                            unfocusedIndicatorColor = Color.Transparent
+                                        ),
+                                        shape = RoundedCornerShape(12.dp)
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(24.dp))
+
+                                // 신고하기 버튼
+                                Button(
+                                    onClick = { onReportSubmit(chat.id, selectedReason, detailText) },
+                                    modifier = Modifier.fillMaxWidth()
+                                        .height(48.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
+                                    Text(
+                                        text = "신고하기",
+                                        color = MapleWhite,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 18.sp
+                                    )
+                                }
                             }
-                        }
-
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        // 신고 사유 작성 (TextField)
-                        Column(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text("신고 사유 작성", color = MapleBlack, fontSize = 14.sp)
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            TextField(
-                                value = detailText,
-                                onValueChange = { detailText = it },
-                                modifier = Modifier.fillMaxWidth()
-                                    .height(120.dp),
-                                placeholder = { Text("상세 내용을 입력해주세요.", fontSize = 13.sp) },
-                                colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = MapleGray,
-                                    unfocusedContainerColor = MapleGray,
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent
-                                ),
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(24.dp))
-
-                        // 신고하기 버튼
-                        Button(
-                            onClick = { onReportSubmit(chat.id, selectedReason, detailText) },
-                            modifier = Modifier.fillMaxWidth()
-                                .height(48.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Text(
-                                text = "신고하기",
-                                color = MapleWhite,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp
-                            )
                         }
                     }
                 }

@@ -197,6 +197,7 @@ fun NavHost(
             composable(Navigation.BossPartyList.destination) {
                 BossPartyListScreen(
                     viewModel = bossViewModel,
+                    snackbarHostState = snackbarHostState,
                     onBack = { navController.popBackStack() },
                     onPartyClick = { bossPartyId ->
                         bossViewModel.onIntent(BossIntent.FetchBossPartyDetail(bossPartyId))
@@ -210,6 +211,7 @@ fun NavHost(
             composable(Navigation.BossPartyCreate.destination) {
                 BossPartyCreateScreen(
                     viewModel = bossViewModel,
+                    snackbarHostState = snackbarHostState,
                     onBack = { navController.popBackStack() },
                     onNavigateToDetail = { bossPartyId ->
                         bossViewModel.onIntent(BossIntent.FetchBossPartyDetail(bossPartyId))
@@ -223,6 +225,7 @@ fun NavHost(
             composable(Navigation.BossPartyDetail.destination) {
                 BossPartyDetailScreen(
                     viewModel = bossViewModel,
+                    snackbarHostState = snackbarHostState,
                     onBack = {
                         bossViewModel.onIntent(BossIntent.DisconnectBossPartyChat)
                         navController.popBackStack()

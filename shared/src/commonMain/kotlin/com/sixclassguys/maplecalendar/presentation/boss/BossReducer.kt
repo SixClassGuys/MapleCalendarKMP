@@ -1048,5 +1048,12 @@ class BossReducer {
                 createdPartyId = null
             )
         }
+
+        is BossIntent.InitErrorMessage -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = null
+            )
+        }
     }
 }

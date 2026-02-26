@@ -84,6 +84,7 @@ import org.koin.compose.getKoin
 @Composable
 fun BossPartyDetailScreen(
     viewModel: BossViewModel,
+    snackbarHostState: SnackbarHostState,
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
@@ -179,6 +180,14 @@ fun BossPartyDetailScreen(
                 eventBus.emitKickedPartyId(null)
                 onBack()
             }
+        }
+    }
+
+    LaunchedEffect(uiState.errorMessage) {
+        val message = uiState.errorMessage
+        if (message != null) {
+            snackbarHostState.showSnackbar(message = message)
+            viewModel.onIntent(BossIntent.InitErrorMessage)
         }
     }
 
@@ -465,6 +474,7 @@ fun BossPartyDetailScreen(
 
     if (uiState.showBossPartyChatReport && uiState.selectBossPartyChatToReport != null) {
         BossPartyChatReportDialog(
+            viewModel = viewModel,
             chat = uiState.selectBossPartyChatToReport,
             onDismiss = { viewModel.onIntent(BossIntent.DismissBossPartyChatReportDialog) },
             onReportSubmit = { chatId, reason, reasonDetail ->

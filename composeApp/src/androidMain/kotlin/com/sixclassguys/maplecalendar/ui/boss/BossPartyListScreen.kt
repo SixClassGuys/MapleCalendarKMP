@@ -20,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,6 +48,7 @@ import org.koin.compose.getKoin
 @Composable
 fun BossPartyListScreen(
     viewModel: BossViewModel,
+    snackbarHostState: SnackbarHostState,
     onBack: () -> Unit,
     onPartyClick: (Long) -> Unit,
     onAddParty: () -> Unit
@@ -81,6 +83,14 @@ fun BossPartyListScreen(
                 Toast.makeText(context, "파티를 떠났어요.", Toast.LENGTH_SHORT).show()
                 eventBus.emitKickedPartyId(null)
             }
+        }
+    }
+
+    LaunchedEffect(uiState.errorMessage) {
+        val message = uiState.errorMessage
+        if (message != null) {
+            snackbarHostState.showSnackbar(message = message)
+            viewModel.onIntent(BossIntent.InitErrorMessage)
         }
     }
 
