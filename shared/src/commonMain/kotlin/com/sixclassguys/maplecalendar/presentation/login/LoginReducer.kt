@@ -160,5 +160,12 @@ class LoginReducer {
                 errorMessage = intent.message
             )
         }
+
+        is LoginIntent.InitErrorMessage -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = null
+            )
+        }
     }
 }

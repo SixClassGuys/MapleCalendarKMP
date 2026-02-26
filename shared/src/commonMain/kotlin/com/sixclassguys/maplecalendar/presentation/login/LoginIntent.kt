@@ -47,4 +47,6 @@ sealed class LoginIntent {
     data object SetOpenApiKey : LoginIntent()
 
     data class SetOpenApiKeyFailed(val message: String) : LoginIntent()
+
+    data object InitErrorMessage : LoginIntent()
 }
