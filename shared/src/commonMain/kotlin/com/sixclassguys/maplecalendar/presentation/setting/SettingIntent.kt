@@ -31,4 +31,6 @@ sealed class SettingIntent {
     data object LogoutSuccess : SettingIntent()
 
     data class LogoutFailed(val message: String) : SettingIntent()
+
+    data object InitErrorMessage : SettingIntent()
 }

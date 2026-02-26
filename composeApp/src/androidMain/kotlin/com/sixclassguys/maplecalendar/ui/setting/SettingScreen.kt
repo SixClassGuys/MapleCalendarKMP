@@ -95,6 +95,7 @@ fun SettingScreen(
         val message = uiState.errorMessage
         if (message != null) {
             snackbarHostState.showSnackbar(message = message)
+            viewModel.onIntent(SettingIntent.InitErrorMessage)
         }
     }
 
@@ -102,6 +103,7 @@ fun SettingScreen(
         val message = homeUiState.errorMessage
         if (message != null) {
             snackbarHostState.showSnackbar(message = message)
+            homeViewModel.onIntent(HomeIntent.InitErrorMessage)
         }
     }
 

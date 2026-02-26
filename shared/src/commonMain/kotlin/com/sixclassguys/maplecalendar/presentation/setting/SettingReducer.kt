@@ -104,5 +104,12 @@ class SettingReducer {
                 errorMessage = intent.message
             )
         }
+
+        is SettingIntent.InitErrorMessage -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = null
+            )
+        }
     }
 }
