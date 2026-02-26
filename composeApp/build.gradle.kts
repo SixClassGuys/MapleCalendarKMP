@@ -44,6 +44,9 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(compose.materialIconsExtended)
 
+            // Reorderable
+            implementation("sh.calvin.reorderable:reorderable:2.4.2")
+
             // ViewModel
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.androidx.lifecycle.runtime.compose)
@@ -78,6 +81,9 @@ kotlin {
 
             // Firebase Messaging
             implementation("dev.gitlive:firebase-messaging:2.4.0")
+
+            // ExoPlayer
+            implementation(libs.bundles.media3)
 
             // Napier
             implementation("io.github.aakira:napier:2.7.1")

@@ -84,6 +84,9 @@ kotlin {
 
             // Coil & GIF
             implementation(libs.coil.gif)
+
+            // ExoPlayer
+            implementation(libs.bundles.media3)
         }
 
         iosMain.dependencies {
