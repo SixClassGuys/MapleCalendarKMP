@@ -70,4 +70,6 @@ sealed class CalendarIntent {
         val key: String,
         val apiState: ApiState<List<MapleEvent>>
     ) : CalendarIntent()
+
+    data object InitErrorMessage : CalendarIntent()
 }

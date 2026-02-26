@@ -23,6 +23,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,7 +49,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.domain.model.MapleEvent
+import com.sixclassguys.maplecalendar.presentation.calendar.CalendarViewModel
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleOrange
@@ -70,10 +73,13 @@ import kotlinx.datetime.todayIn
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AlarmSettingDialog(
+    viewModel: CalendarViewModel,
     event: MapleEvent,
     onDismiss: () -> Unit,
     onSubmit: (List<LocalDateTime>) -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     var selectedTab by remember { mutableIntStateOf(0) } // 0: 선택, 1: 주기
     // 💡 상태 관리
     var selectedDates by remember { mutableStateOf(setOf<LocalDate>()) } // 다중 선택 날짜
@@ -200,145 +206,169 @@ fun AlarmSettingDialog(
                         shape = RoundedCornerShape(16.dp),
                         color = MapleWhite
                     ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null
-                                ) { clearFocusAll() }, // 🚀 화이트 카드 클릭 시에도 실행
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            // 💡 탭 메뉴 (선택 / 주기)
-                            Row(
-                                modifier = Modifier.width(144.dp) // 전체 너비 제한 (작게 설정)
-                                    .height(28.dp) // 높이도 조금 더 컴팩트하게 조절
-                                    .align(Alignment.Start) // 부모 Column 내에서 왼쪽으로 배치
-                                    .clip(RoundedCornerShape(20.dp)) // 전체를 캡슐 모양으로 깎음
-                                    .background(MapleGray) // 기본 배경색 (연한 회색)
+                        when {
+                            uiState.isLoading -> Box(
+                                modifier = Modifier.fillMaxWidth()
+                                    .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                                    .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
+                                contentAlignment = Alignment.Center
                             ) {
-                                // 1. 선택 탭
-                                Box(
-                                    modifier = Modifier.weight(1f)
-                                        .fillMaxHeight()
-                                        .background(if (selectedTab == 0) MapleOrange else Color.Transparent) // 선택 시 오렌지색
-                                        .clickable { selectedTab = 0 },
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "선택",
-                                        style = Typography.bodyLarge,
-                                        color = if (selectedTab == 0) MapleWhite else MapleBlack
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    CircularProgressIndicator(
+                                        color = MapleOrange,
+                                        strokeWidth = 4.dp
                                     )
-                                }
-
-                                // 2. 주기 탭
-                                Box(
-                                    modifier = Modifier.weight(1f)
-                                        .fillMaxHeight()
-                                        .background(if (selectedTab == 1) MapleOrange else Color.Transparent) // 선택 시 오렌지색
-                                        .clickable { selectedTab = 1 },
-                                    contentAlignment = Alignment.Center
-                                ) {
+                                    Spacer(modifier = Modifier.height(16.dp))
                                     Text(
-                                        text = "주기",
-                                        style = Typography.bodyLarge,
-                                        color = if (selectedTab == 1) MapleWhite else MapleBlack
+                                        text = "알람을 예약하는 중이에요...",
+                                        color = MapleWhite,
+                                        style = Typography.bodyLarge
                                     )
                                 }
                             }
 
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            // 💡 모드별 컨텐츠
-                            if (selectedTab == 0) {
-                                // 선택 모드: 실제 구현 시에는 Calendar 라이브러리나 DatePicker 배치
-                                CalendarPlaceholder(
-                                    startDate = if (event.startDate < today) today else event.startDate,
-                                    endDate = event.endDate,
-                                    currentMonthDate = currentMonthDate,
-                                    selectedDates = selectedDates,
-                                    onDateClick = { date ->
-                                        selectedDates = if (selectedDates.contains(date)) {
-                                            selectedDates - date
-                                        } else {
-                                            selectedDates + date
-                                        }
-                                    },
-                                    onMonthChange = { offset ->
-                                        // 월 변경 로직 (단순화된 예시)
-                                        currentMonthDate = if (offset > 0) {
-                                            currentMonthDate.plusMonths(1)
-                                        } else {
-                                            currentMonthDate.minusMonths(1)
-                                        }
-                                    }
-                                )
-                            } else {
-                                // 주기 모드: 드롭다운 메뉴
-                                PeriodSelector(
-                                    onPeriodSelected = { selectedInterval = it }
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            TimeInputRow(
-                                hour = hour, onHourChange = { hour = it },
-                                minute = minute, onMinuteChange = { minute = it },
-                                isAddEnabled = ((selectedTab == 0) && selectedDates.isNotEmpty()) || (selectedTab == 1), // 👈 날짜 선택 여부 체크
-                                onAddClick = {
-                                    if (selectedTab == 0) {
-                                        addAlarmAction()
-                                    } else {
-                                        applyPeriodAlarms()
-                                    }
-                                },
-                                focusRequester = minuteFocusRequester,
-                                onNext = { minuteFocusRequester.requestFocus() },
-                                onDone = { addAlarmAction() }
-                            )
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            // 💡 알림 시간 추가 리스트 (FlowRow로 태그 형태 구현)
-                            Text(
-                                text = "알림 시간 추가",
-                                style = Typography.bodyLarge,
-                                color = MapleWhite,
-                                modifier = Modifier.fillMaxWidth()
-                                    .padding(bottom = 8.dp)
-                            )
-                            Row(
-                                modifier = Modifier.fillMaxWidth()
-                                    .height(48.dp) // Chip 높이에 맞게 적절히 조절
-                                    .horizontalScroll(rememberScrollState()), // 수평 스크롤 활성화
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                addedAlarms.keys.forEach { alarm ->
-                                    AlarmChip(
-                                        alarm = alarm,
-                                        onRemove = {
-                                            val newMap = java.util.TreeMap<LocalDateTime, Boolean>(
-                                                addedAlarms
+                            else -> {
+                                Column(
+                                    modifier = Modifier.padding(16.dp)
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null
+                                        ) { clearFocusAll() }, // 🚀 화이트 카드 클릭 시에도 실행
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    // 💡 탭 메뉴 (선택 / 주기)
+                                    Row(
+                                        modifier = Modifier.width(144.dp) // 전체 너비 제한 (작게 설정)
+                                            .height(28.dp) // 높이도 조금 더 컴팩트하게 조절
+                                            .align(Alignment.Start) // 부모 Column 내에서 왼쪽으로 배치
+                                            .clip(RoundedCornerShape(20.dp)) // 전체를 캡슐 모양으로 깎음
+                                            .background(MapleGray) // 기본 배경색 (연한 회색)
+                                    ) {
+                                        // 1. 선택 탭
+                                        Box(
+                                            modifier = Modifier.weight(1f)
+                                                .fillMaxHeight()
+                                                .background(if (selectedTab == 0) MapleOrange else Color.Transparent) // 선택 시 오렌지색
+                                                .clickable { selectedTab = 0 },
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(
+                                                text = "선택",
+                                                style = Typography.bodyLarge,
+                                                color = if (selectedTab == 0) MapleWhite else MapleBlack
                                             )
-                                            newMap.remove(alarm)
-                                            addedAlarms = newMap
                                         }
+
+                                        // 2. 주기 탭
+                                        Box(
+                                            modifier = Modifier.weight(1f)
+                                                .fillMaxHeight()
+                                                .background(if (selectedTab == 1) MapleOrange else Color.Transparent) // 선택 시 오렌지색
+                                                .clickable { selectedTab = 1 },
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(
+                                                text = "주기",
+                                                style = Typography.bodyLarge,
+                                                color = if (selectedTab == 1) MapleWhite else MapleBlack
+                                            )
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    // 💡 모드별 컨텐츠
+                                    if (selectedTab == 0) {
+                                        // 선택 모드: 실제 구현 시에는 Calendar 라이브러리나 DatePicker 배치
+                                        CalendarPlaceholder(
+                                            startDate = if (event.startDate < today) today else event.startDate,
+                                            endDate = event.endDate,
+                                            currentMonthDate = currentMonthDate,
+                                            selectedDates = selectedDates,
+                                            onDateClick = { date ->
+                                                selectedDates = if (selectedDates.contains(date)) {
+                                                    selectedDates - date
+                                                } else {
+                                                    selectedDates + date
+                                                }
+                                            },
+                                            onMonthChange = { offset ->
+                                                // 월 변경 로직 (단순화된 예시)
+                                                currentMonthDate = if (offset > 0) {
+                                                    currentMonthDate.plusMonths(1)
+                                                } else {
+                                                    currentMonthDate.minusMonths(1)
+                                                }
+                                            }
+                                        )
+                                    } else {
+                                        // 주기 모드: 드롭다운 메뉴
+                                        PeriodSelector(
+                                            onPeriodSelected = { selectedInterval = it }
+                                        )
+                                    }
+
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    TimeInputRow(
+                                        hour = hour, onHourChange = { hour = it },
+                                        minute = minute, onMinuteChange = { minute = it },
+                                        isAddEnabled = ((selectedTab == 0) && selectedDates.isNotEmpty()) || (selectedTab == 1), // 👈 날짜 선택 여부 체크
+                                        onAddClick = {
+                                            if (selectedTab == 0) {
+                                                addAlarmAction()
+                                            } else {
+                                                applyPeriodAlarms()
+                                            }
+                                        },
+                                        focusRequester = minuteFocusRequester,
+                                        onNext = { minuteFocusRequester.requestFocus() },
+                                        onDone = { addAlarmAction() }
                                     )
+
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    // 💡 알림 시간 추가 리스트 (FlowRow로 태그 형태 구현)
+                                    Text(
+                                        text = "알림 시간 추가",
+                                        style = Typography.bodyLarge,
+                                        color = MapleWhite,
+                                        modifier = Modifier.fillMaxWidth()
+                                            .padding(bottom = 8.dp)
+                                    )
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth()
+                                            .height(48.dp) // Chip 높이에 맞게 적절히 조절
+                                            .horizontalScroll(rememberScrollState()), // 수평 스크롤 활성화
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        addedAlarms.keys.forEach { alarm ->
+                                            AlarmChip(
+                                                alarm = alarm,
+                                                onRemove = {
+                                                    val newMap = java.util.TreeMap<LocalDateTime, Boolean>(
+                                                        addedAlarms
+                                                    )
+                                                    newMap.remove(alarm)
+                                                    addedAlarms = newMap
+                                                }
+                                            )
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(24.dp))
+
+                                    // 💡 제출 버튼
+                                    Button(
+                                        onClick = { onSubmit(addedAlarms.keys.toList()) },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        colors = ButtonDefaults.buttonColors(containerColor = MapleOrange),
+                                        shape = RoundedCornerShape(8.dp)
+                                    ) {
+                                        Text("제출하기", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                                    }
                                 }
-                            }
-
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            // 💡 제출 버튼
-                            Button(
-                                onClick = { onSubmit(addedAlarms.keys.toList()) },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = ButtonDefaults.buttonColors(containerColor = MapleOrange),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text("제출하기", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                             }
                         }
                     }

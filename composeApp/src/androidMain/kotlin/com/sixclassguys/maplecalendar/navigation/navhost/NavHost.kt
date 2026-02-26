@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -43,7 +42,6 @@ import com.sixclassguys.maplecalendar.ui.playlist.MapleBgmPlayScreen
 import com.sixclassguys.maplecalendar.ui.playlist.PlaylistScreen
 import com.sixclassguys.maplecalendar.ui.setting.SettingScreen
 import com.sixclassguys.maplecalendar.ui.splash.SplashScreen
-import com.sixclassguys.maplecalendar.utils.RegionCategory
 import io.github.aakira.napier.Napier
 import kotlinx.serialization.json.Json
 import org.koin.compose.viewmodel.koinViewModel

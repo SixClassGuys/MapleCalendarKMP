@@ -261,6 +261,13 @@ class CalendarReducer {
                     errorMessage = intent.message
                 )
             }
+
+            is CalendarIntent.InitErrorMessage -> {
+                currentState.copy(
+                    isLoading = false,
+                    errorMessage = null
+                )
+            }
         }
     }
 }
