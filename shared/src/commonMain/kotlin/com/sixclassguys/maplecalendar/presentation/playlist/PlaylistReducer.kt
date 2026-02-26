@@ -372,5 +372,12 @@ class PlaylistReducer {
                 selectedTab = intent.selectedPlaylistMenu
             )
         }
+
+        is PlaylistIntent.InitErrorMessage -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = null
+            )
+        }
     }
 }

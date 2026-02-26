@@ -49,7 +49,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.domain.model.MapleBgm
 import com.sixclassguys.maplecalendar.domain.model.MapleBgmPlaylist
-import com.sixclassguys.maplecalendar.presentation.home.HomeViewModel
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
 import com.sixclassguys.maplecalendar.theme.MapleBlack
@@ -57,14 +56,12 @@ import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleWhite
 import com.sixclassguys.maplecalendar.ui.component.AddMyPlaylistDialog
-import com.sixclassguys.maplecalendar.util.MapleBgmLikeStatus
 import com.sixclassguys.maplecalendar.util.PlaylistTab
 import com.sixclassguys.maplecalendar.utils.RegionCategory
 
 @Composable
 fun PlaylistScreen(
     viewModel: PlaylistViewModel,
-    homeViewModel: HomeViewModel,
     snackbarHostState: SnackbarHostState,
     onNavigateToBgmPlay: () -> Unit
 ) {
@@ -114,6 +111,14 @@ fun PlaylistScreen(
         }
     }
 
+    LaunchedEffect(uiState.errorMessage) {
+        val message = uiState.errorMessage
+        if (message != null) {
+            snackbarHostState.showSnackbar(message = message)
+            viewModel.onIntent(PlaylistIntent.InitErrorMessage)
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.onIntent(PlaylistIntent.FetchMapleBgmPlaylists)
     }
@@ -155,9 +160,6 @@ fun PlaylistScreen(
                                 viewModel.onIntent(PlaylistIntent.PlayMapleBgm(bgm, listOf(bgm)))
                                 onNavigateToBgmPlay()
                             },
-                            onLike = { status ->
-                                viewModel.onIntent(PlaylistIntent.ToggleMapleBgmLikeStatus(status))
-                            },
                             onMoreClick = { /* 메뉴 팝업 */ }
                         )
                     }
@@ -173,9 +175,6 @@ fun PlaylistScreen(
                             onNavigateToBgmPlay = {
                                 viewModel.onIntent(PlaylistIntent.PlayMapleBgm(bgm, listOf(bgm)))
                                 onNavigateToBgmPlay()
-                            },
-                            onLike = { status ->
-                                viewModel.onIntent(PlaylistIntent.ToggleMapleBgmLikeStatus(status))
                             }
                         )
                     }
@@ -216,7 +215,6 @@ fun BgmItem(
     rank: Int? = null,
     bgm: MapleBgm,
     onNavigateToBgmPlay: (MapleBgm) -> Unit,
-    onLike: (MapleBgmLikeStatus) -> Unit,
     onMoreClick: () -> Unit = {}
 ) {
     Row(
@@ -238,13 +236,12 @@ fun BgmItem(
                     .background(badgeColor, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Text(it.toString(), color = Color.White, fontWeight = FontWeight.Bold)
+                Text(it.toString(), color = MapleWhite, fontWeight = FontWeight.Bold)
             }
             Spacer(Modifier.width(12.dp))
         }
 
         // 2. 지역 아이콘 (Thumbnail)
-        // region 값에 따라 ic_map_henesys 등을 매핑하는 헬퍼 함수 사용
         Image(
             painter = painterResource(RegionCategory.fromCode(bgm.region).iconRes),
             contentDescription = null,

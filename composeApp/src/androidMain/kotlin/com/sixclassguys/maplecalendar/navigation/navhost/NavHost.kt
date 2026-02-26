@@ -105,7 +105,6 @@ fun NavHost(
         composable(Navigation.Playlist.destination) {
             PlaylistScreen(
                 viewModel = playlistViewModel,
-                homeViewModel = homeViewModel,
                 snackbarHostState = snackbarHostState,
                 onNavigateToBgmPlay = {
                     navController.navigate(Navigation.MapleBgmPlay.destination)
@@ -116,6 +115,7 @@ fun NavHost(
         composable(Navigation.MapleBgmPlay.destination) {
             MapleBgmPlayScreen(
                 viewModel = playlistViewModel,
+                snackbarHostState = snackbarHostState,
                 onBack = {
                     navController.popBackStack()
                     playlistViewModel.onIntent(PlaylistIntent.MinimizePlayer)

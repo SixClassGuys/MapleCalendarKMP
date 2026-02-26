@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -33,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
@@ -44,6 +46,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
+import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
@@ -102,60 +105,95 @@ fun AddMyPlaylistDialog(
                 shape = RoundedCornerShape(16.dp),
                 color = MapleWhite
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    // 제목 입력
-                    PlaylistInputField(
-                        label = "제목",
-                        value = uiState.newPlaylistName,
-                        onValueChange = { viewModel.onIntent(PlaylistIntent.UpdateNewMapleBgmPlaylistName(it)) },
-                        placeholder = "플레이리스트 제목을 입력하세요"
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // 설명 입력
-                    PlaylistInputField(
-                        label = "설명",
-                        value = uiState.newPlaylistDescription,
-                        onValueChange = { viewModel.onIntent(PlaylistIntent.UpdateNewMapleBgmPlaylistDescription(it)) },
-                        placeholder = "플레이리스트 내용을 입력하세요"
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // 공개 범위 설정
-                    Text("공개 범위", fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                            .clickable { viewModel.onIntent(PlaylistIntent.UpdateNewMapleBgmPlaylistPublicStatus) }
-                            .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = if (uiState.isNewPlaylistPublic) Icons.Default.Public else Icons.Default.Lock,
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text(if (uiState.isNewPlaylistPublic) "공개" else "비공개", fontSize = 15.sp)
+                when {
+                    uiState.isLoading -> {
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                                .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                                .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                CircularProgressIndicator(
+                                    color = MapleOrange,
+                                    strokeWidth = 4.dp
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "플레이리스트를 추가하는 중이에요...",
+                                    color = MapleWhite,
+                                    style = Typography.bodyLarge
+                                )
+                            }
                         }
-                        Icon(Icons.Default.KeyboardArrowDown, contentDescription = null)
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    else -> {
 
-                    // 만들기 버튼
-                    Button(
-                        onClick = { viewModel.onIntent(PlaylistIntent.CreateMapleBgmPlaylist) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MapleOrange) // 주황색 버튼
-                    ) {
-                        Text("만들기", color = MapleWhite, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            // 제목 입력
+                            PlaylistInputField(
+                                label = "제목",
+                                value = uiState.newPlaylistName,
+                                onValueChange = { viewModel.onIntent(PlaylistIntent.UpdateNewMapleBgmPlaylistName(it)) },
+                                placeholder = "플레이리스트 제목을 입력하세요"
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // 설명 입력
+                            PlaylistInputField(
+                                label = "설명",
+                                value = uiState.newPlaylistDescription,
+                                onValueChange = { viewModel.onIntent(PlaylistIntent.UpdateNewMapleBgmPlaylistDescription(it)) },
+                                placeholder = "플레이리스트 내용을 입력하세요"
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // 공개 범위 설정
+                            Text("공개 범위", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                            Row(
+                                modifier = Modifier.fillMaxWidth()
+                                    .clickable { viewModel.onIntent(PlaylistIntent.UpdateNewMapleBgmPlaylistPublicStatus) }
+                                    .padding(vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = if (uiState.isNewPlaylistPublic) Icons.Default.Public else Icons.Default.Lock,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Spacer(Modifier.width(8.dp))
+                                    Text(if (uiState.isNewPlaylistPublic) "공개" else "비공개", fontSize = 15.sp)
+                                }
+                                Icon(Icons.Default.KeyboardArrowDown, contentDescription = null)
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // 만들기 버튼
+                            val isEnabled = uiState.newPlaylistName.isNotBlank() && uiState.newPlaylistDescription.isNotBlank()
+                            Button(
+                                enabled = isEnabled,
+                                onClick = {
+                                    if (isEnabled) {
+                                        viewModel.onIntent(PlaylistIntent.CreateMapleBgmPlaylist)
+                                    }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = MapleOrange) // 주황색 버튼
+                            ) {
+                                Text("만들기", color = if (isEnabled) MapleWhite else MapleBlack, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                            }
+                        }
                     }
                 }
             }

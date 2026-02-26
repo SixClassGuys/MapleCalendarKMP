@@ -110,4 +110,6 @@ sealed class PlaylistIntent {
     data class UpdateMapleBgmPlaylistFailure(val message: String) : PlaylistIntent()
 
     data class SelectPlaylistMenu(val selectedPlaylistMenu: PlaylistTab) : PlaylistIntent()
+
+    data object InitErrorMessage : PlaylistIntent()
 }

@@ -49,6 +49,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxState
@@ -89,6 +90,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 @Composable
 fun MapleBgmPlayScreen(
     viewModel: PlaylistViewModel,
+    snackbarHostState: SnackbarHostState,
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
@@ -98,6 +100,14 @@ fun MapleBgmPlayScreen(
     val duration by viewModel.duration.collectAsStateWithLifecycle(0L)
 
     var isPlaylistVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(uiState.errorMessage) {
+        val message = uiState.errorMessage
+        if (message != null) {
+            snackbarHostState.showSnackbar(message = message)
+            viewModel.onIntent(PlaylistIntent.InitErrorMessage)
+        }
+    }
 
     BackHandler(enabled = true) {
         if (isPlaylistVisible) {
@@ -112,8 +122,7 @@ fun MapleBgmPlayScreen(
         containerColor = MapleWhite
     ) { padding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
                 .padding(padding)
         ) {
             Column(
@@ -133,8 +142,7 @@ fun MapleBgmPlayScreen(
                     } else {
                         // [기존 확장된 화면] 기존에 작성했던 1~6번 전체 레이아웃
                         Column(
-                            modifier = Modifier
-                                .fillMaxSize()
+                            modifier = Modifier.fillMaxSize()
                                 .background(MapleWhite)
                                 .padding(
                                     start = 16.dp,
@@ -206,8 +214,7 @@ fun MapleBgmPlayScreen(
                                         imageVector = if (isLiked) Icons.Default.ThumbUp else Icons.Outlined.ThumbUp,
                                         contentDescription = null,
                                         tint = if (isLiked) MapleOrange else MapleGray,
-                                        modifier = Modifier
-                                            .size(20.dp)
+                                        modifier = Modifier.size(20.dp)
                                             .clickable {
                                                 viewModel.onIntent(
                                                     PlaylistIntent.ToggleMapleBgmLikeStatus(

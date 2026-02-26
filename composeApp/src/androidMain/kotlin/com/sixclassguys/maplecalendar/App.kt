@@ -199,6 +199,7 @@ fun App() {
             ) {
                 MapleBgmPlayScreen(
                     viewModel = playlistViewModel,
+                    snackbarHostState = snackbarHostState,
                     onBack = {
                         navController.popBackStack()
                         playlistViewModel.onIntent(PlaylistIntent.MinimizePlayer)
