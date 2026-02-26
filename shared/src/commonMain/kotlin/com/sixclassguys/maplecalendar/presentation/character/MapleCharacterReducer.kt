@@ -151,5 +151,12 @@ class MapleCharacterReducer {
                 errorMessage = intent.message
             )
         }
+
+        is MapleCharacterIntent.InitErrorMessage -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = null
+            )
+        }
     }
 }

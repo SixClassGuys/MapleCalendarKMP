@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,6 +63,7 @@ fun MapleCharacterFetchScreen(
     onNavigateToSubmit: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
     var showGuide by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
     val allWorlds = MapleWorld.entries.map { it.worldName }
@@ -72,6 +74,14 @@ fun MapleCharacterFetchScreen(
         if (uiState.newCharacterSummeries.isNotEmpty() && uiState.isFetchStarted) {
             onNavigateToSubmit()
             viewModel.onIntent(MapleCharacterIntent.LockIsFetchStarted)
+        }
+    }
+
+    LaunchedEffect(uiState.errorMessage) {
+        val message = uiState.errorMessage
+        if (message != null) {
+            snackbarHostState.showSnackbar(message = message)
+            viewModel.onIntent(MapleCharacterIntent.InitErrorMessage)
         }
     }
 

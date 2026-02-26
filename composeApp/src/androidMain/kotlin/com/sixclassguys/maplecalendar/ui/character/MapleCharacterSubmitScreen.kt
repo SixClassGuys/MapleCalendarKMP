@@ -20,6 +20,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -64,6 +65,7 @@ fun MapleCharacterSubmitScreen(
     onSubmitSuccess: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     // 1. 헤더 높이 및 스크롤 상태 관리
     val density = LocalDensity.current
@@ -91,6 +93,14 @@ fun MapleCharacterSubmitScreen(
             viewModel.onIntent(MapleCharacterIntent.InitNewCharacters)
             viewModel.onIntent(MapleCharacterIntent.InitApiKey)
             onSubmitSuccess()
+        }
+    }
+
+    LaunchedEffect(uiState.errorMessage) {
+        val message = uiState.errorMessage
+        if (message != null) {
+            snackbarHostState.showSnackbar(message = message)
+            viewModel.onIntent(MapleCharacterIntent.InitErrorMessage)
         }
     }
 

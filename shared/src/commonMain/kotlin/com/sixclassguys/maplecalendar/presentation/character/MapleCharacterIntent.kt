@@ -44,4 +44,6 @@ sealed class MapleCharacterIntent {
     data class SubmitNewCharactersSuccess(val newCharacterSummeries: Map<String, Map<String, List<CharacterSummary>>>) : MapleCharacterIntent()
 
     data class SubmitNewCharactersFailed(val message: String) : MapleCharacterIntent()
+
+    data object InitErrorMessage : MapleCharacterIntent()
 }
