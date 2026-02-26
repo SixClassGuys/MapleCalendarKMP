@@ -66,4 +66,6 @@ sealed class HomeIntent {
     data object Logout : HomeIntent()
 
     data object NavigationHandled : HomeIntent()
+
+    data object InitErrorMessage : HomeIntent()
 }

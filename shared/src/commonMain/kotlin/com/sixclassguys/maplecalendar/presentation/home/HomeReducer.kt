@@ -194,5 +194,12 @@ class HomeReducer {
         is HomeIntent.NavigationHandled -> {
             currentState.copy(isNavigateToLogin = false)
         }
+
+        is HomeIntent.InitErrorMessage -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = null
+            )
+        }
     }
 }

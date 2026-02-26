@@ -63,6 +63,7 @@ fun HomeScreen(
         val message = uiState.errorMessage
         if (message != null) {
             snackbarHostState.showSnackbar(message = message)
+            viewModel.onIntent(HomeIntent.InitErrorMessage)
         }
     }
 
