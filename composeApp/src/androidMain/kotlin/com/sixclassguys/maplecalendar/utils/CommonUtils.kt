@@ -127,3 +127,11 @@ fun getTopVisiblePixel(bitmap: Bitmap): Float {
     }
     return 0f
 }
+
+fun formatTime(milliseconds: Long): String {
+    if (milliseconds < 0) return "00:00"
+    val totalSeconds = milliseconds / 1000
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return "${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}"
+}
