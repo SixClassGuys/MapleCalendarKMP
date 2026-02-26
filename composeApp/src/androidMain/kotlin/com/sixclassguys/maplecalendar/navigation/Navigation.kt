@@ -16,7 +16,7 @@ sealed class Navigation(
         Navigation("home", R.drawable.bottomnav_home, R.drawable.bottomnav_home_disabled, "홈")
 
     data object Playlist :
-        Navigation("playlist", R.drawable.bottomnav_playlist, R.drawable.bottomnav_playlist_disabled, "플리")
+        Navigation("playlist", R.drawable.bottomnav_playlist, R.drawable.bottomnav_playlist_disabled, "플레이리스트")
 
     data object Calendar : Navigation("calendar")
 
@@ -43,4 +43,6 @@ sealed class Navigation(
     data object BossPartyCreate : Navigation("bossPartyCreate")
 
     data object BossPartyDetail : Navigation("bossPartyDetail")
+
+    data object MapleBgmPlay : Navigation("mapleBgmPlay")
 }

@@ -16,6 +16,8 @@ import com.sixclassguys.maplecalendar.data.remote.datasource.NexonOpenApiDataSou
 import com.sixclassguys.maplecalendar.data.remote.datasource.NexonOpenApiDataSourceImpl
 import com.sixclassguys.maplecalendar.data.remote.datasource.NotificationDataSource
 import com.sixclassguys.maplecalendar.data.remote.datasource.NotificationDataSourceImpl
+import com.sixclassguys.maplecalendar.data.remote.datasource.PlaylistDataSource
+import com.sixclassguys.maplecalendar.data.remote.datasource.PlaylistDataSourceImpl
 import com.sixclassguys.maplecalendar.data.remote.datasource.ReportDataSource
 import com.sixclassguys.maplecalendar.data.remote.datasource.ReportDataSourceImpl
 import io.ktor.client.*
@@ -143,6 +145,9 @@ val networkModule = module {
 
     // Report DataSource 객체 주입
     single<ReportDataSource> { ReportDataSourceImpl(get(named("BackendClient"))) }
+
+    // Playlist DataSource 객체 주입
+    single<PlaylistDataSource> { PlaylistDataSourceImpl(get(named("BackendClient"))) }
 
     // 넥슨 Open API와 통신하는 DataSource 객체 주입
     single<NexonOpenApiDataSource> { NexonOpenApiDataSourceImpl(get(named("NexonClient"))) }

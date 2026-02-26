@@ -139,8 +139,11 @@ fun BottomNavigationBar(
                     isSelected = currentRoute == item.destination,
                     onClick = {
                         // BGM 플레이리스트와 게시판 기능은 준비중
-                        if ((item == Navigation.Playlist) || (item == Navigation.Board)) {
-                            Toast.makeText(context, "준비중입니다.", Toast.LENGTH_SHORT).show()
+                        if (item == Navigation.Board) {
+                            Toast.makeText(context, "준비중이에요.", Toast.LENGTH_SHORT).show()
+                        } else if (item == Navigation.Playlist && !isLoginSuccess) {
+                            Toast.makeText(context, "로그인이 필요해요.", Toast.LENGTH_SHORT).show()
+                            navController.navigate("login_flow")
                         } else {
 //                            navController.navigate(item.destination) {
 //                                popUpTo(navController.graph.startDestinationId)
@@ -164,8 +167,7 @@ fun BottomNavigationBar(
 
         if (animProgress > 0f) {
             Box(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
+                modifier = Modifier.align(Alignment.TopCenter)
                     .offset(y = (-10).dp) // FAB 중심점 맞춤
             ) {
                 // (아이콘, 라벨, 경로, 각도)

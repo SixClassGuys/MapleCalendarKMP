@@ -4,5 +4,7 @@ interface AuthManager {
 
     suspend fun signInWithGoogle(context: Any): String?
 
+    suspend fun signInWithApple(context: Any): String?
+
     suspend fun signOut()
 }

@@ -9,6 +9,7 @@ import com.sixclassguys.maplecalendar.data.repository.FirebaseNotificationReposi
 import com.sixclassguys.maplecalendar.data.repository.MapleCharacterRepositoryImpl
 import com.sixclassguys.maplecalendar.data.repository.MemberRepositoryImpl
 import com.sixclassguys.maplecalendar.data.repository.NotificationEventBusImpl
+import com.sixclassguys.maplecalendar.data.repository.PlaylistRepositoryImpl
 import com.sixclassguys.maplecalendar.data.repository.ReportRepositoryImpl
 import com.sixclassguys.maplecalendar.domain.repository.AlarmRepository
 import com.sixclassguys.maplecalendar.domain.repository.AuthRepository
@@ -19,18 +20,23 @@ import com.sixclassguys.maplecalendar.domain.repository.MapleCharacterRepository
 import com.sixclassguys.maplecalendar.domain.repository.MemberRepository
 import com.sixclassguys.maplecalendar.domain.repository.NotificationEventBus
 import com.sixclassguys.maplecalendar.domain.repository.NotificationRepository
+import com.sixclassguys.maplecalendar.domain.repository.PlaylistRepository
 import com.sixclassguys.maplecalendar.domain.repository.ReportRepository
 import com.sixclassguys.maplecalendar.domain.usecase.AcceptBossPartyInvitationUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.AddMapleBgmToPlaylistUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.AppleLoginUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.AutoLoginUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.CheckCharacterAuthorityUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ConnectBossChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.CreateBossPartyAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.CreateBossPartyBoardUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.CreateBossPartyUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.CreateMapleBgmPlaylistUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.DeclineBossPartyInvitationUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.DeleteBossPartyAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.DeleteBossPartyChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.DeleteCharacterUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.DeleteMapleBgmPlaylistUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.DisconnectBossPartyChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.DoLoginWithApiKeyUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.FetchCharactersWithApiKeyUseCase
@@ -47,9 +53,14 @@ import com.sixclassguys.maplecalendar.domain.usecase.GetDailyEventsUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetEventDetailUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetFcmTokenUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetGlobalAlarmStatusUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.GetMapleBgmDetailUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.GetMapleBgmPlaylistDetailUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.GetMapleBgmPlaylistsUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetMonthlyEventsUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.GetRecentMapleBgmsUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetSavedFcmTokenUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetTodayEventsUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.GetTopMapleBgmsUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GoogleLoginUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.HideBossPartyChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.InviteBossPartyMemberUseCase
@@ -60,6 +71,7 @@ import com.sixclassguys.maplecalendar.domain.usecase.ObserveBossChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.RegisterCharactersUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.RegisterTokenUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ReissueJwtTokenUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.RemoveMapleBgmFromPlaylistUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ReportBossPartyChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.SearchCharactersUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.SendBossChatUseCase
@@ -72,9 +84,11 @@ import com.sixclassguys.maplecalendar.domain.usecase.ToggleBossPartyBoardLikeUse
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleBossPartyChatAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleEventAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleGlobalAlarmStatusUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.ToggleMapleBgmLikeUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.TransferBossPartyLeaderUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.UnregisterTokenUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.UpdateBossPartyPeriodUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.UpdateMapleBgmPlaylistUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.UpdateRepresentativeCharacterUseCase
 import com.sixclassguys.maplecalendar.presentation.boss.BossReducer
 import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
@@ -88,6 +102,8 @@ import com.sixclassguys.maplecalendar.presentation.home.HomeViewModel
 import com.sixclassguys.maplecalendar.presentation.login.LoginReducer
 import com.sixclassguys.maplecalendar.presentation.login.LoginViewModel
 import com.sixclassguys.maplecalendar.presentation.notification.NotificationReducer
+import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistReducer
+import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
 import com.sixclassguys.maplecalendar.presentation.setting.SettingReducer
 import com.sixclassguys.maplecalendar.presentation.setting.SettingViewModel
 import org.koin.core.context.startKoin
@@ -113,11 +129,13 @@ val repositoryModule = module {
     single<AlarmRepository> { AlarmRepositoryImpl(get(), get()) }
     single<BossRepository> { BossRepositoryImpl(get(), get()) }
     single<ReportRepository> { ReportRepositoryImpl(get(), get()) }
+    single<PlaylistRepository> { PlaylistRepositoryImpl(get(), get()) }
 }
 
 val useCaseModule = module {
     // UseCase 객체 생성
     single<GoogleLoginUseCase> { GoogleLoginUseCase(get()) }
+    single<AppleLoginUseCase> { AppleLoginUseCase(get()) }
     single<AutoLoginUseCase> { AutoLoginUseCase(get()) }
     single<ReissueJwtTokenUseCase> { ReissueJwtTokenUseCase(get()) }
     single<DoLoginWithApiKeyUseCase> { DoLoginWithApiKeyUseCase(get()) }
@@ -173,6 +191,17 @@ val useCaseModule = module {
     single<GetBossPartyBoardsUseCase> { GetBossPartyBoardsUseCase(get()) }
     single<CreateBossPartyBoardUseCase> { CreateBossPartyBoardUseCase(get()) }
     single<ToggleBossPartyBoardLikeUseCase> { ToggleBossPartyBoardLikeUseCase(get()) }
+    single<GetMapleBgmDetailUseCase> { GetMapleBgmDetailUseCase(get()) }
+    single<GetTopMapleBgmsUseCase> { GetTopMapleBgmsUseCase(get()) }
+    single<GetRecentMapleBgmsUseCase> { GetRecentMapleBgmsUseCase(get()) }
+    single<ToggleMapleBgmLikeUseCase> { ToggleMapleBgmLikeUseCase(get()) }
+    single<GetMapleBgmPlaylistsUseCase> { GetMapleBgmPlaylistsUseCase(get()) }
+    single<GetMapleBgmPlaylistDetailUseCase> { GetMapleBgmPlaylistDetailUseCase(get()) }
+    single<CreateMapleBgmPlaylistUseCase> { CreateMapleBgmPlaylistUseCase(get()) }
+    single<DeleteMapleBgmPlaylistUseCase> { DeleteMapleBgmPlaylistUseCase(get()) }
+    single<AddMapleBgmToPlaylistUseCase> { AddMapleBgmToPlaylistUseCase(get()) }
+    single<RemoveMapleBgmFromPlaylistUseCase> { RemoveMapleBgmFromPlaylistUseCase(get()) }
+    single<UpdateMapleBgmPlaylistUseCase> { UpdateMapleBgmPlaylistUseCase(get()) }
 }
 
 val viewModelModule = module {
@@ -190,7 +219,7 @@ val viewModelModule = module {
             get()
         )
     }
-    viewModel { LoginViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { LoginViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { SettingViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { NotificationViewModel(get(), get(), get(), get()) }
     viewModel {
@@ -242,6 +271,7 @@ val viewModelModule = module {
             get()
         )
     }
+    viewModel { PlaylistViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
     // Reducer
     single { HomeReducer() }
@@ -251,6 +281,7 @@ val viewModelModule = module {
     single { MapleCharacterReducer() }
     single { NotificationReducer() }
     single { BossReducer() }
+    single { PlaylistReducer() }
 }
 
 // 공통 초기화 함수: 안드로이드와 iOS 앱 시작 시 호출됨

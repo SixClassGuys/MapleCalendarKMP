@@ -2,8 +2,14 @@ package com.sixclassguys.maplecalendar
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
@@ -37,9 +43,13 @@ import com.sixclassguys.maplecalendar.presentation.calendar.CalendarIntent
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarViewModel
 import com.sixclassguys.maplecalendar.presentation.character.MapleCharacterViewModel
 import com.sixclassguys.maplecalendar.presentation.home.HomeViewModel
+import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
+import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleWhite
 import com.sixclassguys.maplecalendar.ui.component.BottomNavigationBar
+import com.sixclassguys.maplecalendar.ui.component.DraggableMiniPlayerOverlay
+import com.sixclassguys.maplecalendar.ui.playlist.MapleBgmPlayScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -55,7 +65,10 @@ fun App() {
     val calendarViewModel: CalendarViewModel = koinViewModel(viewModelStoreOwner = activity)
     val mapleCharacterViewModel: MapleCharacterViewModel = koinViewModel(viewModelStoreOwner = activity)
     val bossViewModel: BossViewModel = koinViewModel(viewModelStoreOwner = activity)
+    val playlistViewModel: PlaylistViewModel = koinViewModel(viewModelStoreOwner = activity)
+
     val homeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val playlistUiState by playlistViewModel.uiState.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val focusManager = LocalFocusManager.current
@@ -68,6 +81,23 @@ fun App() {
         Navigation.Board.destination,
         Navigation.Setting.destination
     )
+
+    // App.kt 내부
+    val context = LocalContext.current
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (!isGranted) {
+            // 권한 거부 시 유저에게 알림창이 뜨지 않는다고 안내
+            Toast.makeText(context, "알림 권한이 허용되지 않으면 백그라운드 재생 시 알림이 뜨지 않아요.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -119,8 +149,41 @@ fun App() {
                 homeViewModel = homeViewModel,
                 calendarViewModel = calendarViewModel,
                 mapleCharacterViewModel = mapleCharacterViewModel,
-                bossViewModel = bossViewModel
+                bossViewModel = bossViewModel,
+                playlistViewModel = playlistViewModel
             )
+
+            // 2. 미니 플레이어 (곡이 선택되어 있고 최소화 상태일 때만)
+            val selectedBgm = playlistUiState.selectedBgm
+            if (selectedBgm != null && playlistUiState.isPlayerMinimized) {
+                DraggableMiniPlayerOverlay(
+                    bgm = selectedBgm,
+                    isPlaying = playlistUiState.isPlaying,
+                    onTogglePlay = { isPlaying ->
+                        playlistViewModel.onIntent(PlaylistIntent.TogglePlayPause(isPlaying))
+                    },
+                    onClose = { playlistViewModel.onIntent(PlaylistIntent.ClosePlayer) },
+                    onClick = {
+                        playlistViewModel.onIntent(PlaylistIntent.MaximizePlayer)
+                        navController.navigate(Navigation.MapleBgmPlay.destination)
+                    }
+                )
+            }
+
+            // 3. 전체 화면 플레이어 (슬라이드 애니메이션)
+            AnimatedVisibility(
+                visible = !playlistUiState.isPlayerMinimized,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it })
+            ) {
+                MapleBgmPlayScreen(
+                    viewModel = playlistViewModel,
+                    onBack = {
+                        navController.popBackStack()
+                        playlistViewModel.onIntent(PlaylistIntent.MinimizePlayer)
+                    }
+                )
+            }
         }
     }
 }

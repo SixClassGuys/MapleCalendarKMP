@@ -32,7 +32,7 @@ fun EmptyCharacterBasicCard(
     )
 
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .height(200.dp)
             .drawBehind {
                 drawRoundRect(

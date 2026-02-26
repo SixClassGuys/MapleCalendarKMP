@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,6 +25,8 @@ import com.sixclassguys.maplecalendar.presentation.character.MapleCharacterViewM
 import com.sixclassguys.maplecalendar.presentation.home.HomeViewModel
 import com.sixclassguys.maplecalendar.presentation.login.LoginIntent
 import com.sixclassguys.maplecalendar.presentation.login.LoginViewModel
+import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
+import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
 import com.sixclassguys.maplecalendar.ui.board.BoardScreen
 import com.sixclassguys.maplecalendar.ui.boss.BossPartyCreateScreen
 import com.sixclassguys.maplecalendar.ui.boss.BossPartyDetailScreen
@@ -36,9 +39,11 @@ import com.sixclassguys.maplecalendar.ui.character.MapleCharacterSubmitScreen
 import com.sixclassguys.maplecalendar.ui.home.HomeScreen
 import com.sixclassguys.maplecalendar.ui.login.LoginScreen
 import com.sixclassguys.maplecalendar.ui.login.SelectRepresentativeCharacterScreen
+import com.sixclassguys.maplecalendar.ui.playlist.MapleBgmPlayScreen
 import com.sixclassguys.maplecalendar.ui.playlist.PlaylistScreen
 import com.sixclassguys.maplecalendar.ui.setting.SettingScreen
 import com.sixclassguys.maplecalendar.ui.splash.SplashScreen
+import com.sixclassguys.maplecalendar.utils.RegionCategory
 import io.github.aakira.napier.Napier
 import kotlinx.serialization.json.Json
 import org.koin.compose.viewmodel.koinViewModel
@@ -54,7 +59,8 @@ fun NavHost(
     homeViewModel: HomeViewModel,
     calendarViewModel: CalendarViewModel,
     mapleCharacterViewModel: MapleCharacterViewModel,
-    bossViewModel: BossViewModel
+    bossViewModel: BossViewModel,
+    playlistViewModel: PlaylistViewModel
 ) {
     val context = LocalContext.current
 
@@ -99,7 +105,24 @@ fun NavHost(
         }
 
         composable(Navigation.Playlist.destination) {
-            PlaylistScreen()
+            PlaylistScreen(
+                viewModel = playlistViewModel,
+                homeViewModel = homeViewModel,
+                snackbarHostState = snackbarHostState,
+                onNavigateToBgmPlay = {
+                    navController.navigate(Navigation.MapleBgmPlay.destination)
+                }
+            )
+        }
+
+        composable(Navigation.MapleBgmPlay.destination) {
+            MapleBgmPlayScreen(
+                viewModel = playlistViewModel,
+                onBack = {
+                    navController.popBackStack()
+                    playlistViewModel.onIntent(PlaylistIntent.MinimizePlayer)
+                }
+            )
         }
 
         navigation(
