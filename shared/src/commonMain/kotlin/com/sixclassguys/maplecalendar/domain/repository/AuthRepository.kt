@@ -18,5 +18,11 @@ interface AuthRepository {
         fcmToken: String
     ): Flow<ApiState<LoginResult>>
 
+    suspend fun loginWithApple(
+        provider: String,
+        idToken: String,
+        fcmToken: String
+    ): Flow<ApiState<LoginResult>>
+
     suspend fun reissueJwtToken(): Flow<ApiState<Unit>>
 }

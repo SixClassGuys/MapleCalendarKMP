@@ -3,6 +3,7 @@ package com.sixclassguys.maplecalendar.presentation.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sixclassguys.maplecalendar.domain.model.ApiState
+import com.sixclassguys.maplecalendar.domain.usecase.AppleLoginUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.DoLoginWithApiKeyUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetCharacterBasicUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetFcmTokenUseCase
@@ -26,6 +27,7 @@ class LoginViewModel(
     private val reducer: LoginReducer,
     private val getFcmTokenUseCase: GetFcmTokenUseCase,
     private val googleLoginUseCase: GoogleLoginUseCase,
+    private val appleLoginUseCase: AppleLoginUseCase,
     private val doLoginWithApiKeyUseCase: DoLoginWithApiKeyUseCase,
     private val submitRepresentativeCharacterUseCase: SubmitRepresentativeCharacterUseCase,
     private val setOpenApiKeyUseCase: SetOpenApiKeyUseCase,
@@ -56,24 +58,65 @@ class LoginViewModel(
         }
     }
 
+    private fun loginWithApple(context: Any) {
+        viewModelScope.launch {
+            val idToken = authManager.signInWithApple(context)
+
+            if (idToken != null) {
+                // 💡 여기서 이제 서버(Spring)에 토큰을 보내는 UseCase를 호출해야 합니다.
+                // 예: authenticateWithGoogleUseCase(idToken).collect { ... }
+                println("애플 토큰 획득 성공: $idToken")
+
+                // 임시로 성공 처리하거나 다음 스텝(서버 검증)으로 넘김
+                submitUserInfo("apple", idToken)
+            } else {
+                onIntent(LoginIntent.LoginFailed("애플 로그인에 실패했습니다."))
+            }
+        }
+    }
+
     private fun submitUserInfo(platform: String, idToken: String) {
         viewModelScope.launch {
             val fcmToken = getFcmTokenUseCase() ?: ""
             Napier.d("FCM 토큰: $fcmToken")
-            googleLoginUseCase(platform, idToken, fcmToken).collect { state ->
-                when (state) {
-                    is ApiState.Success -> {
-                        val member = state.data.member
-                        val isNewMember = state.data.isNewMember
-                        Napier.d("멤버: $member")
-                        onIntent(LoginIntent.GoogleLoginSuccess(member, isNewMember))
-                    }
 
-                    is ApiState.Error -> {
-                        onIntent(LoginIntent.LoginFailed("구글 로그인에 실패했습니다."))
-                    }
+            when (platform) {
+                "google" -> {
+                    googleLoginUseCase(platform, idToken, fcmToken).collect { state ->
+                        when (state) {
+                            is ApiState.Success -> {
+                                val member = state.data.member
+                                val isNewMember = state.data.isNewMember
+                                Napier.d("멤버: $member")
+                                onIntent(LoginIntent.GoogleLoginSuccess(member, isNewMember))
+                            }
 
-                    else -> {}
+                            is ApiState.Error -> {
+                                onIntent(LoginIntent.LoginFailed("구글 로그인에 실패했습니다."))
+                            }
+
+                            else -> {}
+                        }
+                    }
+                }
+
+                "apple" -> {
+                    appleLoginUseCase(platform, idToken, fcmToken).collect { state ->
+                        when (state) {
+                            is ApiState.Success -> {
+                                val member = state.data.member
+                                val isNewMember = state.data.isNewMember
+                                Napier.d("멤버: $member")
+                                onIntent(LoginIntent.AppleLoginSuccess(member, isNewMember))
+                            }
+
+                            is ApiState.Error -> {
+                                onIntent(LoginIntent.LoginFailed("구글 로그인에 실패했습니다."))
+                            }
+
+                            else -> {}
+                        }
+                    }
                 }
             }
         }

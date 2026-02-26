@@ -40,7 +40,9 @@ class LoginReducer {
         is LoginIntent.AppleLoginSuccess -> {
             currentState.copy(
                 isLoading = false,
-
+                isLoginSuccess = true,
+                member = intent.member,
+                showRegistrationDialog = intent.isNewMember
             )
         }
 

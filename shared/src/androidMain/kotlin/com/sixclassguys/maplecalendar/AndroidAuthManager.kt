@@ -45,6 +45,12 @@ class AndroidAuthManager(
         }
     }
 
+    override suspend fun signInWithApple(context: Any): String? {
+        // TODO: Apple Developer Console에서 설정하기
+
+        return null
+    }
+
     override suspend fun signOut() {
         credentialManager.clearCredentialState(ClearCredentialStateRequest())
     }

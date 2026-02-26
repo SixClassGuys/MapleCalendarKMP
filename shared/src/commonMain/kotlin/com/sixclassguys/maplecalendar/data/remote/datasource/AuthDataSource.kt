@@ -1,5 +1,7 @@
 package com.sixclassguys.maplecalendar.data.remote.datasource
 
+import com.sixclassguys.maplecalendar.data.remote.dto.AuthAppleRequest
+import com.sixclassguys.maplecalendar.data.remote.dto.AuthAppleResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.AuthGoogleRequest
 import com.sixclassguys.maplecalendar.data.remote.dto.AuthGoogleResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.JwtTokenRequest
@@ -14,6 +16,8 @@ interface AuthDataSource {
     suspend fun autoLogin(accessToken: String, request: FcmTokenRequest): AuthGoogleResponse
 
     suspend fun loginWithGoogle(request: AuthGoogleRequest): AuthGoogleResponse
+
+    suspend fun loginWithApple(request: AuthAppleRequest): AuthAppleResponse
 
     suspend fun reissueJwtToken(request: JwtTokenRequest): JwtTokenResponse
 }

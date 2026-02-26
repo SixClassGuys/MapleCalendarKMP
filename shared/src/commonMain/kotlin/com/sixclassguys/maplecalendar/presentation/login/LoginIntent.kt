@@ -15,7 +15,7 @@ sealed class LoginIntent {
 
     data object ClickAppleLogin : LoginIntent()
 
-    data class AppleLoginSuccess(val idToken: String) : LoginIntent()
+    data class AppleLoginSuccess(val member: Member, val isNewMember: Boolean) : LoginIntent()
 
     data class AppleLoginFailed(val message: String) : LoginIntent()
 
