@@ -9,4 +9,6 @@ val androidPermissionModule = module {
     single { PermissionChecker(get()) }
 
     single<AuthManager> { AndroidAuthManager(get()) }
+
+    single<MusicPlayer> { AndroidMusicPlayer(get(), "com.sixclassguys.maplecalendar.service.MusicService") }
 }
