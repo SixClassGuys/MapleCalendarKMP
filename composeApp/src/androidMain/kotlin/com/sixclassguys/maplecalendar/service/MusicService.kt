@@ -44,6 +44,23 @@ class MusicService : MediaSessionService() {
         return mediaSession
     }
 
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        val player = mediaSession?.player
+
+        // 1. 재생 중이거나 플레이어가 존재하면 정지 및 리소스 해제
+        if (player != null) {
+            if (player.playWhenReady) {
+                player.stop()
+            }
+            // 필요한 경우 release는 onDestroy에 맡기거나 여기서 미리 수행
+        }
+
+        // 2. 서비스 종료 (알림창 제거 및 포그라운드 해제)
+        stopSelf()
+
+        super.onTaskRemoved(rootIntent)
+    }
+
     override fun onDestroy() {
         mediaSession?.run {
             player.release()

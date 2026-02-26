@@ -238,6 +238,7 @@ fun NavHost(
         composable(Navigation.Setting.destination) {
             SettingScreen(
                 homeViewModel = homeViewModel,
+                playlistViewModel = playlistViewModel,
                 snackbarHostState = snackbarHostState
             ) {
                 navController.navigate("login_flow")

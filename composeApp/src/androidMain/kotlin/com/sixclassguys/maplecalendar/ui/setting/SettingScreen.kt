@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.home.HomeIntent
 import com.sixclassguys.maplecalendar.presentation.home.HomeViewModel
+import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
+import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
 import com.sixclassguys.maplecalendar.presentation.setting.SettingIntent
 import com.sixclassguys.maplecalendar.presentation.setting.SettingViewModel
 import com.sixclassguys.maplecalendar.theme.MapleWhite
@@ -49,6 +51,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun SettingScreen(
     viewModel: SettingViewModel = koinViewModel(),
     homeViewModel: HomeViewModel,
+    playlistViewModel: PlaylistViewModel,
     snackbarHostState: SnackbarHostState,
     onNavigateToLogin: () -> Unit
 ) {
@@ -79,6 +82,12 @@ fun SettingScreen(
                     context.startActivity(intent)
                 }
             }
+        }
+    }
+
+    LaunchedEffect(homeUiState.isLoginSuccess) {
+        if (!homeUiState.isLoginSuccess) {
+            playlistViewModel.onIntent(PlaylistIntent.ClosePlayer)
         }
     }
 

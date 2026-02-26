@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -60,7 +61,9 @@ import org.koin.core.annotation.KoinExperimentalAPI
 @Composable
 @Preview
 fun App() {
-    val activity = LocalContext.current as ComponentActivity
+    val context = LocalContext.current
+    val activity = context as ComponentActivity
+
     val homeViewModel: HomeViewModel = koinViewModel(viewModelStoreOwner = activity)
     val calendarViewModel: CalendarViewModel = koinViewModel(viewModelStoreOwner = activity)
     val mapleCharacterViewModel: MapleCharacterViewModel = koinViewModel(viewModelStoreOwner = activity)
@@ -83,7 +86,6 @@ fun App() {
     )
 
     // App.kt 내부
-    val context = LocalContext.current
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -93,9 +95,28 @@ fun App() {
         }
     }
 
+    var backPressedTime by remember { mutableLongStateOf(0L) }
+
     LaunchedEffect(Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    BackHandler(enabled = currentRoute in screenWithBottomBar) {
+        val currentTime = System.currentTimeMillis()
+
+        // 2초(2000ms) 이내에 다시 눌렀는지 확인
+        if (currentTime - backPressedTime < 2000) {
+            // 1. 음악 정지 로직 호출 (ViewModel의 Intent 활용)
+            playlistViewModel.onIntent(PlaylistIntent.ClosePlayer)
+
+            // 2. 앱 종료
+            activity.finish()
+        } else {
+            // 처음 눌렀을 때 토스트 메시지 출력
+            backPressedTime = currentTime
+            Toast.makeText(context, "뒤로가기를 한 번 더 누르면 종료돼요.", Toast.LENGTH_SHORT).show()
         }
     }
 
