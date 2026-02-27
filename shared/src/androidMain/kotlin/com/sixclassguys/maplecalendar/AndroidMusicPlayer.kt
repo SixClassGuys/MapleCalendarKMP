@@ -15,6 +15,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
+import androidx.core.net.toUri
 
 class AndroidMusicPlayer(
     private val context: Context,
@@ -96,7 +97,7 @@ class AndroidMusicPlayer(
         // 1. 모든 MapleBgm을 MediaItem으로 변환
         val mediaItems = bgmList.map { bgm ->
             // 아이콘 리소스를 가져오는 로직 (예시: region 필드 활용 등)
-            val artworkUri = Uri.parse(bgm.thumbnailUrl)
+            val artworkUri = bgm.thumbnailUrl.toUri()
 
             val metadata = MediaMetadata.Builder()
                 .setTitle(bgm.title)
@@ -116,6 +117,7 @@ class AndroidMusicPlayer(
 
         mediaController?.let { controller ->
             // 2. 단일 곡이 아닌 리스트 전체를 세팅
+            controller.clearMediaItems()
             controller.setMediaItems(mediaItems)
 
             // 3. 클릭한 곡의 위치로 이동 (0ms 지점)

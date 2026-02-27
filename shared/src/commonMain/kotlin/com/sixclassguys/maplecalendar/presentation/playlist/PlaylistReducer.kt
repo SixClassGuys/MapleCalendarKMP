@@ -132,7 +132,7 @@ class PlaylistReducer {
         is PlaylistIntent.FetchRecentMapleBgmsSuccess -> {
             val history = intent.recentMapleBgmsHistory
 
-            val combinedRecentMapleBgms = (currentState.topMapleBgms + history.bgms)
+            val combinedRecentMapleBgms = (currentState.recentMapleBgms + history.bgms)
                 .distinctBy { it.id }
 
             currentState.copy(
