@@ -74,17 +74,15 @@ enum class Boss(
         memberCounts = listOf(3, 3),
         rewards = listOf()
     ),
-    /*
     JUPITER(
         bossName = "유피테르",
         region = "그란디스",
-        difficulties = listOf(BossDifficulty.BossDifficulty.NORMAL, BossDifficulty.CHAOS, BossDifficulty.EXTREME),
+        difficulties = listOf(BossDifficulty.NORMAL, BossDifficulty.HARD),
         reqLevels = listOf(295, 295),
-        bossLevels = listOf(),
+        bossLevels = listOf(295, 295),
         memberCounts = listOf(3, 3),
         rewards = listOf()
-    )
-    */
+    ),
 
     // 아케인리버
     LUCID(

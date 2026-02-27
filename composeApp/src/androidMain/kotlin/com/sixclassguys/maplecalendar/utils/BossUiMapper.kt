@@ -71,6 +71,7 @@ val Boss.iconRes: Int
         Boss.RADIANTMALEFIC -> R.drawable.ic_boss_radiant_malefic
         Boss.LIMBO -> R.drawable.ic_boss_limbo
         Boss.BALDRIX -> R.drawable.ic_boss_baldrix
+        Boss.JUPITER -> R.drawable.ic_boss_jupiter
         Boss.LUCID -> R.drawable.ic_boss_lucid
         Boss.WILL -> R.drawable.ic_boss_will
         Boss.DUSK -> R.drawable.ic_boss_dusk
@@ -101,6 +102,7 @@ val Boss.backgroundRes: Int
         Boss.RADIANTMALEFIC -> R.drawable.bg_boss_radiant_malefic
         Boss.LIMBO -> R.drawable.bg_boss_limbo
         Boss.BALDRIX -> R.drawable.bg_boss_baldrix
+        Boss.JUPITER -> R.drawable.bg_boss_jupiter
         Boss.LUCID -> R.drawable.bg_boss_lucid
         Boss.WILL -> R.drawable.bg_boss_will
         Boss.DUSK -> R.drawable.bg_boss_dusk
@@ -131,6 +133,7 @@ val Boss.entryBackgroundRes: Int
         Boss.RADIANTMALEFIC -> R.drawable.boss_entry_radiant_malefic
         Boss.LIMBO -> R.drawable.boss_entry_limbo
         Boss.BALDRIX -> R.drawable.boss_entry_baldrix
+        Boss.JUPITER -> R.drawable.boss_entry_jupiter
         Boss.LUCID -> R.drawable.boss_entry_lucid
         Boss.WILL -> R.drawable.boss_entry_will
         Boss.DUSK -> R.drawable.boss_entry_dusk
