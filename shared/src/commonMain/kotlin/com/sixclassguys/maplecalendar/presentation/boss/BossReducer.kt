@@ -564,14 +564,14 @@ class BossReducer {
 
         is BossIntent.InviteBossPartyMember -> {
             currentState.copy(
-                isLoading = true,
+                isMemberInviteLoading = true,
                 createdPartyId = null
             )
         }
 
         is BossIntent.InviteBossPartyMemberSuccess -> {
             currentState.copy(
-                isLoading = false,
+                isMemberInviteLoading = false,
                 showCharacterInvitationDialog = false,
                 createdPartyId = null
             )
@@ -579,7 +579,7 @@ class BossReducer {
 
         is BossIntent.InviteBossPartyMemberFailed -> {
             currentState.copy(
-                isLoading = false,
+                isMemberInviteLoading = false,
                 errorMessage = intent.message,
                 createdPartyId = null
             )

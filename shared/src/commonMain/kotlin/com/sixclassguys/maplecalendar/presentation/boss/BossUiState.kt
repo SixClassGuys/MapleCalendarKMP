@@ -14,7 +14,11 @@ import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 
 data class BossUiState(
+    // 로딩
     val isLoading: Boolean = false,
+    val isMemberInviteLoading: Boolean = false,
+
+    // 보스 파티 목록
     val bossParties: List<BossParty> = emptyList(),
     val bossPartiesInvited: List<BossParty> = emptyList(),
     val showBossInvitationDialog: Boolean = false,
@@ -26,6 +30,8 @@ data class BossUiState(
     val bossPartyCreateCharacter: CharacterSummary? = characters.firstOrNull()?.second,
     val bossPartyCreateTitle: String = "",
     val bossPartyCreateDescription: String = "",
+
+    // 보스 파티 상세
     val createdPartyId: Long? = null,
     val selectedBossParty: BossPartyDetail? = null,
     val selectedBossPartyDetailMenu: BossPartyTab = BossPartyTab.ALARM,

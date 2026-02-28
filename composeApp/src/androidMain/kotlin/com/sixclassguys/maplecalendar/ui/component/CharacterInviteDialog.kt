@@ -80,7 +80,7 @@ fun CharacterInviteDialog(
                     color = Color.White
                 ) {
                     when {
-                        uiState.isLoading -> Box(
+                        uiState.isMemberInviteLoading -> Box(
                             modifier = Modifier.fillMaxWidth()
                                 .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
                                 .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
