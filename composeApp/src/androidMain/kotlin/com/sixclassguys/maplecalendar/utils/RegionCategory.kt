@@ -157,11 +157,25 @@ enum class RegionCategory(
     // 테네브리스
     MOONBRIDGE("MOONBRIDGE", "문브릿지", R.drawable.ic_map_moonbridge),
     LABYRINTHOFSUFFERING("LABYRINTHOFSUFFERING", "고통의 미궁", R.drawable.ic_map_labyrinth_of_suffering),
-    LIMINA("LIMINA", "리멘", R.drawable.ic_map_limina);
+    LIMINA("LIMINA", "리멘", R.drawable.ic_map_limina),
 
     /*** 파티 퀘스트 ***/
+    LUDIBRIUMPQ("LUDIBRIUMPQ", "차원의 균열", R.drawable.ic_map_ludibrium_pq),
+    ORBISPQ("ORBISPQ", "여신의 흔적", R.drawable.ic_map_orbis_pq),
+    KREASE("KREASE", "크리세의 크세르크세스", R.drawable.ic_map_krease),
+    PARTYQUEST("PARTYQUEST", "파티 퀘스트", R.drawable.ic_map_party_quest),
 
     /*** 테마던전 ***/
+    GOLDBEACH("GOLDBEACH", "골드비치", R.drawable.ic_map_gold_beach),
+    RIENASTRAIT("RIENASTRAIT", "리에나 해협", R.drawable.ic_map_riena_strait),
+    ELLINELFAIRYACADEMY("ELLINELFAIRYACADEMY", "요정학원 엘리넬", R.drawable.ic_map_ellinel_fairy_academy),
+    ELODIN("ELODIN", "비밀의 숲 엘로딘", R.drawable.ic_map_elodin),
+    MUSHROOMCASTLE("MUSHROOMCASTLE", "버섯의 성", R.drawable.ic_map_mushroom_castle),
+    ELLINFOREST("ELLINFOREST", "엘린숲", R.drawable.ic_map_ellin_forest),
+    VONLEON("VONLEON", "사자왕의 성", R.drawable.ic_map_von_leon),
+    KERNINGTOWER("KERNINGTOWER", "커닝 타워", R.drawable.ic_map_kerning_tower),
+    STONECOLOSSUS("STONECOLOSSUS", "암벽거인 콜로서스", R.drawable.ic_map_stone_colossus),
+    FOXVALLEY("FOXVALLEY", "여우골짜기", R.drawable.ic_map_fox_valley_theme_dungeon);
 
     /*** 차원의 도서관 ***/
 
