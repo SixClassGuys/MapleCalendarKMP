@@ -103,8 +103,8 @@ android {
         applicationId = "com.sixclassguys.maplecalendar"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 13
-        versionName = "0.3.3"
+        versionCode = 14
+        versionName = "0.3.4"
 
         ndk {
             // 구글 플레이에서 요구하는 64비트 아키텍처를 포함합니다.
