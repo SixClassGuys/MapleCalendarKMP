@@ -18,6 +18,7 @@ import com.sixclassguys.maplecalendar.domain.usecase.RemoveMapleBgmFromPlaylistU
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleMapleBgmLikeUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.UpdateMapleBgmPlaylistUseCase
 import com.sixclassguys.maplecalendar.util.MapleBgmLikeStatus
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -61,11 +62,11 @@ class PlaylistViewModel(
             // 현재 곡 ID 관찰
             musicPlayer.currentTrackId.collect { trackId ->
                 if (trackId != null) {
-                    // 1. 현재 리스트에서 해당 ID를 가진 곡을 찾습니다.
-                    val nextBgm = uiState.value.topMapleBgms.find { it.id == trackId }
+                    // [수정] currentPlaylist를 최우선으로 탐색해야 합니다.
+                    val nextBgm = uiState.value.currentPlaylist.find { it.id == trackId }
+                        ?: uiState.value.topMapleBgms.find { it.id == trackId }
                         ?: uiState.value.recentMapleBgms.find { it.id == trackId }
 
-                    // 2. UiState를 업데이트하여 UI(플레이어 화면 등)를 갱신합니다.
                     if (nextBgm != null) {
                         _uiState.update { it.copy(selectedBgm = nextBgm) }
                     }
@@ -99,7 +100,7 @@ class PlaylistViewModel(
         } else {
             musicPlayer.resume()
         }
-        // isPlaying 상태는 musicPlayer.isPlaying Flow를 통해 자동으로 업데이트됩니다.
+        // isPlaying 상태는 musicPlayer.isPlaying Flow를 통해 자동으로 업데이트
     }
 
     private fun skipToNext() {
@@ -112,7 +113,7 @@ class PlaylistViewModel(
 
     private fun toggleShuffle() {
         musicPlayer.toggleShuffle()
-        // 이전에 설정한 musicPlayer.isShuffleModeEnabled Flow가 UI를 갱신합니다.
+        // 이전에 설정한 musicPlayer.isShuffleModeEnabled Flow가 UI를 갱신
     }
 
     private fun toggleRepeatMode(currentMode: RepeatMode) {
