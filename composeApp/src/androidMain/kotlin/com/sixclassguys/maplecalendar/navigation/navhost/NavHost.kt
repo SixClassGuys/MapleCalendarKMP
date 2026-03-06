@@ -40,6 +40,7 @@ import com.sixclassguys.maplecalendar.ui.login.LoginScreen
 import com.sixclassguys.maplecalendar.ui.login.SelectRepresentativeCharacterScreen
 import com.sixclassguys.maplecalendar.ui.playlist.MapleBgmPlayScreen
 import com.sixclassguys.maplecalendar.ui.playlist.PlaylistScreen
+import com.sixclassguys.maplecalendar.ui.playlist.SearchMapleBgmScreen
 import com.sixclassguys.maplecalendar.ui.setting.SettingScreen
 import com.sixclassguys.maplecalendar.ui.splash.SplashScreen
 import io.github.aakira.napier.Napier
@@ -107,19 +108,32 @@ fun NavHost(
                 viewModel = playlistViewModel,
                 snackbarHostState = snackbarHostState,
                 onNavigateToBgmPlay = {
-                    navController.navigate(Navigation.MapleBgmPlay.destination)
+                    playlistViewModel.onIntent(PlaylistIntent.MaximizePlayer)
+                    // navController.navigate(Navigation.MapleBgmPlay.destination)
+                },
+                onNavigateToSearchBgm = {
+                    navController.navigate(Navigation.SearchMapleBgm.destination)
                 }
             )
         }
 
-        composable(Navigation.MapleBgmPlay.destination) {
-            MapleBgmPlayScreen(
+//        composable(Navigation.MapleBgmPlay.destination) {
+//            MapleBgmPlayScreen(
+//                viewModel = playlistViewModel,
+//                snackbarHostState = snackbarHostState,
+//                onBack = {
+//                    if (navController.currentDestination?.route == Navigation.MapleBgmPlay.destination) {
+//                        navController.popBackStack()
+//                        playlistViewModel.onIntent(PlaylistIntent.MinimizePlayer)
+//                    }
+//                }
+//            )
+//        }
+
+        composable(Navigation.SearchMapleBgm.destination) {
+            SearchMapleBgmScreen(
                 viewModel = playlistViewModel,
-                snackbarHostState = snackbarHostState,
-                onBack = {
-                    navController.popBackStack()
-                    playlistViewModel.onIntent(PlaylistIntent.MinimizePlayer)
-                }
+                snackbarHostState = snackbarHostState
             )
         }
 

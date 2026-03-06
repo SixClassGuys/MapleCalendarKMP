@@ -58,6 +58,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -99,7 +100,9 @@ fun MapleBgmPlayScreen(
     val currentPos by viewModel.currentPosition.collectAsStateWithLifecycle(0L)
     val duration by viewModel.duration.collectAsStateWithLifecycle(0L)
 
-    var isPlaylistVisible by remember { mutableStateOf(false) }
+    var isTransitioning by remember { mutableStateOf(false) }
+    var lastClickTime by remember { mutableLongStateOf(0L) }
+    var isPlaylistVisible by remember { mutableStateOf(uiState.selectedPlaylist != null) }
 
     LaunchedEffect(uiState.errorMessage) {
         val message = uiState.errorMessage
@@ -110,9 +113,13 @@ fun MapleBgmPlayScreen(
     }
 
     BackHandler(enabled = true) {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastClickTime < 500L) return@BackHandler // 0.5초 이내 연타 무시
+
         if (isPlaylistVisible) {
             isPlaylistVisible = false
         } else {
+            lastClickTime = currentTime // 시간 기록
             viewModel.onIntent(PlaylistIntent.MinimizePlayer)
             onBack()
         }
@@ -159,7 +166,18 @@ fun MapleBgmPlayScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                IconButton(onClick = onBack) {
+                                IconButton(onClick = {
+                                    val currentTime = System.currentTimeMillis()
+                                    if (currentTime - lastClickTime < 500L) return@IconButton // 0.5초 이내 연타 무시
+
+                                    if (isPlaylistVisible) {
+                                        isPlaylistVisible = false
+                                    } else {
+                                        lastClickTime = currentTime // 시간 기록
+                                        viewModel.onIntent(PlaylistIntent.MinimizePlayer)
+                                        onBack()
+                                    }
+                                }) {
                                     Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Close")
                                 }
                                 IconButton(onClick = { /* 메뉴 팝업 */ }) {

@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -63,7 +64,8 @@ import com.sixclassguys.maplecalendar.utils.RegionCategory
 fun PlaylistScreen(
     viewModel: PlaylistViewModel,
     snackbarHostState: SnackbarHostState,
-    onNavigateToBgmPlay: () -> Unit
+    onNavigateToBgmPlay: () -> Unit,
+    onNavigateToSearchBgm: () -> Unit
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -126,7 +128,8 @@ fun PlaylistScreen(
     Scaffold(
         topBar = {
             PlaylistTopBar(
-                onAddPlaylist = { viewModel.onIntent(PlaylistIntent.ShowNewPlaylistDialog) }
+                onAddPlaylist = { viewModel.onIntent(PlaylistIntent.ShowNewPlaylistDialog) },
+                onSearchClick = onNavigateToSearchBgm
             )
         },
         containerColor = MapleWhite
@@ -157,7 +160,8 @@ fun PlaylistScreen(
                             rank = index + 1,
                             bgm = bgm,
                             onNavigateToBgmPlay = {
-                                viewModel.onIntent(PlaylistIntent.PlayMapleBgm(bgm, listOf(bgm)))
+                                viewModel.onIntent(PlaylistIntent.InitSelectedPlaylist)
+                                viewModel.onIntent(PlaylistIntent.PlayMapleBgm(bgm, uiState.topMapleBgms))
                                 onNavigateToBgmPlay()
                             },
                             onMoreClick = { /* 메뉴 팝업 */ }
@@ -173,7 +177,8 @@ fun PlaylistScreen(
                         BgmItem(
                             bgm = bgm,
                             onNavigateToBgmPlay = {
-                                viewModel.onIntent(PlaylistIntent.PlayMapleBgm(bgm, listOf(bgm)))
+                                viewModel.onIntent(PlaylistIntent.InitSelectedPlaylist)
+                                viewModel.onIntent(PlaylistIntent.PlayMapleBgm(bgm, uiState.recentMapleBgms))
                                 onNavigateToBgmPlay()
                             }
                         )
@@ -289,7 +294,8 @@ fun PlaylistTabRow(
 
 @Composable
 fun PlaylistTopBar(
-    onAddPlaylist: () -> Unit
+    onAddPlaylist: () -> Unit,
+    onSearchClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth()
@@ -308,13 +314,24 @@ fun PlaylistTopBar(
         }
 
         // 플레이리스트 추가 버튼
-        IconButton(onClick = onAddPlaylist) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add Playlist",
-                modifier = Modifier.size(32.dp),
-                tint = MapleBlack
-            )
+        Row {
+            IconButton(onClick = onAddPlaylist) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Playlist",
+                    modifier = Modifier.size(32.dp),
+                    tint = MapleBlack
+                )
+            }
+
+            IconButton(onClick = onSearchClick) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search",
+                    modifier = Modifier.size(32.dp),
+                    tint = MapleBlack
+                )
+            }
         }
     }
 }

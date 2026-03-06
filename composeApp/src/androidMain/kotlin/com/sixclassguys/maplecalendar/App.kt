@@ -143,7 +143,11 @@ fun App() {
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
             bottomBar = {
                 // 커스텀 Bottom Navigation Bar 적용
-                if (currentRoute in screenWithBottomBar) {
+                AnimatedVisibility(
+                    visible = currentRoute in screenWithBottomBar && playlistUiState.isPlayerMinimized,
+                    enter = slideInVertically(initialOffsetY = { it }),
+                    exit = slideOutVertically(targetOffsetY = { it })
+                ) {
                     BottomNavigationBar(
                         navController = navController,
                         isLoginSuccess = homeUiState.isLoginSuccess,
@@ -186,7 +190,7 @@ fun App() {
                     onClose = { playlistViewModel.onIntent(PlaylistIntent.ClosePlayer) },
                     onClick = {
                         playlistViewModel.onIntent(PlaylistIntent.MaximizePlayer)
-                        navController.navigate(Navigation.MapleBgmPlay.destination)
+                        // navController.navigate(Navigation.MapleBgmPlay.destination)
                     }
                 )
             }
@@ -201,7 +205,7 @@ fun App() {
                     viewModel = playlistViewModel,
                     snackbarHostState = snackbarHostState,
                     onBack = {
-                        navController.popBackStack()
+                        // navController.popBackStack()
                         playlistViewModel.onIntent(PlaylistIntent.MinimizePlayer)
                     }
                 )

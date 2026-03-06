@@ -45,4 +45,6 @@ sealed class Navigation(
     data object BossPartyDetail : Navigation("bossPartyDetail")
 
     data object MapleBgmPlay : Navigation("mapleBgmPlay")
+
+    data object SearchMapleBgm : Navigation("searchMapleBgm")
 }
