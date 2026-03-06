@@ -75,7 +75,7 @@ class MapleCharacterRepositoryImpl(
             )
             val characters = response.toDomain(allWorldNames)
 
-            emit(ApiState.Success(characters))
+            emit(ApiState.Success(characters, "캐릭터 등록에 성공했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }

@@ -271,7 +271,8 @@ class BossReducer {
             currentState.copy(
                 isLoading = true,
                 showCreateDialog = false,
-                createdPartyId = intent.bossPartyId
+                createdPartyId = intent.bossPartyId,
+                successMessage = intent.successMessage
             )
         }
 
@@ -411,7 +412,8 @@ class BossReducer {
                 selectedHour = "",
                 selectedMinute = "",
                 alarmMessage = "",
-                createdPartyId = null
+                createdPartyId = null,
+                successMessage = intent.successMessage
             )
         }
 
@@ -457,7 +459,8 @@ class BossReducer {
                 selectedHour = "",
                 selectedMinute = "",
                 alarmMessage = "",
-                createdPartyId = null
+                createdPartyId = null,
+                successMessage = intent.successMessage
             )
         }
 
@@ -480,7 +483,8 @@ class BossReducer {
             currentState.copy(
                 isLoading = false,
                 bossPartyAlarmTimes = intent.bossPartyAlarmTimes,
-                createdPartyId = null
+                createdPartyId = null,
+                successMessage = intent.successMessage
             )
         }
 
@@ -574,7 +578,8 @@ class BossReducer {
                 isMemberInviteLoading = false,
                 showCharacterInvitationDialog = false,
                 searchKeyword = "",
-                createdPartyId = null
+                createdPartyId = null,
+                successMessage = intent.successMessage
             )
         }
 
@@ -596,7 +601,8 @@ class BossReducer {
         is BossIntent.KickBossPartyMemberSuccess -> {
             currentState.copy(
                 isLoading = false,
-                createdPartyId = null
+                createdPartyId = null,
+                successMessage = intent.successMessage
             )
         }
 
@@ -642,7 +648,8 @@ class BossReducer {
         is BossIntent.TransferBossPartyLeaderSuccess -> {
             currentState.copy(
                 isLoading = false,
-                createdPartyId = null
+                createdPartyId = null,
+                successMessage = intent.successMessage
             )
         }
 
@@ -988,6 +995,7 @@ class BossReducer {
                 uploadComment = "",
                 createdPartyId = null,
                 uploadSuccessEvent = Clock.System.now().toEpochMilliseconds(),
+                successMessage = intent.successMessage
             )
         }
 
@@ -1061,9 +1069,10 @@ class BossReducer {
             )
         }
 
-        is BossIntent.InitErrorMessage -> {
+        is BossIntent.InitMessage -> {
             currentState.copy(
                 isLoading = false,
+                successMessage = null,
                 errorMessage = null
             )
         }

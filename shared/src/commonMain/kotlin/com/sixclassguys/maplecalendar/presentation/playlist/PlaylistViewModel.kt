@@ -266,7 +266,7 @@ class PlaylistViewModel(
             createMapleBgmPlaylistUseCase(name, description, isPublic).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(PlaylistIntent.CreateMapleBgmPlaylistSuccess(state.data))
+                        onIntent(PlaylistIntent.CreateMapleBgmPlaylistSuccess(state.data, state.message))
                     }
 
                     is ApiState.Error -> {
@@ -284,7 +284,7 @@ class PlaylistViewModel(
             deleteMapleBgmPlaylistUseCase(playlistId).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(PlaylistIntent.DeleteMapleBgmPlaylistSuccess(state.data))
+                        onIntent(PlaylistIntent.DeleteMapleBgmPlaylistSuccess(state.data, state.message))
                     }
 
                     is ApiState.Error -> {
@@ -302,7 +302,7 @@ class PlaylistViewModel(
             addMapleBgmToPlaylistUseCase(playlistId, bgmId).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(PlaylistIntent.AddMapleBgmToPlaylistSuccess(state.data))
+                        onIntent(PlaylistIntent.AddMapleBgmToPlaylistSuccess(state.data, state.message))
                     }
 
                     is ApiState.Error -> {
@@ -320,7 +320,7 @@ class PlaylistViewModel(
             removeMapleBgmFromPlaylistUseCase(playlistId, bgmId).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(PlaylistIntent.RemoveMapleBgmFromPlaylistSuccess(state.data))
+                        onIntent(PlaylistIntent.RemoveMapleBgmFromPlaylistSuccess(state.data, state.message))
                     }
 
                     is ApiState.Error -> {
@@ -347,7 +347,7 @@ class PlaylistViewModel(
             updateMapleBgmPlaylistUseCase(playlistId, null, null, orderedIds).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(PlaylistIntent.UpdateMapleBgmPlaylistSuccess(state.data))
+                        onIntent(PlaylistIntent.UpdateMapleBgmPlaylistSuccess(state.data, state.message))
                     }
 
                     is ApiState.Error -> {

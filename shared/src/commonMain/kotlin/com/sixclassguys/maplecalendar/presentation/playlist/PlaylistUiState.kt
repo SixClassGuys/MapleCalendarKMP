@@ -49,5 +49,6 @@ data class PlaylistUiState(
     val showAddMapleBgmToPlaylistDialog: Boolean = false,
     val selectedPlaylistToAdd: MapleBgmPlaylist? = null,
 
+    val successMessage: String? = null,
     val errorMessage: String? = null
 )

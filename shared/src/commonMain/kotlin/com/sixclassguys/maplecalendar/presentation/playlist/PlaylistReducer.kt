@@ -301,7 +301,8 @@ class PlaylistReducer {
                 showNewPlaylistDialog = false,
                 newPlaylistName = "",
                 newPlaylistDescription = "",
-                isNewPlaylistPublic = false
+                isNewPlaylistPublic = false,
+                successMessage = intent.successMessage
             )
         }
 
@@ -321,7 +322,8 @@ class PlaylistReducer {
         is PlaylistIntent.DeleteMapleBgmPlaylistSuccess -> {
             currentState.copy(
                 isLoading = false,
-                myPlaylists = intent.playlists
+                myPlaylists = intent.playlists,
+                successMessage = intent.successMessage
             )
         }
 
@@ -362,7 +364,8 @@ class PlaylistReducer {
                 isLoading = false,
                 selectedPlaylist = intent.playlist,
                 showAddMapleBgmToPlaylistDialog = false,
-                selectedPlaylistToAdd = null
+                selectedPlaylistToAdd = null,
+                successMessage = intent.successMessage
             )
         }
 
@@ -383,7 +386,8 @@ class PlaylistReducer {
             currentState.copy(
                 isLoading = false,
                 selectedPlaylist = intent.playlist,
-                currentPlaylist = intent.playlist.bgms
+                currentPlaylist = intent.playlist.bgms,
+                successMessage = intent.successMessage
             )
         }
 
@@ -404,7 +408,8 @@ class PlaylistReducer {
             currentState.copy(
                 isLoading = false,
                 selectedPlaylist = intent.playlist,
-                currentPlaylist = intent.playlist.bgms
+                currentPlaylist = intent.playlist.bgms,
+                successMessage = intent.successMessage
             )
         }
 
@@ -421,9 +426,10 @@ class PlaylistReducer {
             )
         }
 
-        is PlaylistIntent.InitErrorMessage -> {
+        is PlaylistIntent.InitMessage -> {
             currentState.copy(
                 isLoading = false,
+                successMessage = null,
                 errorMessage = null
             )
         }

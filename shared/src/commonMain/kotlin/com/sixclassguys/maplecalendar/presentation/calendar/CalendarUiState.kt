@@ -25,5 +25,6 @@ data class CalendarUiState(
     val showAlarmDialog: Boolean = false,
     val scheduledNotifications: List<LocalDateTime> = emptyList(),
     val showBottomSheet: Boolean = false,
+    val successMessage: String? = null,
     val errorMessage: String? = null
 )

@@ -37,7 +37,7 @@ class AlarmRepositoryImpl(
             )
             val event = response.toDomain()
 
-            emit(ApiState.Success(event))
+            emit(ApiState.Success(event, "알람을 예약했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -57,7 +57,7 @@ class AlarmRepositoryImpl(
             val response = dataSource.toggleEventAlarm(accessToken, eventId)
             val event = response.toDomain()
 
-            emit(ApiState.Success(event))
+            emit(ApiState.Success(event, "알람 수신 여부를 변경했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }

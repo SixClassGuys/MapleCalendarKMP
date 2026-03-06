@@ -139,7 +139,7 @@ class CalendarViewModel(
             toggleEventAlarmUseCase(eventId).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(CalendarIntent.ToggleNotificationSuccess(state.data))
+                        onIntent(CalendarIntent.ToggleNotificationSuccess(state.data, state.message))
                     }
 
                     is ApiState.Error -> {
@@ -160,7 +160,7 @@ class CalendarViewModel(
             submitEventAlarmUseCase(eventId, isEnabled, alarmTimes).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(CalendarIntent.SubmitNotificationTimesSuccess(state.data))
+                        onIntent(CalendarIntent.SubmitNotificationTimesSuccess(state.data, state.message))
                     }
 
                     is ApiState.Error -> {

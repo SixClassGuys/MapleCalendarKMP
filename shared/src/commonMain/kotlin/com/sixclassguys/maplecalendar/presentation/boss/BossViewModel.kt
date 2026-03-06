@@ -140,7 +140,7 @@ class BossViewModel(
             createBossPartyUseCase(boss, bossDifficulty, title, description, characterId).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(BossIntent.CreateBossPartySuccess(state.data))
+                        onIntent(BossIntent.CreateBossPartySuccess(state.data, state.message))
                     }
 
                     is ApiState.Error -> {
@@ -247,7 +247,7 @@ class BossViewModel(
             ).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(BossIntent.CreateBossPartyAlarmSuccess(state.data))
+                        onIntent(BossIntent.CreateBossPartyAlarmSuccess(state.data, state.message))
                     }
 
                     is ApiState.Error -> {
@@ -297,7 +297,7 @@ class BossViewModel(
             ).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(BossIntent.UpdateBossPartyAlarmPeriodSuccess(state.data))
+                        onIntent(BossIntent.UpdateBossPartyAlarmPeriodSuccess(state.data, state.message))
                     }
 
                     is ApiState.Error -> {
@@ -316,7 +316,7 @@ class BossViewModel(
             deleteBossPartyAlarmUseCase(bossPartyId, alarmId).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(BossIntent.DeleteBossPartyAlarmSuccess(state.data))
+                        onIntent(BossIntent.DeleteBossPartyAlarmSuccess(state.data, state.message))
                     }
 
                     is ApiState.Error -> {
@@ -354,7 +354,7 @@ class BossViewModel(
             inviteBossPartyMemberUseCase(bossPartyId, characterId).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(BossIntent.InviteBossPartyMemberSuccess)
+                        onIntent(BossIntent.InviteBossPartyMemberSuccess(state.message))
                     }
 
                     is ApiState.Error -> {
@@ -373,7 +373,7 @@ class BossViewModel(
             kickBossPartyMemberUseCase(bossPartyId, characterId).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(BossIntent.KickBossPartyMemberSuccess)
+                        onIntent(BossIntent.KickBossPartyMemberSuccess(state.message))
                     }
 
                     is ApiState.Error -> {
@@ -392,11 +392,11 @@ class BossViewModel(
             leaveBossPartyUseCase(bossPartyId).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(BossIntent.KickBossPartyMemberSuccess)
+                        onIntent(BossIntent.LeaveBossPartySuccess(state.data))
                     }
 
                     is ApiState.Error -> {
-                        onIntent(BossIntent.KickBossPartyMemberFailed(state.message))
+                        onIntent(BossIntent.LeaveBossPartyFailed(state.message))
                     }
 
                     else -> {}
@@ -411,11 +411,11 @@ class BossViewModel(
             transferBossPartyLeaderUseCase(bossPartyId, characterId).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(BossIntent.KickBossPartyMemberSuccess)
+                        onIntent(BossIntent.TransferBossPartyLeaderSuccess(state.message))
                     }
 
                     is ApiState.Error -> {
-                        onIntent(BossIntent.KickBossPartyMemberFailed(state.message))
+                        onIntent(BossIntent.TransferBossPartyLeaderFailed(state.message))
                     }
 
                     else -> {}
@@ -610,7 +610,7 @@ class BossViewModel(
                 when (state) {
                     is ApiState.Success -> {
                         Napier.d("업로드 성공")
-                        onIntent(BossIntent.SubmitBossPartyBoardSuccess(state.data))
+                        onIntent(BossIntent.SubmitBossPartyBoardSuccess(state.data, state.message))
                     }
 
                     is ApiState.Error -> {

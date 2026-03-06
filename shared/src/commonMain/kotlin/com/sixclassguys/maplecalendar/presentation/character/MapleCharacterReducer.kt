@@ -141,7 +141,8 @@ class MapleCharacterReducer {
             currentState.copy(
                 isLoading = false,
                 characterSummeries = intent.newCharacterSummeries,
-                isSubmitSuccess = true
+                isSubmitSuccess = true,
+                successMessage = intent.successMessage
             )
         }
 
@@ -152,9 +153,10 @@ class MapleCharacterReducer {
             )
         }
 
-        is MapleCharacterIntent.InitErrorMessage -> {
+        is MapleCharacterIntent.InitMessage -> {
             currentState.copy(
                 isLoading = false,
+                successMessage = null,
                 errorMessage = null
             )
         }

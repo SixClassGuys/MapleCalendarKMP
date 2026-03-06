@@ -20,5 +20,6 @@ data class MapleCharacterUiState(
     val selectedCharacter: CharacterSummary? = null,
     val isSelectedCharacterOwned: Boolean = false,
     val isSelectedCharacterRepresentative: Boolean = false,
+    val successMessage: String? = null,
     val errorMessage: String? = null
 )

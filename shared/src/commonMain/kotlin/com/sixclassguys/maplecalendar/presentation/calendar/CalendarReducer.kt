@@ -220,7 +220,8 @@ class CalendarReducer {
                     isLoading = false,
                     selectedEvent = intent.event,
                     isNotificationEnabled = isNotificationEnabled,
-                    scheduledNotifications = scheduledNotifications
+                    scheduledNotifications = scheduledNotifications,
+                    successMessage = intent.successMessage
                 )
             }
 
@@ -251,7 +252,8 @@ class CalendarReducer {
                     isLoading = false,
                     selectedEvent = event,
                     isNotificationEnabled = isNotificationEnabled,
-                    scheduledNotifications = scheduledNotifications
+                    scheduledNotifications = scheduledNotifications,
+                    successMessage = intent.successMessage
                 )
             }
 
@@ -262,9 +264,10 @@ class CalendarReducer {
                 )
             }
 
-            is CalendarIntent.InitErrorMessage -> {
+            is CalendarIntent.InitMessage -> {
                 currentState.copy(
                     isLoading = false,
+                    successMessage = null,
                     errorMessage = null
                 )
             }

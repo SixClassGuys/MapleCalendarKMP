@@ -37,7 +37,7 @@ class AuthRepositoryImpl(
             // 데이터 계층의 모델을 도메인 모델로 변환
             val loginResult = response.toDomain()
             dataStore.setNotificationMode(loginResult.isGlobalAlarmEnabled)
-            emit(ApiState.Success(loginResult))
+            emit(ApiState.Success(loginResult, "로그인에 성공했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -75,7 +75,7 @@ class AuthRepositoryImpl(
             dataStore.setNotificationMode(loginResult.member.isGlobalAlarmEnabled)
             dataStore.saveJwtTokens(loginResult.accessToken, loginResult.refreshToken)
             dataStore.saveToken(fcmToken)
-            emit(ApiState.Success(loginResult))
+            emit(ApiState.Success(loginResult, "로그인에 성공했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -111,7 +111,7 @@ class AuthRepositoryImpl(
             dataStore.saveJwtTokens(loginResult.accessToken, loginResult.refreshToken)
 
             Napier.d("로그인 결과: $loginResult")
-            emit(ApiState.Success(loginResult))
+            emit(ApiState.Success(loginResult, "로그인에 성공했어요."))
         } catch (e: Exception) {
             Napier.e("로그인 실패: ${e.message}")
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
@@ -149,7 +149,7 @@ class AuthRepositoryImpl(
             dataStore.saveJwtTokens(loginResult.accessToken, loginResult.refreshToken)
 
             Napier.d("로그인 결과: $loginResult")
-            emit(ApiState.Success(loginResult))
+            emit(ApiState.Success(loginResult, "로그인에 성공했어요."))
         } catch (e: Exception) {
             Napier.e("로그인 실패: ${e.message}")
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
@@ -176,7 +176,7 @@ class AuthRepositoryImpl(
             val newRefreshToken = response.refreshToken
             dataStore.saveJwtTokens(accessToken, newRefreshToken)
 
-            emit(ApiState.Success(Unit))
+            emit(ApiState.Success(Unit, ""))
         } catch (e: Exception) {
             Napier.e("로그인 실패: ${e.message}")
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))

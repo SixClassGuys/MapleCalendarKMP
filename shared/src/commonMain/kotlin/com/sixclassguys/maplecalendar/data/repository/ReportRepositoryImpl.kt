@@ -35,7 +35,7 @@ class ReportRepositoryImpl(
                 )
             )
 
-            emit(ApiState.Success(Unit))
+            emit(ApiState.Success(Unit, "파티원을 신고했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }

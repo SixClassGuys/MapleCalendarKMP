@@ -62,5 +62,8 @@ data class BossUiState(
     val uploadImage: List<ByteArray> = emptyList(),
     val uploadComment: String = "",
     val uploadSuccessEvent: Long = 0L,
+
+    // 상태 메시지
+    val successMessage: String? = null,
     val errorMessage: String? = null
 )

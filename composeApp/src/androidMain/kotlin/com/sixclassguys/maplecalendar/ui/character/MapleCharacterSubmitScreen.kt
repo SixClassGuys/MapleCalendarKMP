@@ -1,5 +1,6 @@
 package com.sixclassguys.maplecalendar.ui.character
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +39,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -64,6 +66,7 @@ fun MapleCharacterSubmitScreen(
     onBack: () -> Unit,
     onSubmitSuccess: () -> Unit
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -96,11 +99,19 @@ fun MapleCharacterSubmitScreen(
         }
     }
 
+    LaunchedEffect(uiState.successMessage) {
+        val message = uiState.successMessage
+        if (!message.isNullOrBlank()) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            viewModel.onIntent(MapleCharacterIntent.InitMessage)
+        }
+    }
+
     LaunchedEffect(uiState.errorMessage) {
         val message = uiState.errorMessage
         if (message != null) {
             snackbarHostState.showSnackbar(message = message)
-            viewModel.onIntent(MapleCharacterIntent.InitErrorMessage)
+            viewModel.onIntent(MapleCharacterIntent.InitMessage)
         }
     }
 

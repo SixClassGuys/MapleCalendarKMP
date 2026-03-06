@@ -113,11 +113,19 @@ fun PlaylistScreen(
         }
     }
 
+    LaunchedEffect(uiState.successMessage) {
+        val message = uiState.successMessage
+        if (!message.isNullOrBlank()) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            viewModel.onIntent(PlaylistIntent.InitMessage)
+        }
+    }
+
     LaunchedEffect(uiState.errorMessage) {
         val message = uiState.errorMessage
         if (message != null) {
             snackbarHostState.showSnackbar(message = message)
-            viewModel.onIntent(PlaylistIntent.InitErrorMessage)
+            viewModel.onIntent(PlaylistIntent.InitMessage)
         }
     }
 

@@ -13,7 +13,8 @@ sealed class PlaylistIntent {
 
     data object InitSelectedPlaylist : PlaylistIntent()
 
-    data class FetchMapleBgmDetailSuccess(val bgm: MapleBgm, val bgms: List<MapleBgm>) : PlaylistIntent()
+    data class FetchMapleBgmDetailSuccess(val bgm: MapleBgm, val bgms: List<MapleBgm>) :
+        PlaylistIntent()
 
     data class FetchMapleBgmDetailFailure(val message: String) : PlaylistIntent()
 
@@ -43,13 +44,15 @@ sealed class PlaylistIntent {
 
     data object FetchRecentMapleBgms : PlaylistIntent()
 
-    data class FetchRecentMapleBgmsSuccess(val recentMapleBgmsHistory: MapleBgmHistory) : PlaylistIntent()
+    data class FetchRecentMapleBgmsSuccess(val recentMapleBgmsHistory: MapleBgmHistory) :
+        PlaylistIntent()
 
     data class FetchRecentMapleBgmsFailure(val message: String) : PlaylistIntent()
 
     data class SearchMapleBgms(val query: String) : PlaylistIntent()
 
-    data class SearchMapleBgmsSuccess(val searchedMapleBgmsHistory: MapleBgmHistory) : PlaylistIntent()
+    data class SearchMapleBgmsSuccess(val searchedMapleBgmsHistory: MapleBgmHistory) :
+        PlaylistIntent()
 
     data class SearchMapleBgmsFailure(val message: String) : PlaylistIntent()
 
@@ -61,7 +64,8 @@ sealed class PlaylistIntent {
 
     data object FetchMapleBgmPlaylists : PlaylistIntent()
 
-    data class FetchMapleBgmPlaylistsSuccess(val playlists: List<MapleBgmPlaylist>) : PlaylistIntent()
+    data class FetchMapleBgmPlaylistsSuccess(val playlists: List<MapleBgmPlaylist>) :
+        PlaylistIntent()
 
     data class FetchMapleBgmPlaylistsFailure(val message: String) : PlaylistIntent()
 
@@ -83,13 +87,19 @@ sealed class PlaylistIntent {
 
     data object CreateMapleBgmPlaylist : PlaylistIntent()
 
-    data class CreateMapleBgmPlaylistSuccess(val playlists: List<MapleBgmPlaylist>) : PlaylistIntent()
+    data class CreateMapleBgmPlaylistSuccess(
+        val playlists: List<MapleBgmPlaylist>,
+        val successMessage: String?
+    ) : PlaylistIntent()
 
     data class CreateMapleBgmPlaylistFailure(val message: String) : PlaylistIntent()
 
     data class DeleteMapleBgmPlaylist(val playlistId: Long) : PlaylistIntent()
 
-    data class DeleteMapleBgmPlaylistSuccess(val playlists: List<MapleBgmPlaylist>) : PlaylistIntent()
+    data class DeleteMapleBgmPlaylistSuccess(
+        val playlists: List<MapleBgmPlaylist>,
+        val successMessage: String?
+    ) : PlaylistIntent()
 
     data class DeleteMapleBgmPlaylistFailure(val message: String) : PlaylistIntent()
 
@@ -101,23 +111,33 @@ sealed class PlaylistIntent {
 
     data class AddMapleBgmToPlaylist(val playlistId: Long, val bgmId: Long) : PlaylistIntent()
 
-    data class AddMapleBgmToPlaylistSuccess(val playlist: MapleBgmPlaylist) : PlaylistIntent()
+    data class AddMapleBgmToPlaylistSuccess(
+        val playlist: MapleBgmPlaylist,
+        val successMessage: String?
+    ) : PlaylistIntent()
 
     data class AddMapleBgmToPlaylistFailure(val message: String) : PlaylistIntent()
 
     data class RemoveMapleBgmFromPlaylist(val playlistId: Long, val bgmId: Long) : PlaylistIntent()
 
-    data class RemoveMapleBgmFromPlaylistSuccess(val playlist: MapleBgmPlaylist) : PlaylistIntent()
+    data class RemoveMapleBgmFromPlaylistSuccess(
+        val playlist: MapleBgmPlaylist,
+        val successMessage: String?
+    ) : PlaylistIntent()
 
     data class RemoveMapleBgmFromPlaylistFailure(val message: String) : PlaylistIntent()
 
-    data class UpdateMapleBgmPlaylist(val playlistId: Long, val from: Int, val to: Int) : PlaylistIntent()
+    data class UpdateMapleBgmPlaylist(val playlistId: Long, val from: Int, val to: Int) :
+        PlaylistIntent()
 
-    data class UpdateMapleBgmPlaylistSuccess(val playlist: MapleBgmPlaylist) : PlaylistIntent()
+    data class UpdateMapleBgmPlaylistSuccess(
+        val playlist: MapleBgmPlaylist,
+        val successMessage: String?
+    ) : PlaylistIntent()
 
     data class UpdateMapleBgmPlaylistFailure(val message: String) : PlaylistIntent()
 
     data class SelectPlaylistMenu(val selectedPlaylistMenu: PlaylistTab) : PlaylistIntent()
 
-    data object InitErrorMessage : PlaylistIntent()
+    data object InitMessage : PlaylistIntent()
 }

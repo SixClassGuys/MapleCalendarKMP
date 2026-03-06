@@ -64,7 +64,8 @@ sealed class BossIntent {
 
     data object CreateBossParty : BossIntent()
 
-    data class CreateBossPartySuccess(val bossPartyId: Long) : BossIntent()
+    data class CreateBossPartySuccess(val bossPartyId: Long, val successMessage: String?) :
+        BossIntent()
 
     data class CreateBossPartyFailed(val message: String) : BossIntent()
 
@@ -94,8 +95,10 @@ sealed class BossIntent {
 
     data object CreateBossPartyAlarm : BossIntent()
 
-    data class CreateBossPartyAlarmSuccess(val bossPartyAlarmTimes: List<BossPartyAlarmTime>) :
-        BossIntent()
+    data class CreateBossPartyAlarmSuccess(
+        val bossPartyAlarmTimes: List<BossPartyAlarmTime>,
+        val successMessage: String?
+    ) : BossIntent()
 
     data class CreateBossPartyAlarmFailed(val message: String) : BossIntent()
 
@@ -105,15 +108,19 @@ sealed class BossIntent {
 
     data object UpdateBossPartyAlarmPeriod : BossIntent()
 
-    data class UpdateBossPartyAlarmPeriodSuccess(val bossPartyAlarmTimes: List<BossPartyAlarmTime>) :
-        BossIntent()
+    data class UpdateBossPartyAlarmPeriodSuccess(
+        val bossPartyAlarmTimes: List<BossPartyAlarmTime>,
+        val successMessage: String?
+    ) : BossIntent()
 
     data class UpdateBossPartyAlarmPeriodFailed(val message: String) : BossIntent()
 
     data class DeleteBossPartyAlarm(val alarmId: Long) : BossIntent()
 
-    data class DeleteBossPartyAlarmSuccess(val bossPartyAlarmTimes: List<BossPartyAlarmTime>) :
-        BossIntent()
+    data class DeleteBossPartyAlarmSuccess(
+        val bossPartyAlarmTimes: List<BossPartyAlarmTime>,
+        val successMessage: String?
+    ) : BossIntent()
 
     data class DeleteBossPartyAlarmFailed(val message: String) : BossIntent()
 
@@ -129,19 +136,20 @@ sealed class BossIntent {
 
     data class SearchCharacters(val name: String, val allWorldNames: List<String>) : BossIntent()
 
-    data class SearchCharactersSuccess(val characters: Map<String, Map<String, List<CharacterSummary>>>) : BossIntent()
+    data class SearchCharactersSuccess(val characters: Map<String, Map<String, List<CharacterSummary>>>) :
+        BossIntent()
 
     data class SearchCharactersFailed(val message: String) : BossIntent()
 
     data class InviteBossPartyMember(val characterId: Long) : BossIntent()
 
-    data object InviteBossPartyMemberSuccess : BossIntent()
+    data class InviteBossPartyMemberSuccess(val successMessage: String?) : BossIntent()
 
     data class InviteBossPartyMemberFailed(val message: String) : BossIntent()
 
     data class KickBossPartyMember(val characterId: Long) : BossIntent()
 
-    data object KickBossPartyMemberSuccess : BossIntent()
+    data class KickBossPartyMemberSuccess(val successMessage: String?) : BossIntent()
 
     data class KickBossPartyMemberFailed(val message: String) : BossIntent()
 
@@ -153,7 +161,7 @@ sealed class BossIntent {
 
     data class TransferBossPartyLeader(val characterId: Long) : BossIntent()
 
-    data object TransferBossPartyLeaderSuccess : BossIntent()
+    data class TransferBossPartyLeaderSuccess(val successMessage: String?) : BossIntent()
 
     data class TransferBossPartyLeaderFailed(val message: String) : BossIntent()
 
@@ -246,7 +254,10 @@ sealed class BossIntent {
 
     data object SubmitBossPartyBoard : BossIntent()
 
-    data class SubmitBossPartyBoardSuccess(val bossPartyBoard: BossPartyBoard) : BossIntent()
+    data class SubmitBossPartyBoardSuccess(
+        val bossPartyBoard: BossPartyBoard,
+        val successMessage: String?
+    ) : BossIntent()
 
     data class SubmitBossPartyBoardFailed(val message: String) : BossIntent()
 
@@ -265,5 +276,5 @@ sealed class BossIntent {
     data class SelectBossPartyDetailMenu(val selectedBossPartyDetailMenu: BossPartyTab) :
         BossIntent()
 
-    data object InitErrorMessage : BossIntent()
+    data object InitMessage : BossIntent()
 }

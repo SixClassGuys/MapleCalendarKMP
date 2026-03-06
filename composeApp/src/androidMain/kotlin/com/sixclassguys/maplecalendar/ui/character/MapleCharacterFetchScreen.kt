@@ -81,7 +81,7 @@ fun MapleCharacterFetchScreen(
         val message = uiState.errorMessage
         if (message != null) {
             snackbarHostState.showSnackbar(message = message)
-            viewModel.onIntent(MapleCharacterIntent.InitErrorMessage)
+            viewModel.onIntent(MapleCharacterIntent.InitMessage)
         }
     }
 

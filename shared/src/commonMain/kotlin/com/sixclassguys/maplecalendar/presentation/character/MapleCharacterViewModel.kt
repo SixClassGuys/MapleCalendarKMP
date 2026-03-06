@@ -73,7 +73,7 @@ class MapleCharacterViewModel(
                 Napier.d("State: $state")
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(MapleCharacterIntent.SubmitNewCharactersSuccess(state.data))
+                        onIntent(MapleCharacterIntent.SubmitNewCharactersSuccess(state.data, state.message))
                     }
 
                     is ApiState.Error -> {

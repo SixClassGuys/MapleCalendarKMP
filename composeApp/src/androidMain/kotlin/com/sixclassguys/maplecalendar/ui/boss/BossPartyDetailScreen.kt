@@ -183,11 +183,19 @@ fun BossPartyDetailScreen(
         }
     }
 
+    LaunchedEffect(uiState.successMessage) {
+        val message = uiState.successMessage
+        if (!message.isNullOrBlank()) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            viewModel.onIntent(BossIntent.InitMessage)
+        }
+    }
+
     LaunchedEffect(uiState.errorMessage) {
         val message = uiState.errorMessage
         if (message != null) {
             snackbarHostState.showSnackbar(message = message)
-            viewModel.onIntent(BossIntent.InitErrorMessage)
+            viewModel.onIntent(BossIntent.InitMessage)
         }
     }
 

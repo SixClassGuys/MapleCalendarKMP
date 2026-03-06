@@ -46,7 +46,7 @@ fun MapleCalendarScreen(
         val message = uiState.errorMessage
         if (message != null) {
             snackbarHostState.showSnackbar(message = message)
-            viewModel.onIntent(CalendarIntent.InitErrorMessage)
+            viewModel.onIntent(CalendarIntent.InitMessage)
         }
     }
 

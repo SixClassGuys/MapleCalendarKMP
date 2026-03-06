@@ -38,7 +38,7 @@ sealed class CalendarIntent {
 
     data object ToggleNotification : CalendarIntent()
 
-    data class ToggleNotificationSuccess(val event: MapleEvent) : CalendarIntent()
+    data class ToggleNotificationSuccess(val event: MapleEvent, val successMessage: String?) : CalendarIntent()
 
     data class ToggleNotificationFailed(val message: String) : CalendarIntent()
 
@@ -49,7 +49,7 @@ sealed class CalendarIntent {
         val dates: List<LocalDateTime>
     ) : CalendarIntent()
 
-    data class SubmitNotificationTimesSuccess(val event: MapleEvent) : CalendarIntent()
+    data class SubmitNotificationTimesSuccess(val event: MapleEvent, val successMessage: String?) : CalendarIntent()
 
     data class SubmitNotificationTimesFailed(val message: String) : CalendarIntent()
 
@@ -71,5 +71,5 @@ sealed class CalendarIntent {
         val apiState: ApiState<List<MapleEvent>>
     ) : CalendarIntent()
 
-    data object InitErrorMessage : CalendarIntent()
+    data object InitMessage : CalendarIntent()
 }

@@ -21,7 +21,8 @@ sealed class MapleCharacterIntent {
 
     data class SubmitApiKey(val allWorldNames: List<String>) : MapleCharacterIntent()
 
-    data class SubmitApiKeySuccess(val newCharacterSummeries: Map<String, Map<String, List<CharacterSummary>>>) : MapleCharacterIntent()
+    data class SubmitApiKeySuccess(val newCharacterSummeries: Map<String, Map<String, List<CharacterSummary>>>) :
+        MapleCharacterIntent()
 
     data class SubmitApiKeyFailed(val message: String) : MapleCharacterIntent()
 
@@ -41,9 +42,12 @@ sealed class MapleCharacterIntent {
 
     data class SubmitNewCharacters(val allWorldNames: List<String>) : MapleCharacterIntent()
 
-    data class SubmitNewCharactersSuccess(val newCharacterSummeries: Map<String, Map<String, List<CharacterSummary>>>) : MapleCharacterIntent()
+    data class SubmitNewCharactersSuccess(
+        val newCharacterSummeries: Map<String, Map<String, List<CharacterSummary>>>,
+        val successMessage: String?
+    ) : MapleCharacterIntent()
 
     data class SubmitNewCharactersFailed(val message: String) : MapleCharacterIntent()
 
-    data object InitErrorMessage : MapleCharacterIntent()
+    data object InitMessage : MapleCharacterIntent()
 }

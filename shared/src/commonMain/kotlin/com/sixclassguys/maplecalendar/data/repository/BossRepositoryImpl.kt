@@ -84,7 +84,7 @@ class BossRepositoryImpl(
             )
             val bossPartyId = response.partyId
 
-            emit(ApiState.Success(bossPartyId))
+            emit(ApiState.Success(bossPartyId, "보스 파티 생성에 성공했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -210,7 +210,7 @@ class BossRepositoryImpl(
             )
             val alarmTimes = response.map { it.toDomain() }
 
-            emit(ApiState.Success(alarmTimes))
+            emit(ApiState.Success(alarmTimes, "알람 예약에 성공했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -247,7 +247,7 @@ class BossRepositoryImpl(
             )
             val alarmTimes = response.map { it.toDomain() }
 
-            emit(ApiState.Success(alarmTimes))
+            emit(ApiState.Success(alarmTimes, "알람 주기 변경에 성공했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -274,7 +274,7 @@ class BossRepositoryImpl(
             )
             val alarmTimes = response.map { it.toDomain() }
 
-            emit(ApiState.Success(alarmTimes))
+            emit(ApiState.Success(alarmTimes, "예약된 알람을 제거했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -300,7 +300,7 @@ class BossRepositoryImpl(
                 characterId = characterId
             )
 
-            emit(ApiState.Success(Unit))
+            emit(ApiState.Success(Unit, "파티원 초대에 성공했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -322,7 +322,7 @@ class BossRepositoryImpl(
                 bossPartyId = bossPartyId
             )
 
-            emit(ApiState.Success(response))
+            emit(ApiState.Success(response, "초대 수락에 성공했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -345,7 +345,7 @@ class BossRepositoryImpl(
             )
             val bossParties = response.map { it.toDomain() }
 
-            emit(ApiState.Success(bossParties))
+            emit(ApiState.Success(bossParties, "초대를 거절했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -371,7 +371,7 @@ class BossRepositoryImpl(
                 characterId = characterId
             )
 
-            emit(ApiState.Success(Unit))
+            emit(ApiState.Success(Unit, "파티원 추방에 성공했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -394,7 +394,7 @@ class BossRepositoryImpl(
             )
             val bossParties = response.map { it.toDomain() }
 
-            emit(ApiState.Success(bossParties))
+            emit(ApiState.Success(bossParties, "파티를 나갔어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -420,7 +420,7 @@ class BossRepositoryImpl(
                 targetCharacterId = targetCharacterId
             )
 
-            emit(ApiState.Success(Unit))
+            emit(ApiState.Success(Unit, "파티장 양도에 성공했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -619,7 +619,7 @@ class BossRepositoryImpl(
             Napier.d("Response: $response")
             val board = response.toDomain()
 
-            emit(ApiState.Success(board))
+            emit(ApiState.Success(board, "게시글 작성에 성공했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }

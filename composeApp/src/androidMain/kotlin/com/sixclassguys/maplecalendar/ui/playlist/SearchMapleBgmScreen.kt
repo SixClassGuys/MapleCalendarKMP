@@ -1,5 +1,6 @@
 package com.sixclassguys.maplecalendar.ui.playlist
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -45,6 +47,7 @@ fun SearchMapleBgmScreen(
     viewModel: PlaylistViewModel,
     snackbarHostState: SnackbarHostState
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current // 1. 포커스 매니저 선언
@@ -72,11 +75,19 @@ fun SearchMapleBgmScreen(
         focusRequester.requestFocus()
     }
 
+    LaunchedEffect(uiState.successMessage) {
+        val message = uiState.successMessage
+        if (!message.isNullOrBlank()) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            viewModel.onIntent(PlaylistIntent.InitMessage)
+        }
+    }
+
     LaunchedEffect(uiState.errorMessage) {
         val message = uiState.errorMessage
         if (message != null) {
             snackbarHostState.showSnackbar(message = message)
-            viewModel.onIntent(PlaylistIntent.InitErrorMessage)
+            viewModel.onIntent(PlaylistIntent.InitMessage)
         }
     }
 

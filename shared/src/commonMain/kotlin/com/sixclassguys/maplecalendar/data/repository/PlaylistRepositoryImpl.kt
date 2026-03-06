@@ -226,7 +226,7 @@ class PlaylistRepositoryImpl(
 
             val playlists = response.map { it.toDomain() }
 
-            emit(ApiState.Success(playlists))
+            emit(ApiState.Success(playlists, "플레이리스트 생성에 성공했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -250,7 +250,7 @@ class PlaylistRepositoryImpl(
 
             val playlists = response.map { it.toDomain() }
 
-            emit(ApiState.Success(playlists))
+            emit(ApiState.Success(playlists, "플레이리스트 제거에 성공했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -278,7 +278,7 @@ class PlaylistRepositoryImpl(
 
             val playlist = response.toDomain()
 
-            emit(ApiState.Success(playlist))
+            emit(ApiState.Success(playlist, "BGM을 추가했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -306,7 +306,7 @@ class PlaylistRepositoryImpl(
 
             val playlist = response.toDomain()
 
-            emit(ApiState.Success(playlist))
+            emit(ApiState.Success(playlist, "플레이리스트에서 BGM을 제거했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
@@ -340,7 +340,7 @@ class PlaylistRepositoryImpl(
 
             val playlist = response.toDomain()
 
-            emit(ApiState.Success(playlist))
+            emit(ApiState.Success(playlist, "플레이리스트를 업데이트했어요."))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "인증 서버와 통신 중 오류가 발생했습니다."))
         }
