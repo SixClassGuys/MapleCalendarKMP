@@ -132,6 +132,7 @@ fun SearchMapleBgmScreen(
                             bgm = bgm,
                             onNavigateToBgmPlay = {
                                 focusManager.clearFocus()
+                                viewModel.onIntent(PlaylistIntent.InitSelectedPlaylist)
                                 viewModel.onIntent(PlaylistIntent.PlayMapleBgm(bgm, uiState.searchedMapleBgms))
                                 viewModel.onIntent(PlaylistIntent.MaximizePlayer)
                             },
