@@ -86,6 +86,12 @@ kotlin {
             implementation(libs.coil.gif)
             implementation(libs.coil.network.okhttp)
 
+            // Firebase BoM
+            implementation(project.dependencies.platform(libs.firebase.bom))
+
+            // Firebase Auth
+            implementation(libs.firebase.auth.ktx)
+
             // ExoPlayer
             implementation(libs.bundles.media3)
         }

@@ -104,7 +104,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 16
-        versionName = "0.3.6"
+        versionName = "0.4.0"
 
         ndk {
             // 구글 플레이에서 요구하는 64비트 아키텍처를 포함합니다.
