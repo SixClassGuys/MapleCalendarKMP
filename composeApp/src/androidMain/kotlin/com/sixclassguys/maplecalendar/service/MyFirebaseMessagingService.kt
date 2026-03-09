@@ -39,12 +39,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
 
     override fun onMessageReceived(message: RemoteMessage) {
         CoroutineScope(Dispatchers.IO).launch {
-            val isEnabled = dataStore.isNotificationMode.first()
-            if (!isEnabled) {
-                Napier.d("알림이 꺼져 있습니다.")
-                return@launch
-            }
-
             // 1. 공통 데이터 추출
             val title = message.notification?.title ?: message.data["title"] ?: "Maplendar"
             val body = message.notification?.body ?: message.data["body"] ?: "내용이 없습니다."
@@ -52,17 +46,18 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
             val targetId = message.data["targetId"]?.toLongOrNull() ?: 0L
             val contentId = message.data["contentId"]?.toLongOrNull() ?: 0L
 
+            handleInternalEvent(type, contentId, message.data)
+
+            val isEnabled = dataStore.isNotificationMode.first()
+            if (!isEnabled) {
+                Napier.d("알림이 꺼져 있습니다.")
+                return@launch
+            }
+
             // 2. 타입별 처리
             when (type) {
                 "BOSS", "MEMBER_JOINED", "MEMBER_KICKED", "MEMBER_LEFT", "LEADER_TRANSFERRED" -> {
-                    // 보스 파티 전용 알림 표시
-                    eventBus.emitBossPartyId(contentId)
                     showBossNotification(title, body, contentId)
-
-                    val acceptIntent = message.data["acceptIntent"]
-                    if (acceptIntent == "GO_TO_BOSS_PARTY") {
-                        eventBus.emitAcceptedPartyId(contentId)
-                    }
                 }
 
                 "BOSSCHAT" -> {
@@ -70,24 +65,47 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                 }
 
                 "BOSS_INVITATION", "INVITATION_DECLINED" -> {
-                    eventBus.emitInvitedPartyId(contentId)
                     showBossNotification(title, body, contentId, type)
                 }
 
-                "REFRESH_BOSS_ALARM" -> {
-                    eventBus.emitBossPartyId(contentId)
-                }
-
                 "YOU_ARE_KICKED", "YOU_ARE_LEAVED" -> {
-                    eventBus.emitKickedPartyId(contentId)
                     showBossNotification(title, body, 0L, type)
                 }
 
                 else -> {
-                    // 기존 이벤트 알림 로직 (eventId 기반)
-                    eventBus.emitEvent(contentId)
                     showEventNotification(title, body, contentId)
                 }
+            }
+        }
+    }
+
+    // 별도의 함수로 분리하여 관리하면 코드가 더 깔끔해집니다.
+    private suspend fun handleInternalEvent(type: String?, contentId: Long, data: Map<String, String>) {
+        when (type) {
+            "BOSS", "MEMBER_JOINED", "MEMBER_KICKED", "MEMBER_LEFT", "LEADER_TRANSFERRED" -> {
+                eventBus.emitBossPartyId(contentId)
+
+                // 수락 의도 파악 등 추가 로직
+                if (data["acceptIntent"] == "GO_TO_BOSS_PARTY") {
+                    eventBus.emitAcceptedPartyId(contentId)
+                }
+            }
+
+            "BOSS_INVITATION", "INVITATION_DECLINED" -> {
+                eventBus.emitInvitedPartyId(contentId)
+            }
+
+
+            "REFRESH_BOSS_ALARM" -> {
+                eventBus.emitBossPartyId(contentId)
+            }
+
+            "YOU_ARE_KICKED", "YOU_ARE_LEAVED" -> {
+                eventBus.emitKickedPartyId(contentId)
+            }
+
+            else -> {
+                eventBus.emitEvent(contentId)
             }
         }
     }
