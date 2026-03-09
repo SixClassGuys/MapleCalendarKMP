@@ -284,6 +284,15 @@ fun NavHost(
                             println("Debug: Activity not found from context $context")
                         }
                     },
+                    onAppleLoginClick = {
+                        val activity = context.findActivity()
+                        if (activity != null) {
+                            loginViewModel.onIntent(LoginIntent.ClickAppleLoginInAndroid(activity))
+                        } else {
+                            // Activity를 찾지 못했을 때의 예외 처리 (로그 확인용)
+                            println("Debug: Activity not found from context $context")
+                        }
+                    },
                     onNavigateToRegistration = {
                         // navController.navigate(Navigation.CharacterRegistration.destination)
                     },
