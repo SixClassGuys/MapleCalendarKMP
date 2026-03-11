@@ -1,6 +1,7 @@
 package com.sixclassguys.maplecalendar.di
 
 import com.sixclassguys.maplecalendar.data.repository.AlarmRepositoryImpl
+import com.sixclassguys.maplecalendar.data.repository.AppConfigRepositoryImpl
 import com.sixclassguys.maplecalendar.data.repository.AuthRepositoryImpl
 import com.sixclassguys.maplecalendar.data.repository.BossRepositoryImpl
 import com.sixclassguys.maplecalendar.data.repository.CharacterRepositoryImpl
@@ -12,6 +13,7 @@ import com.sixclassguys.maplecalendar.data.repository.NotificationEventBusImpl
 import com.sixclassguys.maplecalendar.data.repository.PlaylistRepositoryImpl
 import com.sixclassguys.maplecalendar.data.repository.ReportRepositoryImpl
 import com.sixclassguys.maplecalendar.domain.repository.AlarmRepository
+import com.sixclassguys.maplecalendar.domain.repository.AppConfigRepository
 import com.sixclassguys.maplecalendar.domain.repository.AuthRepository
 import com.sixclassguys.maplecalendar.domain.repository.BossRepository
 import com.sixclassguys.maplecalendar.domain.repository.CharacterRepository
@@ -27,6 +29,7 @@ import com.sixclassguys.maplecalendar.domain.usecase.AddMapleBgmToPlaylistUseCas
 import com.sixclassguys.maplecalendar.domain.usecase.AppleLoginUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.AutoLoginUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.CheckCharacterAuthorityUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.CheckLatestVersionUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ConnectBossChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.CreateBossPartyAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.CreateBossPartyBoardUseCase
@@ -120,6 +123,7 @@ val appModule = module {
 }
 
 val repositoryModule = module {
+    single<AppConfigRepository> { AppConfigRepositoryImpl(get()) }
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
     single<MemberRepository> { MemberRepositoryImpl(get(), get()) }
     single<CharacterRepository> { CharacterRepositoryImpl(get(), get()) }
@@ -135,6 +139,7 @@ val repositoryModule = module {
 
 val useCaseModule = module {
     // UseCase 객체 생성
+    single<CheckLatestVersionUseCase> { CheckLatestVersionUseCase(get()) }
     single<GoogleLoginUseCase> { GoogleLoginUseCase(get()) }
     single<AppleLoginUseCase> { AppleLoginUseCase(get()) }
     single<AutoLoginUseCase> { AutoLoginUseCase(get()) }
@@ -210,6 +215,7 @@ val viewModelModule = module {
     // ViewModel (화면마다 생명주기를 관리하기 위해 factory 사용)
     viewModel {
         HomeViewModel(
+            get(),
             get(),
             get(),
             get(),

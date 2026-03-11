@@ -2,6 +2,8 @@ package com.sixclassguys.maplecalendar.di
 
 import com.sixclassguys.maplecalendar.data.remote.datasource.AlarmDataSource
 import com.sixclassguys.maplecalendar.data.remote.datasource.AlarmDataSourceImpl
+import com.sixclassguys.maplecalendar.data.remote.datasource.AppConfigDataSource
+import com.sixclassguys.maplecalendar.data.remote.datasource.AppConfigDataSourceImpl
 import com.sixclassguys.maplecalendar.data.remote.datasource.AuthDataSource
 import com.sixclassguys.maplecalendar.data.remote.datasource.AuthDataSourceImpl
 import com.sixclassguys.maplecalendar.data.remote.datasource.BossDataSource
@@ -121,6 +123,9 @@ val networkModule = module {
             }
         }
     }
+
+    // AppConfigDataSource 객체 주입
+    single<AppConfigDataSource> { AppConfigDataSourceImpl(get(named("BackendClient"))) }
 
     // Alarm DataSource 객체 주입
     single<AlarmDataSource> { AlarmDataSourceImpl(get(named("BackendClient"))) }
