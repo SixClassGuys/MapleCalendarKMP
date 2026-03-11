@@ -46,6 +46,7 @@ import com.sixclassguys.maplecalendar.presentation.character.MapleCharacterViewM
 import com.sixclassguys.maplecalendar.presentation.home.HomeViewModel
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
+import com.sixclassguys.maplecalendar.presentation.setting.SettingViewModel
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleWhite
 import com.sixclassguys.maplecalendar.ui.component.BottomNavigationBar
@@ -65,6 +66,7 @@ fun App() {
     val activity = context as ComponentActivity
 
     val homeViewModel: HomeViewModel = koinViewModel(viewModelStoreOwner = activity)
+    val settingViewModel: SettingViewModel = koinViewModel(viewModelStoreOwner = activity)
     val calendarViewModel: CalendarViewModel = koinViewModel(viewModelStoreOwner = activity)
     val mapleCharacterViewModel: MapleCharacterViewModel = koinViewModel(viewModelStoreOwner = activity)
     val bossViewModel: BossViewModel = koinViewModel(viewModelStoreOwner = activity)
@@ -172,6 +174,7 @@ fun App() {
                 startDestination = "main_flow",
                 snackbarHostState = snackbarHostState,
                 homeViewModel = homeViewModel,
+                settingViewModel = settingViewModel,
                 calendarViewModel = calendarViewModel,
                 mapleCharacterViewModel = mapleCharacterViewModel,
                 bossViewModel = bossViewModel,

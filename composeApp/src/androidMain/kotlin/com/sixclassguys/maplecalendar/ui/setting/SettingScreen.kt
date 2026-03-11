@@ -49,7 +49,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SettingScreen(
-    viewModel: SettingViewModel = koinViewModel(),
+    viewModel: SettingViewModel,
     homeViewModel: HomeViewModel,
     playlistViewModel: PlaylistViewModel,
     snackbarHostState: SnackbarHostState,

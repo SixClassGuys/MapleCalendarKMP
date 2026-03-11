@@ -26,6 +26,8 @@ import com.sixclassguys.maplecalendar.presentation.login.LoginIntent
 import com.sixclassguys.maplecalendar.presentation.login.LoginViewModel
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
+import com.sixclassguys.maplecalendar.presentation.setting.SettingIntent
+import com.sixclassguys.maplecalendar.presentation.setting.SettingViewModel
 import com.sixclassguys.maplecalendar.ui.board.BoardScreen
 import com.sixclassguys.maplecalendar.ui.boss.BossPartyCreateScreen
 import com.sixclassguys.maplecalendar.ui.boss.BossPartyDetailScreen
@@ -56,6 +58,7 @@ fun NavHost(
     startDestination: String,
     snackbarHostState: SnackbarHostState,
     homeViewModel: HomeViewModel,
+    settingViewModel: SettingViewModel,
     calendarViewModel: CalendarViewModel,
     mapleCharacterViewModel: MapleCharacterViewModel,
     bossViewModel: BossViewModel,
@@ -252,6 +255,7 @@ fun NavHost(
 
         composable(Navigation.Setting.destination) {
             SettingScreen(
+                viewModel = settingViewModel,
                 homeViewModel = homeViewModel,
                 playlistViewModel = playlistViewModel,
                 snackbarHostState = snackbarHostState

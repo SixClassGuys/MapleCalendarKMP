@@ -49,6 +49,7 @@ class HomeReducer {
                 isLoading = false,
                 isLoginSuccess = intent.isLoginSuccess,
                 member = intent.member,
+                isGlobalAlarmEnabled = intent.member.isGlobalAlarmEnabled,
                 errorMessage = null
             )
         }
