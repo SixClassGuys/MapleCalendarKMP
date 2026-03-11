@@ -20,11 +20,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarIntent
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarViewModel
+import com.sixclassguys.maplecalendar.theme.MapleWhite
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.BossScheduleRow
 import com.sixclassguys.maplecalendar.ui.component.CalendarCard
@@ -36,7 +36,7 @@ import com.sixclassguys.maplecalendar.ui.component.EmptyEventScreen
 @Composable
 fun MapleCalendarScreen(
     viewModel: CalendarViewModel,
-    onNavigateToEventDetail: (Long) -> Unit,
+    onNavigateToEventDetail: () -> Unit,
     onNavigateToBossDetail: (Long) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -51,7 +51,7 @@ fun MapleCalendarScreen(
     }
 
     Scaffold(
-        containerColor = Color.White
+        containerColor = MapleWhite
     ) { padding ->
         Column(
             modifier = Modifier.fillMaxSize()
@@ -107,10 +107,10 @@ fun MapleCalendarScreen(
                         CarouselEventRow(
                             nowEvents = nowEvents,
                             onNavigateToEventDetail = { eventId ->
+                                onNavigateToEventDetail()
                                 val selected = nowEvents.find { it.id == eventId }
                                 selected?.let {
                                     viewModel.onIntent(CalendarIntent.SelectEvent(it.id))
-                                    onNavigateToEventDetail(eventId)
                                 }
                             }
                         )

@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -33,12 +35,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
@@ -49,13 +53,17 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarIntent
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarViewModel
+import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
+import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.MapleWhite
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.AlarmSettingDialog
 import com.sixclassguys.maplecalendar.ui.component.EventCollapsingHeader
 import com.sixclassguys.maplecalendar.ui.component.EventDetailHeader
 import com.sixclassguys.maplecalendar.ui.component.EventWebView
 import com.sixclassguys.maplecalendar.ui.component.NotificationSection
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 
 // 상단 바의 높이 설정 (dp 단위)
@@ -101,13 +109,7 @@ fun MapleEventDetailScreen(
 
     val scrollState = rememberScrollState()
 
-    LaunchedEffect(uiState.selectedEvent) {
-        if (uiState.selectedEvent == null) {
-            onBack()
-        }
-    }
-
-    val event = uiState.selectedEvent ?: return // 이벤트가 없으면 표시 안함
+    val event = uiState.selectedEvent
     val currentEvent by rememberUpdatedState(event)
 
     val density = LocalDensity.current
@@ -138,11 +140,12 @@ fun MapleEventDetailScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    DisposableEffect(currentEvent.id) { // 👈 key를 event.id로 설정하여 id가 바뀌면 effect 재실행
+    DisposableEffect(currentEvent?.id) { // 👈 key를 event.id로 설정하여 id가 바뀌면 effect 재실행
+        val eventId = currentEvent?.id ?: 0L
         val observer = LifecycleEventObserver { _, lifecycleEvent ->
             if (lifecycleEvent == Lifecycle.Event.ON_RESUME) {
                 // 💡 항상 최신 ID로 요청
-                viewModel.onIntent(CalendarIntent.SelectEvent(currentEvent.id))
+                viewModel.onIntent(CalendarIntent.SelectEvent(eventId))
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -175,68 +178,116 @@ fun MapleEventDetailScreen(
                 .padding(bottom = padding.calculateBottomPadding())
                 .nestedScroll(nestedScrollConnection) // 👈 핵심: 스크롤 연결
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize()
-                    .offset { IntOffset(0, (expandedHeightPx + toolbarOffsetHeightPx).toInt()) }
-                    .verticalScroll(scrollState) // 전체 스크롤 허용
-            ) {
-                // 2. 헤더 정보 (제목, 공유, 날짜, 태그)
-                EventDetailHeader(
-                    event = event
-                )
-
-                HorizontalDivider(thickness = 1.dp, color = MapleGray)
-
-                // 3. 알림 설정 섹션
-                NotificationSection(
-                    isEnabled = uiState.isNotificationEnabled,
-                    onClick = { viewModel.onIntent(CalendarIntent.ShowAlarmDialog(true)) },
-                    onToggle = {
-                        if (uiState.isGlobalAlarmEnabled) {
-                            if (uiState.isNotificationEnabled) {
-                                // Android 13 이상 대응 (Tiramisu = 33)
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                    launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                                } else {
-                                    viewModel.onIntent(CalendarIntent.ToggleNotification)
-                                }
-                            } else {
-                                // OFF로 바꿀 때는 권한 요청 필요 없음
-                                viewModel.onIntent(CalendarIntent.ToggleNotification)
-                            }
-                        } else {
-                            Toast.makeText(context, "전체 알림을 먼저 허용해주세요.", Toast.LENGTH_SHORT).show()
+            when {
+                event == null -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize()
+                            .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                            .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            CircularProgressIndicator(
+                                color = MapleOrange,
+                                strokeWidth = 4.dp
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = "이벤트 정보를 불러오는 중이에요...",
+                                color = MapleWhite,
+                                style = Typography.bodyLarge
+                            )
                         }
-                    },
-                    notificationTimes = uiState.scheduledNotifications
-                )
-
-                HorizontalDivider(thickness = 8.dp, color = MapleGray)
-
-                // 4. 홈페이지 상세 (WebView)
-                Text(
-                    text = "홈페이지",
-                    style = Typography.titleSmall,
-                    modifier = Modifier.padding(16.dp)
-                )
-
-                // WebView를 Compose에서 사용하기 위해 AndroidView 활용
-                EventWebView(
-                    url = event.url,
-                    parentScrollState = scrollState
-                )// 💡 하단 여백 추가 (웹뷰 끝까지 내리기 편하게)
-                Spacer(modifier = Modifier.height(50.dp))
-            }
-
-            EventCollapsingHeader(
-                event = event,
-                currentHeightPx = expandedHeightPx + toolbarOffsetHeightPx,
-                scrollPercentage = scrollPercentage,
-                onBack = onBack,
-                onShare = {
-                    Toast.makeText(context, "준비중인 기능이에요.", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            )
+
+                else -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                            .offset { IntOffset(0, (expandedHeightPx + toolbarOffsetHeightPx).toInt()) }
+                            .verticalScroll(scrollState) // 전체 스크롤 허용
+                    ) {
+                        // 2. 헤더 정보 (제목, 공유, 날짜, 태그)
+                        EventDetailHeader(
+                            event = event
+                        )
+
+                        HorizontalDivider(thickness = 1.dp, color = MapleGray)
+
+                        // 3. 알림 설정 섹션
+                        NotificationSection(
+                            isEnabled = uiState.isNotificationEnabled,
+                            onClick = { viewModel.onIntent(CalendarIntent.ShowAlarmDialog(true)) },
+                            onToggle = {
+                                if (uiState.isGlobalAlarmEnabled) {
+                                    if (uiState.isNotificationEnabled) {
+                                        // Android 13 이상 대응 (Tiramisu = 33)
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                            launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                        } else {
+                                            viewModel.onIntent(CalendarIntent.ToggleNotification)
+                                        }
+                                    } else {
+                                        // OFF로 바꿀 때는 권한 요청 필요 없음
+                                        viewModel.onIntent(CalendarIntent.ToggleNotification)
+                                    }
+                                } else {
+                                    Toast.makeText(context, "전체 알림을 먼저 허용해주세요.", Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                            notificationTimes = uiState.scheduledNotifications
+                        )
+
+                        HorizontalDivider(thickness = 8.dp, color = MapleGray)
+
+                        // 4. 홈페이지 상세 (WebView)
+                        Text(
+                            text = "홈페이지",
+                            style = Typography.titleSmall,
+                            modifier = Modifier.padding(16.dp)
+                        )
+
+                        // WebView를 Compose에서 사용하기 위해 AndroidView 활용
+                        EventWebView(
+                            url = event.url,
+                            parentScrollState = scrollState
+                        )// 💡 하단 여백 추가 (웹뷰 끝까지 내리기 편하게)
+                        Spacer(modifier = Modifier.height(50.dp))
+                    }
+
+                    EventCollapsingHeader(
+                        event = event,
+                        currentHeightPx = expandedHeightPx + toolbarOffsetHeightPx,
+                        scrollPercentage = scrollPercentage,
+                        onBack = onBack,
+                        onShare = {
+                            Toast.makeText(context, "준비중인 기능이에요.", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                }
+            }
+        }
+
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+                    .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                    .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    CircularProgressIndicator(
+                        color = MapleOrange,
+                        strokeWidth = 4.dp
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "이벤트 정보를 불러오는 중이에요...",
+                        color = MapleWhite,
+                        style = Typography.bodyLarge
+                    )
+                }
+            }
         }
     }
 
