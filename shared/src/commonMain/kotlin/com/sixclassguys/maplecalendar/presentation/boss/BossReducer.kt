@@ -29,33 +29,31 @@ class BossReducer {
             // 1. 나보다 먼저 보낸 메시지(index + 1)를 가져옴
             val previousMessageInTime = chats.getOrNull(index + 1)
 
-            // 2. 연속성 체크 조건
-            // - 이전 메시지가 존재하고
-            // - 보낸 사람이 같으며
-            // - 둘 다 사용자 메시지 타입(TEXT, IMAGE, BOTH)이고
-            // - 날짜가 같을 때
-            val isSameUserAsPrevious = previousMessageInTime != null &&
+            // 💡 수정된 연속성 체크 조건
+            // 1. 이전 메시지가 존재해야 함
+            // 2. 보낸 사람이 같아야 함
+            // 3. 날짜가 같아야 함
+            // 4. ⭐중요: '이전 메시지'가 가려지거나 삭제되지 않은 '일반 대화'여야 함
+            val isContinuousFlow = previousMessageInTime != null &&
                     previousMessageInTime.senderId == currentChat.senderId &&
+                    isSameDay(previousMessageInTime.createdAt, currentChat.createdAt) &&
+                    previousMessageInTime.messageType in userMessageTypes && // 이전께 일반 대화여야 함
+                    !previousMessageInTime.isDeleted && // 이전께 삭제되지 않았어야 함
+                    !previousMessageInTime.isHidden    // 이전께 가려지지 않았어야 함
+
+            // 프로필 노출 결정
+            // - 내 메시지가 아니고, 일반 대화 타입이면서, 이전 메시지와 연속되지 않을 때
+            val shouldShowProfile = !currentChat.isMine &&
                     currentChat.messageType in userMessageTypes &&
-                    previousMessageInTime.messageType in userMessageTypes &&
-                    isSameDay(previousMessageInTime.createdAt, currentChat.createdAt)
-
-            // 3. 프로필 노출 결정
-            // - 나보다 먼저 보낸 사람이 나랑 다른 사람이거나 다른 타입일 때
-            // - 그리고 내 메시지가 사용자 메시지 타입일 때 프사 노출
-            val shouldShowProfile = !isSameUserAsPrevious &&
-                    !currentChat.isMine &&
-                    currentChat.messageType in userMessageTypes
-
-            if (shouldShowProfile) {
-                Napier.d("첫 채팅: ${currentChat}")
-            }
+                    !currentChat.isDeleted &&
+                    !currentChat.isHidden &&
+                    !isContinuousFlow
 
             uiItems.add(
                 BossPartyChatUiItem.Message(
                     chat = currentChat,
                     showProfile = shouldShowProfile,
-                    showTime = true
+                    showTime = currentChat.messageType in userMessageTypes && !currentChat.isDeleted
                 )
             )
 
@@ -898,16 +896,7 @@ class BossReducer {
         }
 
         is BossIntent.DeleteBossPartyChatMessageSuccess -> {
-            val newBossChats = currentState.bossPartyChats.map { chat ->
-                if (chat.id == intent.bossPartyChatId) {
-                    chat.copy(
-                        content = "이 메시지는 삭제되었어요.",
-                        isDeleted = true
-                    )
-                } else {
-                    chat
-                }
-            }
+            val newBossChats = currentState.bossPartyChats
             currentState.copy(
                 isLoading = false,
                 bossPartyChats = newBossChats,

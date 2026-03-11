@@ -263,9 +263,12 @@ fun ChatBubble(
     onDelete: (Long) -> Unit
 ) {
     when (chat.messageType) {
-        BossPartyChatMessageType.ENTER, BossPartyChatMessageType.LEAVE -> {
+        BossPartyChatMessageType.JOINED, BossPartyChatMessageType.KICKED -> {
             SystemChatBubble(chat)
         }
+
+        BossPartyChatMessageType.ENTER, BossPartyChatMessageType.LEAVE -> {}
+
         else -> {
             when {
                 chat.isHidden -> SystemChatBubble(chat.copy(content = "가려진 메시지입니다."))

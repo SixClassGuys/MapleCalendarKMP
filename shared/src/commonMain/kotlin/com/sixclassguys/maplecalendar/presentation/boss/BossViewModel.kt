@@ -774,6 +774,10 @@ class BossViewModel(
                 connectToChat()
             }
 
+            is BossIntent.ConnectBossPartyChatSuccess -> {
+                onIntent(BossIntent.FetchBossPartyChatHistory)
+            }
+
             is BossIntent.ToggleBossPartyChatAlarm -> {
                 toggleBossPartyChatAlarm()
             }
