@@ -92,6 +92,10 @@ class MapleCharacterViewModel(
         }
 
         when (intent) {
+            is MapleCharacterIntent.PullToRefresh -> {
+                getSavedCharacters(intent.allWorldNames)
+            }
+
             is MapleCharacterIntent.FetchCharacters -> {
                 getSavedCharacters(intent.allWorldNames)
             }

@@ -4,6 +4,8 @@ import com.sixclassguys.maplecalendar.domain.model.CharacterSummary
 
 sealed class MapleCharacterIntent {
 
+    data class PullToRefresh(val allWorldNames: List<String>) : MapleCharacterIntent()
+
     data class FetchCharacters(val allWorldNames: List<String>) : MapleCharacterIntent()
 
     data class FetchCharactersSuccess(val characterSummeries: Map<String, Map<String, List<CharacterSummary>>>) :

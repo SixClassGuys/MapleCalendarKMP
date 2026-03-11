@@ -4,6 +4,7 @@ import com.sixclassguys.maplecalendar.domain.model.CharacterSummary
 
 data class MapleCharacterUiState(
     val isLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
     val selectedWorldGroup: String = "일반 월드",
     val selectedWorld: String = "스카니아",
     val characterSummeries: Map<String, Map<String, List<CharacterSummary>>> = emptyMap(),
