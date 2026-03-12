@@ -26,6 +26,16 @@ sealed class SettingIntent {
 
     data class ToggleGlobalAlarmStatusFailed(val message: String) : SettingIntent()
 
+    data object FetchDarkModeStatus : SettingIntent()
+
+    data class FetchDarkModeStatusSuccess(val isDarkMode: Boolean) : SettingIntent()
+
+    data class ToggleDarkModeStatus(val isEnabled: Boolean) : SettingIntent()
+
+    data class ToggleDarkModeStatusSuccess(val isDarkMode: Boolean) : SettingIntent()
+
+    data class ToggleDarkModeStatusFailed(val message: String) : SettingIntent()
+
     data object Logout : SettingIntent()
 
     data object LogoutSuccess : SettingIntent()

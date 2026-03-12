@@ -83,6 +83,39 @@ class SettingReducer {
             )
         }
 
+        is SettingIntent.FetchDarkModeStatus -> {
+            currentState.copy(
+                isLoading = true
+            )
+        }
+
+        is SettingIntent.FetchDarkModeStatusSuccess -> {
+            currentState.copy(
+                isLoading = false,
+                isDarkModeEnabled = intent.isDarkMode
+            )
+        }
+
+        is SettingIntent.ToggleDarkModeStatus -> {
+            currentState.copy(
+                isLoading = true
+            )
+        }
+
+        is SettingIntent.ToggleDarkModeStatusSuccess -> {
+            currentState.copy(
+                isLoading = false,
+                isDarkModeEnabled = intent.isDarkMode
+            )
+        }
+
+        is SettingIntent.ToggleDarkModeStatusFailed -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = intent.message
+            )
+        }
+
         is SettingIntent.Logout -> {
             currentState.copy(
                 isLoading = true

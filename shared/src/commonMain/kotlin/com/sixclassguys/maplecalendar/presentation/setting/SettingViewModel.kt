@@ -7,6 +7,7 @@ import com.sixclassguys.maplecalendar.domain.usecase.GetApiKeyUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetGlobalAlarmStatusUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetSavedFcmTokenUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.LogoutUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.ToggleDarkModeStatusUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleGlobalAlarmStatusUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.UnregisterTokenUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,7 @@ class SettingViewModel(
     private val getSavedFcmTokenUseCase: GetSavedFcmTokenUseCase,
     private val getGlobalAlarmStatusUseCase: GetGlobalAlarmStatusUseCase,
     private val toggleGlobalAlarmStatusUseCase: ToggleGlobalAlarmStatusUseCase,
+    private val toggleDarkModeStatusUseCase: ToggleDarkModeStatusUseCase,
     private val unregisterTokenUseCase: UnregisterTokenUseCase,
     private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
@@ -31,6 +33,7 @@ class SettingViewModel(
         onIntent(SettingIntent.FetchNexonOpenApiKey)
         onIntent(SettingIntent.FetchFcmToken)
         onIntent(SettingIntent.FetchGlobalAlarmStatus)
+        onIntent(SettingIntent.FetchDarkModeStatus)
     }
 
     private fun getNexonOpenApiKey() {
@@ -83,6 +86,14 @@ class SettingViewModel(
 
                     else -> {}
                 }
+            }
+        }
+    }
+
+    private fun getDarkModeStatus() {
+        viewModelScope.launch {
+            toggleDarkModeStatusUseCase.isDarkMode.collect { isDarkMode ->
+                onIntent(SettingIntent.FetchDarkModeStatusSuccess(isDarkMode))
             }
         }
     }
@@ -177,8 +188,18 @@ class SettingViewModel(
                 getGlobalAlarmStatus()
             }
 
+            is SettingIntent.FetchDarkModeStatus -> {
+                getDarkModeStatus()
+            }
+
             is SettingIntent.ToggleGlobalAlarmStatus -> {
                 toggleGlobalAlarmStatus()
+            }
+
+            is SettingIntent.ToggleDarkModeStatus -> {
+                viewModelScope.launch {
+                    toggleDarkModeStatusUseCase(intent.isEnabled)
+                }
             }
 
             is SettingIntent.Logout -> {
