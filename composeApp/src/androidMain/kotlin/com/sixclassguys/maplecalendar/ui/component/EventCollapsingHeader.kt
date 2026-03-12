@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.domain.model.MapleEvent
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.ui.calendar.COLLAPSED_TOP_BAR_HEIGHT
 import com.sixclassguys.maplecalendar.ui.calendar.IMAGE_HEIGHT
@@ -64,7 +65,7 @@ fun EventCollapsingHeader(
     Surface(
         modifier = Modifier.fillMaxWidth()
             .height(currentHeightDp),
-        color = Color.White,
+        color = MapleTheme.colors.surface,
         tonalElevation = if (scrollPercentage > 0.9f) 2.dp else 0.dp,
         shadowElevation = elevation
     ) {
@@ -90,7 +91,7 @@ fun EventCollapsingHeader(
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    Color.Black.copy(alpha = 0.3f), // 상단은 약간 어둡게
+                                    MapleTheme.colors.onSurface.copy(alpha = 0.3f), // 상단은 약간 어둡게
                                     Color.Transparent // 아래로 갈수록 투명하게
                                 )
                             )
@@ -101,7 +102,7 @@ fun EventCollapsingHeader(
 
             // 2. 상단 버튼 (뒤로가기, 공유) - 항상 고정 위치
             val iconColor by animateColorAsState(
-                targetValue = if (scrollPercentage > 0.5f) Color.Black else Color.White
+                targetValue = if (scrollPercentage > 0.5f) MapleTheme.colors.onSurface else MapleTheme.colors.surface
             )
 
             Box(
@@ -143,7 +144,7 @@ fun EventCollapsingHeader(
                     fontSize = titleSize,
                     fontFamily = PretendardFamily,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    color = MapleTheme.colors.onSurface,
                     maxLines = 1,
                     textAlign = textAlign,
                     modifier = Modifier.fillMaxWidth()
@@ -153,7 +154,7 @@ fun EventCollapsingHeader(
                     text = "${event.startDate} ~ ${event.endDate}",
                     fontSize = dateSize,
                     fontFamily = PretendardFamily,
-                    color = Color.Gray,
+                    color = MapleTheme.colors.outline,
                     textAlign = textAlign,
                     modifier = Modifier.fillMaxWidth()
                 )

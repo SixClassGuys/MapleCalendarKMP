@@ -44,12 +44,9 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.domain.model.BossPartyMember
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.util.BossPartyRole
@@ -87,7 +84,7 @@ fun BossPartyMemberContent(
                 style = Typography.titleMedium
             )
             IconButton(onClick = onAddMember) {
-                Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
+                Icon(Icons.Default.Add, contentDescription = null, tint = MapleTheme.colors.surface)
             }
         }
 
@@ -95,13 +92,13 @@ fun BossPartyMemberContent(
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
                 .weight(1f)
-                .background(Color.White, shape = RoundedCornerShape(24.dp))
+                .background(MapleTheme.colors.surface, shape = RoundedCornerShape(24.dp))
                 .padding(12.dp)
         ) {
             if (members.isEmpty()) {
                 item {
                     Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
-                        Text("파티원이 없습니다.", color = Color.Gray)
+                        Text("파티원이 없습니다.", color = MapleTheme.colors.outline)
                     }
                 }
             } else {
@@ -139,7 +136,7 @@ fun PartyMemberItem(
             modifier = Modifier.fillMaxWidth()
                 .aspectRatio(0.75f), // 🚀 카드의 세로 비율을 고정해서 정갈하게 만듭니다.
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = MapleWhite),
+            colors = CardDefaults.cardColors(containerColor = MapleTheme.colors.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Box(
@@ -189,7 +186,7 @@ fun PartyMemberItem(
                     Text(
                         text = "Lv.${member.characterLevel}",
                         fontFamily = PretendardFamily,
-                        color = MapleGray,
+                        color = MapleTheme.colors.outline,
                         fontSize = 13.sp
                     )
 
@@ -235,7 +232,7 @@ fun PartyMemberItem(
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = "파티장",
-                    tint = MapleOrange,
+                    tint = MapleTheme.colors.primary,
                     modifier = Modifier.size(16.dp)
                 )
             }
@@ -247,7 +244,7 @@ fun PartyMemberItem(
                 Icon(
                     imageVector = Icons.Default.Build,
                     contentDescription = "파티장 양도",
-                    tint = MapleOrange, // 금색 계열
+                    tint = MapleTheme.colors.primary, // 금색 계열
                     modifier = Modifier.size(16.dp)
                 )
             }
@@ -261,7 +258,7 @@ fun PartyMemberItem(
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "파티원 추방",
-                    tint = MapleBlack.copy(alpha = 0.6f),
+                    tint = MapleTheme.colors.onSurface.copy(alpha = 0.6f),
                     modifier = Modifier.size(16.dp)
                 )
             }

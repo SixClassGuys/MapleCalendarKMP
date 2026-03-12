@@ -31,9 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.home.HomeIntent
 import com.sixclassguys.maplecalendar.presentation.home.HomeViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.BossScheduleRow
 import com.sixclassguys.maplecalendar.ui.component.CarouselEventRow
@@ -72,9 +70,8 @@ fun HomeScreen(
     }
 
     Scaffold(
-        // topBar를 비워둠으로써 전체가 스크롤되도록 설정
-        containerColor = MapleWhite
-    ) { padding ->
+        containerColor = MapleTheme.colors.surface
+    ) {
         PullToRefreshBox(
             state = pullToRefreshState,
             isRefreshing = uiState.isLoading, // ViewModel의 로딩 상태와 동기화
@@ -84,15 +81,15 @@ fun HomeScreen(
                     state = pullToRefreshState,
                     isRefreshing = uiState.isLoading,
                     modifier = Modifier.align(Alignment.TopCenter),
-                    color = MapleOrange, // 메이플 테마 색상
-                    containerColor = MapleWhite
+                    color = MapleTheme.colors.primary,
+                    containerColor = MapleTheme.colors.surface
                 )
             },
             modifier = Modifier.fillMaxSize()
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
-                    .background(MapleWhite)
+                    .background(MapleTheme.colors.surface)
             ) {
                 // 1. 상단 앱바를 리스트의 첫 번째 아이템으로 삽입
                 item {
@@ -146,7 +143,7 @@ fun HomeScreen(
                                     .height(200.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                CircularProgressIndicator(color = MapleOrange)
+                                CircularProgressIndicator(color = MapleTheme.colors.primary)
                             }
                         }
 
@@ -166,7 +163,7 @@ fun HomeScreen(
                         text = "오늘 진행하는 이벤트",
                         style = Typography.titleSmall,
                         fontWeight = FontWeight.Bold,
-                        color = MapleBlack,
+                        color = MapleTheme.colors.onSurface,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -188,7 +185,7 @@ fun HomeScreen(
                         text = "오늘의 보스 파티 일정",
                         style = Typography.titleSmall,
                         fontWeight = FontWeight.Bold,
-                        color = MapleBlack,
+                        color = MapleTheme.colors.onSurface,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))

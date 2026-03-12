@@ -49,7 +49,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.navigation.Navigation
 import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 
 @Composable
 fun BottomNavigationBar(
@@ -196,8 +196,8 @@ fun BottomNavigationBar(
                         modifier = Modifier.offset(x = xOffset, y = yOffset)
                             .size(48.dp)
                             .alpha(animProgress), // 나타날 때 서서히 밝아짐
-                        containerColor = MapleOrange, // 와이어프레임의 주황색 버튼
-                        contentColor = MapleWhite,
+                        containerColor = MapleTheme.colors.primary, // 와이어프레임의 주황색 버튼
+                        contentColor = MapleTheme.colors.surface,
                         shape = CircleShape
                     ) {
                         Icon(
@@ -218,8 +218,8 @@ fun BottomNavigationBar(
                     navController.navigate("login_flow")
                 }
             }, // 클릭 시 메뉴 토글
-            containerColor = MapleOrange,
-            contentColor = MapleWhite,
+            containerColor = MapleTheme.colors.primary,
+            contentColor = MapleTheme.colors.surface,
             shape = CircleShape,
             modifier = Modifier.size(60.dp)
                 .align(Alignment.TopCenter)
@@ -260,7 +260,7 @@ fun MapleBottomNavItem(
                 id = if (isSelected) item.selectedIconRes!! else item.unselectedIconRes!!
             ),
             contentDescription = item.label,
-            tint = if (isSelected) Color.White else Color.White.copy(alpha = 0.6f),
+            tint = if (isSelected) MapleTheme.colors.surface else MapleTheme.colors.surface.copy(alpha = 0.6f),
             modifier = Modifier.size(26.dp)
         )
 
@@ -271,7 +271,7 @@ fun MapleBottomNavItem(
             modifier = Modifier.width(20.dp)
                 .height(3.dp)
                 .background(
-                    color = if (isSelected) Color.White else Color.Transparent,
+                    color = if (isSelected) MapleTheme.colors.surface else Color.Transparent,
                     shape = RoundedCornerShape(2.dp)
                 )
         )

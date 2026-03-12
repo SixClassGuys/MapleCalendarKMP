@@ -54,12 +54,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.domain.model.BossPartyChat
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.util.BossPartyChatMessageType
 import com.sixclassguys.maplecalendar.util.BossPartyChatUiItem
@@ -172,8 +169,8 @@ fun BossPartyChatContent(
                     }
                 },
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = Color.White,
-                    checkedTrackColor = MapleOrange
+                    checkedThumbColor = MapleTheme.colors.surface,
+                    checkedTrackColor = MapleTheme.colors.primary
                 )
             )
         }
@@ -184,26 +181,26 @@ fun BossPartyChatContent(
             reverseLayout = true, // 💡 리스트를 거꾸로 뒤집음
             modifier = Modifier.fillMaxWidth()
                 .weight(1f)
-                .background(Color.White, shape = RoundedCornerShape(24.dp))
+                .background(MapleTheme.colors.surface, shape = RoundedCornerShape(24.dp))
                 .padding(12.dp)
         ) {
             if (isLoading && !isLastPage) {
                 item {
                     Box(
                         modifier = Modifier.fillMaxSize()
-                            .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                            .background(MapleTheme.colors.onSurface.copy(alpha = 0.7f)) // 화면 어둡게 처리
                             .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
                         contentAlignment = Alignment.Center
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             CircularProgressIndicator(
-                                color = MapleOrange,
+                                color = MapleTheme.colors.primary,
                                 strokeWidth = 4.dp
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
                                 text = "채팅 내역을 불러오고 있습니다...",
-                                color = MapleWhite,
+                                color = MapleTheme.colors.surface,
                                 style = Typography.bodyLarge
                             )
                         }
@@ -296,14 +293,14 @@ fun SystemChatBubble(chat: BossPartyChat) {
         contentAlignment = Alignment.Center
     ) {
         Surface(
-            color = Color.Black.copy(alpha = 0.05f), // 아주 연한 회색 배경
+            color = MapleTheme.colors.onSurface.copy(alpha = 0.05f), // 아주 연한 회색 배경
             shape = RoundedCornerShape(12.dp)
         ) {
             Text(
                 text = chat.content,
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                 fontSize = 11.sp,
-                color = MapleGray, // 기존에 정의하신 회색
+                color = MapleTheme.colors.outline, // 기존에 정의하신 회색
                 style = Typography.bodySmall
             )
         }
@@ -359,7 +356,7 @@ fun UserChatBubble(
 
             Box { // 🚀 메뉴 위치를 잡기 위한 Box
                 Surface(
-                    color = if (chat.isMine) MapleOrange else MapleGray,
+                    color = if (chat.isMine) MapleTheme.colors.primary else MapleTheme.colors.outline,
                     shape = RoundedCornerShape(
                         topStart = if (chat.isMine) 16.dp else 4.dp,
                         topEnd = if (!chat.isMine) 16.dp else 4.dp,
@@ -378,14 +375,14 @@ fun UserChatBubble(
                         text = chat.content,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                         fontSize = 14.sp,
-                        color = if (chat.isMine) MapleWhite else MapleBlack
+                        color = if (chat.isMine) MapleTheme.colors.surface else MapleTheme.colors.onSurface
                     )
                 }
 
                 // 🚀 삭제 메뉴
                 DropdownMenu(
                     expanded = isMenuExpanded,
-                    containerColor = MapleWhite,
+                    containerColor = MapleTheme.colors.surface,
                     onDismissRequest = { isMenuExpanded = false }
                 ) {
                     if (isLeader) {
@@ -450,7 +447,7 @@ fun ChatTimeText(timeStr: String) {
     Text(
         text = displayTime,
         fontSize = 10.sp,
-        color = MapleGray,
+        color = MapleTheme.colors.outline,
         modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
     )
 }
@@ -464,15 +461,15 @@ fun DateDivider(date: String) {
         contentAlignment = Alignment.Center
     ) {
         Surface(
-            color = Color.Black.copy(alpha = 0.05f),
-            shape = RoundedCornerShape(8.dp) // 약간 각진 느낌도 잘 어울립니다
+            color = MapleTheme.colors.onSurface.copy(alpha = 0.05f),
+            shape = RoundedCornerShape(8.dp)
         ) {
             Text(
                 text = formatToYmd(date),
                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp),
                 style = Typography.bodySmall,
                 fontSize = 13.sp, // 날짜는 조금 작게
-                color = MapleGray,
+                color = MapleTheme.colors.outline,
                 fontWeight = FontWeight.Medium
             )
         }

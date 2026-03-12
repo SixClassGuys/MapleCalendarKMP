@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -32,7 +31,7 @@ import com.sixclassguys.maplecalendar.domain.model.CharacterBasic
 import com.sixclassguys.maplecalendar.domain.model.CharacterDojangRanking
 import com.sixclassguys.maplecalendar.domain.model.CharacterRanking
 import com.sixclassguys.maplecalendar.domain.model.CharacterUnion
-import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.MapleWorld
 import com.sixclassguys.maplecalendar.utils.makeCommaInt
@@ -53,8 +52,8 @@ fun CharacterBasicCard(
         modifier = Modifier.fillMaxWidth()
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.5.dp, MapleOrange),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        border = BorderStroke(1.5.dp, MapleTheme.colors.primary),
+        colors = CardDefaults.cardColors(containerColor = MapleTheme.colors.surface)
     ) {
         Row(
             modifier = Modifier.padding(16.dp) // 전체 여백 살짝 조정
@@ -96,7 +95,7 @@ fun CharacterBasicCard(
                         text = basic.characterName,
                         style = Typography.titleSmall,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
+                        color = MapleTheme.colors.onSurface
                     )
 
                     Image(
@@ -109,15 +108,15 @@ fun CharacterBasicCard(
 
                     // 길드 표시
                     Surface(
-                        border = BorderStroke(1.dp, Color.Black),
+                        border = BorderStroke(1.dp, MapleTheme.colors.onSurface),
                         shape = RoundedCornerShape(16.dp),
-                        color = Color.White
+                        color = MapleTheme.colors.surface
                     ) {
                         Text(
                             text = basic.characterGuildName,
                             style = Typography.bodyMedium,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
-                            color = Color.Black
+                            color = MapleTheme.colors.onSurface
                         )
                     }
                 }
@@ -125,13 +124,13 @@ fun CharacterBasicCard(
                 Text(
                     text = "Lv. ${basic.characterLevel}  ${basic.characterExpRate}%",
                     style = Typography.bodyLarge,
-                    color = Color.Black
+                    color = MapleTheme.colors.onSurface
                 )
 
                 Text(
                     text = basic.characterClass,
                     style = Typography.bodyLarge,
-                    color = Color.Black
+                    color = MapleTheme.colors.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -171,13 +170,13 @@ fun CharacterDetailRow(label: String, value: String) {
         Text(
             text = label,
             style = Typography.bodyMedium,
-            color = Color.Black,
+            color = MapleTheme.colors.onSurface,
             modifier = Modifier.width(50.dp) // 레이블 너비 고정으로 정렬 유지
         )
         Text(
             text = value,
             style = Typography.bodyMedium,
-            color = Color.Black
+            color = MapleTheme.colors.onSurface
         )
     }
 }

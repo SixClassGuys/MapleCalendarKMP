@@ -39,10 +39,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.domain.repository.NotificationEventBus
 import com.sixclassguys.maplecalendar.presentation.boss.BossIntent
 import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.BossPartyCard
 import com.sixclassguys.maplecalendar.ui.component.BossPartyInvitationDialog
@@ -136,7 +135,7 @@ fun BossPartyListScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
-        containerColor = MapleWhite
+        containerColor = MapleTheme.colors.surface
     ) { innerPadding ->
         PullToRefreshBox(
             state = pullToRefreshState,
@@ -147,8 +146,8 @@ fun BossPartyListScreen(
                     state = pullToRefreshState,
                     isRefreshing = uiState.isRefreshing,
                     modifier = Modifier.align(Alignment.TopCenter),
-                    color = MapleOrange,
-                    containerColor = MapleWhite
+                    color = MapleTheme.colors.primary,
+                    containerColor = MapleTheme.colors.surface
                 )
             },
             modifier = Modifier.fillMaxSize()
@@ -156,7 +155,7 @@ fun BossPartyListScreen(
             Column(
                 modifier = Modifier.fillMaxSize()
                     .padding(innerPadding)
-                    .background(MapleWhite) // 최하단 바닥 배경
+                    .background(MapleTheme.colors.surface) // 최하단 바닥 배경
             ) {
                 Column(
                     modifier = Modifier.fillMaxSize()
@@ -188,7 +187,7 @@ fun BossPartyListScreen(
                                 Icon(
                                     imageVector = Icons.Default.InsertInvitation,
                                     contentDescription = null,
-                                    tint = MapleWhite
+                                    tint = MapleTheme.colors.surface
                                 )
                             }
                             IconButton(
@@ -201,7 +200,7 @@ fun BossPartyListScreen(
                                 Icon(
                                     imageVector = Icons.Default.Add,
                                     contentDescription = null,
-                                    tint = MapleWhite
+                                    tint = MapleTheme.colors.surface
                                 )
                             }
                         }
@@ -210,7 +209,7 @@ fun BossPartyListScreen(
                     Column(
                         modifier = Modifier.fillMaxSize()
                             .padding(vertical = 16.dp, horizontal = 20.dp)
-                            .background(MapleWhite, shape = RoundedCornerShape(24.dp))
+                            .background(MapleTheme.colors.surface, shape = RoundedCornerShape(24.dp))
                             .padding(12.dp) // 카드들과 흰 컨테이너 사이 여백
                     ) {
                         // 🚀 파티 카드 리스트

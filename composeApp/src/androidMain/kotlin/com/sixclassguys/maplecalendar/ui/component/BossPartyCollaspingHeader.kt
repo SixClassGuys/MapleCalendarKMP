@@ -39,8 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.presentation.boss.BossUiState
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.badgeBackground
@@ -82,13 +81,13 @@ fun BossPartyCollapsingHeader(
     val titleSize = lerp(20f, 17f, scrollPercentage).sp
     val subInfoAlpha = 1f - (scrollPercentage * 3).coerceIn(0f, 1f)
     val iconColor by animateColorAsState(
-        targetValue = if (scrollPercentage > 0.5f) MapleBlack else MapleWhite
+        targetValue = if (scrollPercentage > 0.5f) MapleTheme.colors.onSurface else MapleTheme.colors.surface
     )
 
     Surface(
         modifier = Modifier.fillMaxWidth()
             .height(currentHeightDp),
-        color = MapleWhite,
+        color = MapleTheme.colors.surface,
         shadowElevation = if (scrollPercentage > 0.95f) 4.dp else 0.dp
     ) {
         Box(
@@ -111,7 +110,7 @@ fun BossPartyCollapsingHeader(
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    MapleBlack.copy(alpha = 0.4f), // 위쪽은 어둡게
+                                    MapleTheme.colors.onSurface.copy(alpha = 0.4f), // 위쪽은 어둡게
                                     Color.Transparent // 아래로 갈수록 투명하게
                                 )
                             )
@@ -165,7 +164,7 @@ fun BossPartyCollapsingHeader(
                         fontSize = titleSize,
                         fontFamily = PretendardFamily,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black,
+                        color = MapleTheme.colors.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         textAlign = if (scrollPercentage > 0.8f) TextAlign.Center else TextAlign.Start,
@@ -175,7 +174,7 @@ fun BossPartyCollapsingHeader(
                     // 확장 시에만 제목 옆에 휴지통 배치
                     if (scrollPercentage < 0.2f) {
                         IconButton(onClick = onLeave, modifier = Modifier.size(24.dp)) {
-                            Icon(Icons.Default.Delete, null, tint = MapleBlack)
+                            Icon(Icons.Default.Delete, null, tint = MapleTheme.colors.onSurface)
                         }
                     }
                 }
@@ -206,14 +205,14 @@ fun BossPartyCollapsingHeader(
                         Text(
                             text = bossParty.boss.bossName,
                             style = Typography.bodyLarge,
-                            color = Color.Gray
+                            color = MapleTheme.colors.outline
                         )
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = bossParty.description, // 예: "숙련자만 오세요. 숍 필수!"
                         fontSize = 14.sp,
-                        color = MapleBlack,
+                        color = MapleTheme.colors.onSurface,
                         fontFamily = PretendardFamily,
                         lineHeight = 20.sp,
                         maxLines = 5, // 너무 길어지면 두 줄까지만 표시

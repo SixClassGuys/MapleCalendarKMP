@@ -49,12 +49,9 @@ import com.sixclassguys.maplecalendar.domain.model.BossParty
 import com.sixclassguys.maplecalendar.domain.repository.NotificationEventBus
 import com.sixclassguys.maplecalendar.presentation.boss.BossIntent
 import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.badgeBackground
@@ -129,24 +126,24 @@ fun BossPartyInvitationDialog(
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
-                    color = MapleWhite
+                    color = MapleTheme.colors.surface
                 ) {
                     when {
                         uiState.isLoading -> Box(
                             modifier = Modifier.fillMaxWidth()
-                                .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                                .background(MapleTheme.colors.onSurface.copy(alpha = 0.7f)) // 화면 어둡게 처리
                                 .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
                             contentAlignment = Alignment.Center
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 CircularProgressIndicator(
-                                    color = MapleOrange,
+                                    color = MapleTheme.colors.primary,
                                     strokeWidth = 4.dp
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
                                     text = "보스 파티에 입장하는 중이에요...",
-                                    color = MapleWhite,
+                                    color = MapleTheme.colors.surface,
                                     style = Typography.bodyLarge
                                 )
                             }
@@ -186,7 +183,7 @@ fun InvitationCard(
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MapleWhite),
+        colors = CardDefaults.cardColors(containerColor = MapleTheme.colors.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = Modifier.fillMaxWidth()
             .padding(8.dp)
@@ -222,7 +219,7 @@ fun InvitationCard(
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = "거절",
-                            tint = MapleBlack,
+                            tint = MapleTheme.colors.onSurface,
                             modifier = Modifier.size(16.dp)
                         )
                     }
@@ -252,7 +249,7 @@ fun InvitationCard(
                         fontFamily = PretendardFamily,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = MapleBlack
+                        color = MapleTheme.colors.onSurface
                     )
                 }
 
@@ -266,7 +263,7 @@ fun InvitationCard(
                         imageVector = Icons.Default.Person,
                         contentDescription = null,
                         modifier = Modifier.size(16.dp),
-                        tint = MapleGray
+                        tint = MapleTheme.colors.outline
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
@@ -274,7 +271,7 @@ fun InvitationCard(
                         fontFamily = PretendardFamily,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 13.sp,
-                        color = MapleGray
+                        color = MapleTheme.colors.outline
                     )
                 }
 
@@ -285,13 +282,13 @@ fun InvitationCard(
                     onClick = onAccept,
                     modifier = Modifier.fillMaxWidth().height(48.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MapleOrange) // 주황색 버튼
+                    colors = ButtonDefaults.buttonColors(containerColor = MapleTheme.colors.primary) // 주황색 버튼
                 ) {
                     Text(
                         text = "초대 수락",
                         fontFamily = PretendardFamily,
                         fontWeight = FontWeight.Bold,
-                        color = MapleWhite
+                        color = MapleTheme.colors.surface
                     )
                 }
             }

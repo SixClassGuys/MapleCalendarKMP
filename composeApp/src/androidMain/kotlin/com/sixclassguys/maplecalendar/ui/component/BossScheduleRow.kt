@@ -25,13 +25,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.domain.model.BossPartySchedule
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.iconRes
 
@@ -66,7 +63,7 @@ fun BossScheduleRow(
                 text = "${schedule.boss.bossName}(${schedule.bossDifficulty.displayName})",
                 style = Typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
-                color = MapleBlack
+                color = MapleTheme.colors.onSurface
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -78,7 +75,7 @@ fun BossScheduleRow(
                 Icon(
                     imageVector = Icons.Default.Groups,
                     contentDescription = null,
-                    tint = Color.Gray,
+                    tint = MapleTheme.colors.outline,
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -88,7 +85,7 @@ fun BossScheduleRow(
                     text = "${schedule.members.size}인 - $memberNames",
                     style = Typography.bodySmall,
                     fontWeight = FontWeight.SemiBold,
-                    color = MapleGray
+                    color = MapleTheme.colors.outline
                 )
             }
 
@@ -99,7 +96,7 @@ fun BossScheduleRow(
                 Icon(
                     imageVector = Icons.Default.AccessTimeFilled,
                     contentDescription = null,
-                    tint = Color.Gray,
+                    tint = MapleTheme.colors.outline,
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -107,7 +104,7 @@ fun BossScheduleRow(
                     text = schedule.time, // 예: 21:00
                     style = Typography.bodySmall,
                     fontWeight = FontWeight.SemiBold,
-                    color = MapleGray
+                    color = MapleTheme.colors.outline
                 )
             }
         }

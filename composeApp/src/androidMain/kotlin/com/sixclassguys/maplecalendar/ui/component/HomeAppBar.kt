@@ -17,15 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.sixclassguys.maplecalendar.R
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 
 @Composable
 fun HomeAppBar(
     onNotificationClick: () -> Unit = {}
 ) {
     Surface(
-        color = MapleWhite,
+        color = MapleTheme.colors.surface,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -53,7 +52,7 @@ fun HomeAppBar(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_notification),
                     contentDescription = "Notifications",
-                    tint = MapleOrange,
+                    tint = MapleTheme.colors.primary,
                     modifier = Modifier.size(26.dp)
                 )
             }

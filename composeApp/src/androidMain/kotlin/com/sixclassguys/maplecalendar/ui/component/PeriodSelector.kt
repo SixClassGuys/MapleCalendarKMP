@@ -28,10 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,7 +47,7 @@ fun PeriodSelector(
         Text(
             text = "날짜",
             style = Typography.bodyLarge,
-            color = MapleBlack
+            color = MapleTheme.colors.onSurface
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -61,7 +58,7 @@ fun PeriodSelector(
             Row(
                 modifier = Modifier.fillMaxWidth()
                     .height(40.dp)
-                    .border(1.dp, MapleGray, RoundedCornerShape(8.dp))
+                    .border(1.dp, MapleTheme.colors.outline, RoundedCornerShape(8.dp))
                     .clickable { expanded = true }
                     .padding(horizontal = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -70,12 +67,12 @@ fun PeriodSelector(
                 Text(
                     text = intervals[selectedIdx],
                     style = Typography.bodyMedium,
-                    color = MapleBlack
+                    color = MapleTheme.colors.onSurface
                 )
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = null,
-                    tint = MapleOrange
+                    tint = MapleTheme.colors.primary
                 )
             }
 
@@ -83,13 +80,12 @@ fun PeriodSelector(
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                modifier = Modifier
-                    .fillMaxWidth(0.7f) // 다이얼로그 너비에 맞춰 적절히 조절
-                    .background(MapleWhite)
+                modifier = Modifier.fillMaxWidth(0.7f) // 다이얼로그 너비에 맞춰 적절히 조절
+                    .background(MapleTheme.colors.surface)
             ) {
                 intervals.forEachIndexed { index, label ->
                     DropdownMenuItem(
-                        text = { Text(label, color = MapleBlack) },
+                        text = { Text(label, color = MapleTheme.colors.onSurface) },
                         onClick = {
                             selectedIdx = index
                             onPeriodSelected(intervalValues[index])

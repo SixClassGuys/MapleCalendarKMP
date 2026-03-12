@@ -20,11 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.sixclassguys.maplecalendar.domain.model.AppVersion
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
@@ -62,7 +60,7 @@ fun VersionUpdateDialog(
                 // 2. 중앙 흰색 카드 섹션
                 Surface(
                     shape = RoundedCornerShape(16.dp),
-                    color = MapleWhite,
+                    color = MapleTheme.colors.surface,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(
@@ -88,9 +86,9 @@ fun VersionUpdateDialog(
                                     modifier = Modifier.weight(1f)
                                         .height(36.dp),
                                     shape = RoundedCornerShape(12.dp),
-                                    colors = ButtonDefaults.buttonColors(containerColor = MapleBlack)
+                                    colors = ButtonDefaults.buttonColors(containerColor = MapleTheme.colors.onSurface)
                                 ) {
-                                    Text("나중에", color = MapleWhite, style = Typography.bodySmall)
+                                    Text("나중에", color = MapleTheme.colors.surface, style = Typography.bodySmall)
                                 }
                             }
 
@@ -100,9 +98,9 @@ fun VersionUpdateDialog(
                                 modifier = Modifier.weight(1f)
                                     .height(36.dp),
                                 shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = MapleOrange)
+                                colors = ButtonDefaults.buttonColors(containerColor = MapleTheme.colors.primary)
                             ) {
-                                Text("업데이트", color = MapleWhite, style = Typography.bodySmall)
+                                Text("업데이트", color = MapleTheme.colors.surface, style = Typography.bodySmall)
                             }
                         }
                     }

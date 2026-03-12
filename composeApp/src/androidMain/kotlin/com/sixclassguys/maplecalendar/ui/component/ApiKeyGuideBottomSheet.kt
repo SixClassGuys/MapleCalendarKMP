@@ -2,8 +2,6 @@ package com.sixclassguys.maplecalendar.ui.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.LocalOverscrollConfiguration
-import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,7 +26,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,11 +40,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.R
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 
@@ -82,7 +77,7 @@ fun ApiKeyGuideBottomSheet(onDismiss: () -> Unit) {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(28.dp),
-                color = MapleWhite
+                color = MapleTheme.colors.surface
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -96,7 +91,7 @@ fun ApiKeyGuideBottomSheet(onDismiss: () -> Unit) {
                             Box(
                                 modifier = Modifier.size(10.dp)
                                     .clip(CircleShape)
-                                    .background(if (pagerState.currentPage == i) MapleOrange else MapleGray)
+                                    .background(if (pagerState.currentPage == i) MapleTheme.colors.primary else MapleTheme.colors.outline)
                             )
                         }
                     }

@@ -23,8 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.R
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.utils.MapleWorld
 
@@ -42,7 +41,7 @@ fun WorldSelector(
         contentAlignment = Alignment.CenterEnd
     ) {
         Row(
-            modifier = Modifier.border(1.dp, MapleBlack, RoundedCornerShape(20.dp))
+            modifier = Modifier.border(1.dp, MapleTheme.colors.onSurface, RoundedCornerShape(20.dp))
                 .clickable { onWorldClick() }
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -65,7 +64,7 @@ fun WorldSelector(
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
                 contentDescription = null,
-                tint = MapleOrange
+                tint = MapleTheme.colors.primary
             )
         }
     }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTimeFilled
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,10 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.domain.model.BossParty
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.utils.badgeBackground
 import com.sixclassguys.maplecalendar.utils.badgeOutline
@@ -50,7 +46,7 @@ fun BossPartyCard(
             .padding(vertical = 8.dp)
             .clickable(onClick = onPartyClick),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = MapleWhite),
+        colors = CardDefaults.cardColors(containerColor = MapleTheme.colors.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column {
@@ -100,7 +96,7 @@ fun BossPartyCard(
                         fontFamily = PretendardFamily,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = MapleBlack
+                        color = MapleTheme.colors.onSurface
                     )
                 }
 
@@ -113,7 +109,7 @@ fun BossPartyCard(
                         imageVector = Icons.Default.Person,
                         contentDescription = null,
                         modifier = Modifier.size(16.dp),
-                        tint = MapleGray
+                        tint = MapleTheme.colors.outline
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
@@ -121,7 +117,7 @@ fun BossPartyCard(
                         fontFamily = PretendardFamily,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 13.sp,
-                        color = MapleGray
+                        color = MapleTheme.colors.outline
                     )
                 }
             }

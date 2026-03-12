@@ -38,12 +38,9 @@ import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.domain.model.CharacterSummary
 import com.sixclassguys.maplecalendar.presentation.boss.BossIntent
 import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.MapleWorld
@@ -77,24 +74,24 @@ fun CharacterInviteDialog(
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
-                    color = Color.White
+                    color = MapleTheme.colors.surface
                 ) {
                     when {
                         uiState.isMemberInviteLoading -> Box(
                             modifier = Modifier.fillMaxWidth()
-                                .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                                .background(MapleTheme.colors.onSurface.copy(alpha = 0.7f)) // 화면 어둡게 처리
                                 .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
                             contentAlignment = Alignment.Center
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 CircularProgressIndicator(
-                                    color = MapleOrange,
+                                    color = MapleTheme.colors.primary,
                                     strokeWidth = 4.dp
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
                                     text = "유저를 초대하는 중이에요...",
-                                    color = MapleWhite,
+                                    color = MapleTheme.colors.surface,
                                     style = Typography.bodyLarge
                                 )
                             }
@@ -115,8 +112,8 @@ fun CharacterInviteDialog(
                                         disabledContainerColor = Color(0xFFE0E0E0),
                                         focusedIndicatorColor = Color.Transparent,    // 밑줄 제거
                                         unfocusedIndicatorColor = Color.Transparent,  // 밑줄 제거
-                                        focusedTextColor = MapleBlack,
-                                        unfocusedTextColor = MapleBlack
+                                        focusedTextColor = MapleTheme.colors.onSurface,
+                                        unfocusedTextColor = MapleTheme.colors.onSurface
                                     ),
                                     shape = RoundedCornerShape(12.dp),
                                     singleLine = true
@@ -127,7 +124,7 @@ fun CharacterInviteDialog(
                                 if (uiState.errorMessage != null) {
                                     Text(
                                         text = uiState.errorMessage!!,
-                                        color = MapleOrange, // 혹은 MapleOrange 계열
+                                        color = MapleTheme.colors.primary, // 혹은 MapleOrange 계열
                                         fontSize = 13.sp,
                                         fontFamily = PretendardFamily,
                                         fontWeight = FontWeight.SemiBold,
@@ -204,7 +201,7 @@ fun SearchCharacterItem(
                 text = "Lv. ${character.second.characterLevel} ${character.second.characterClass}",
                 fontFamily = PretendardFamily,
                 fontSize = 11.sp,
-                color = MapleGray
+                color = MapleTheme.colors.outline
             )
         }
     }

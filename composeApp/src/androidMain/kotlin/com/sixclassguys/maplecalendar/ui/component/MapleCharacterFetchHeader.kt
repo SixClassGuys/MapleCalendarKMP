@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.sixclassguys.maplecalendar.theme.MapleBlack
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
@@ -27,14 +27,14 @@ fun MapleCharacterFetchHeader(onBack: () -> Unit) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = "Back",
-                tint = MapleBlack,
+                tint = MapleTheme.colors.onSurface,
                 modifier = Modifier.size(32.dp)
             )
         }
         Text(
             text = "캐릭터 가져오기",
             style = Typography.titleLarge,
-            color = MapleBlack
+            color = MapleTheme.colors.onSurface
         )
     }
 }

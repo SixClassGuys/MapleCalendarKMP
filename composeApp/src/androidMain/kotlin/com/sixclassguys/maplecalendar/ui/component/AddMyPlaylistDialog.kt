@@ -46,12 +46,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
@@ -103,25 +100,25 @@ fun AddMyPlaylistDialog(
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                color = MapleWhite
+                color = MapleTheme.colors.surface
             ) {
                 when {
                     uiState.isLoading -> {
                         Box(
                             modifier = Modifier.fillMaxWidth()
-                                .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                                .background(MapleTheme.colors.onSurface.copy(alpha = 0.7f)) // 화면 어둡게 처리
                                 .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
                             contentAlignment = Alignment.Center
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 CircularProgressIndicator(
-                                    color = MapleOrange,
+                                    color = MapleTheme.colors.primary,
                                     strokeWidth = 4.dp
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
                                     text = "플레이리스트를 추가하는 중이에요...",
-                                    color = MapleWhite,
+                                    color = MapleTheme.colors.surface,
                                     style = Typography.bodyLarge
                                 )
                             }
@@ -189,9 +186,9 @@ fun AddMyPlaylistDialog(
                                     .fillMaxWidth()
                                     .height(50.dp),
                                 shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = MapleOrange) // 주황색 버튼
+                                colors = ButtonDefaults.buttonColors(containerColor = MapleTheme.colors.primary) // 주황색 버튼
                             ) {
-                                Text("만들기", color = if (isEnabled) MapleWhite else MapleBlack, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                                Text("만들기", color = if (isEnabled) MapleTheme.colors.surface else MapleTheme.colors.onSurface, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                             }
                         }
                     }
@@ -219,7 +216,7 @@ fun PlaylistInputField(
             textStyle = TextStyle(fontSize = 15.sp),
             decorationBox = { innerTextField ->
                 if (value.isEmpty()) {
-                    Text(text = placeholder, color = MapleGray, fontSize = 15.sp)
+                    Text(text = placeholder, color = MapleTheme.colors.outline, fontSize = 15.sp)
                 }
                 innerTextField()
             }

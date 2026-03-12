@@ -38,9 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.ui.component.EmptyEventScreen
 
 @Composable
@@ -109,7 +107,7 @@ fun SearchMapleBgmScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
-        containerColor = MapleWhite
+        containerColor = MapleTheme.colors.surface
     ) { padding ->
         Column(
             modifier = Modifier.fillMaxSize()
@@ -168,13 +166,13 @@ fun SearchTopBar(
                 onValueChange = onQueryChange,
                 modifier = Modifier.weight(1f)
                     .focusRequester(focusRequester),
-                textStyle = TextStyle(fontSize = 18.sp, color = MapleBlack),
+                textStyle = TextStyle(fontSize = 18.sp, color = MapleTheme.colors.onSurface),
                 singleLine = true,
                 decorationBox = { innerTextField ->
                     if (query.isEmpty()) {
                         Text(
                             text = "BGM의 제목이나 지역명을 입력하세요",
-                            color = MapleGray,
+                            color = MapleTheme.colors.outline,
                             fontSize = 16.sp
                         )
                     }
@@ -186,9 +184,9 @@ fun SearchTopBar(
                 imageVector = Icons.Default.Search,
                 contentDescription = "Search",
                 modifier = Modifier.size(28.dp),
-                tint = MapleBlack
+                tint = MapleTheme.colors.onSurface
             )
         }
-        HorizontalDivider(color = MapleBlack, thickness = 1.dp)
+        HorizontalDivider(color = MapleTheme.colors.onSurface, thickness = 1.dp)
     }
 }

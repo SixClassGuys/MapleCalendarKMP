@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
@@ -39,7 +39,7 @@ fun MapleCharacterSelectTitle(
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Add Character",
-                tint = MapleWhite,
+                tint = MapleTheme.colors.surface,
                 modifier = Modifier.size(28.dp)
             )
         }

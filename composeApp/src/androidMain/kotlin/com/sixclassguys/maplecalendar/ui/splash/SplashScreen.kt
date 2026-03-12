@@ -1,7 +1,6 @@
 package com.sixclassguys.maplecalendar.ui.splash
 
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,9 +25,9 @@ import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.presentation.home.HomeIntent
 import com.sixclassguys.maplecalendar.presentation.home.HomeViewModel
 import com.sixclassguys.maplecalendar.BuildConfig
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.ui.component.VersionUpdateDialog
+import androidx.core.net.toUri
 
 @Composable
 fun SplashScreen(
@@ -64,7 +63,7 @@ fun SplashScreen(
 
     Box(
         modifier = Modifier.fillMaxSize()
-            .background(MapleWhite),
+            .background(MapleTheme.colors.surface),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -79,7 +78,7 @@ fun SplashScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             CircularProgressIndicator(
-                color = MapleOrange,
+                color = MapleTheme.colors.primary,
                 modifier = Modifier.size(32.dp),
                 strokeWidth = 3.dp
             )
@@ -95,7 +94,7 @@ fun SplashScreen(
             onConfirm = {
                 viewModel.onIntent(HomeIntent.AcceptVersionUpdate)
                 val url = uiState.appVersion?.storeUrl
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                val intent = Intent(Intent.ACTION_VIEW, url?.toUri())
                 context.startActivity(intent)
             }
         )

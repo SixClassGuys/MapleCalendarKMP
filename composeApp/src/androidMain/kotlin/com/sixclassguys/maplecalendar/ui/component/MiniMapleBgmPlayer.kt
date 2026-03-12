@@ -24,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,9 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.domain.model.MapleBgm
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.utils.RegionCategory
 
 @Composable
@@ -52,9 +49,9 @@ fun MiniMapleBgmPlayer(
             .padding(8.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
-        color = MapleWhite,
+        color = MapleTheme.colors.surface,
         shadowElevation = 6.dp,
-        border = BorderStroke(1.dp, MapleOrange.copy(alpha = 0.5f)) // 테두리 추가로 시인성 확보
+        border = BorderStroke(1.dp, MapleTheme.colors.primary.copy(alpha = 0.5f)) // 테두리 추가로 시인성 확보
     ) {
         Column(
             modifier = Modifier.padding(12.dp),
@@ -65,11 +62,10 @@ fun MiniMapleBgmPlayer(
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Close",
-                    modifier = Modifier
-                        .size(18.dp)
+                    modifier = Modifier.size(18.dp)
                         .align(Alignment.TopEnd)
                         .clickable { onClose() },
-                    tint = MapleGray
+                    tint = MapleTheme.colors.outline
                 )
             }
 
@@ -93,7 +89,7 @@ fun MiniMapleBgmPlayer(
             )
             Text(
                 text = bgm.mapName,
-                color = MapleGray,
+                color = MapleTheme.colors.outline,
                 fontSize = 11.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -107,13 +103,13 @@ fun MiniMapleBgmPlayer(
                     .size(36.dp)
                     .clickable { onTogglePlay(isPlaying) },
                 shape = CircleShape,
-                color = MapleOrange
+                color = MapleTheme.colors.primary
             ) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                     contentDescription = null,
                     modifier = Modifier.padding(8.dp),
-                    tint = MapleWhite
+                    tint = MapleTheme.colors.surface
                 )
             }
         }

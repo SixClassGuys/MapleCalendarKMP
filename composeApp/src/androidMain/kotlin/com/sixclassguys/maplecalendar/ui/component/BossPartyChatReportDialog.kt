@@ -41,12 +41,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.domain.model.BossPartyChat
 import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.util.ReportReason
@@ -89,24 +86,24 @@ fun BossPartyChatReportDialog(
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
-                    color = Color.White
+                    color = MapleTheme.colors.surface
                 ) {
                     when {
                         uiState.isLoading -> Box(
                             modifier = Modifier.fillMaxWidth()
-                                .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                                .background(MapleTheme.colors.onSurface.copy(alpha = 0.7f)) // 화면 어둡게 처리
                                 .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
                             contentAlignment = Alignment.Center
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 CircularProgressIndicator(
-                                    color = MapleOrange,
+                                    color = MapleTheme.colors.primary,
                                     strokeWidth = 4.dp
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
                                     text = "유저를 신고하는 중이에요...",
-                                    color = MapleWhite,
+                                    color = MapleTheme.colors.surface,
                                     style = Typography.bodyLarge
                                 )
                             }
@@ -118,7 +115,7 @@ fun BossPartyChatReportDialog(
                                 horizontalAlignment = Alignment.Start
                             ) {
                                 Surface(
-                                    color = MapleWhite,
+                                    color = MapleTheme.colors.surface,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Column {
@@ -132,7 +129,7 @@ fun BossPartyChatReportDialog(
                                                 text = chat.senderName, // 예: 오한별
                                                 style = Typography.bodyMedium,
                                                 fontWeight = FontWeight.Bold,
-                                                color = MapleBlack
+                                                color = MapleTheme.colors.onSurface
                                             )
                                         }
 
@@ -141,12 +138,12 @@ fun BossPartyChatReportDialog(
                                         // 채팅 내용 스냅샷 영역
                                         Box(
                                             modifier = Modifier.fillMaxWidth()
-                                                .background(MapleGray, RoundedCornerShape(9.dp))
+                                                .background(MapleTheme.colors.outline, RoundedCornerShape(9.dp))
                                                 .padding(12.dp)
                                         ) {
                                             Text(
                                                 text = chat.content,
-                                                color = MapleBlack,
+                                                color = MapleTheme.colors.onSurface,
                                                 fontSize = 14.sp
                                             )
                                         }
@@ -159,13 +156,13 @@ fun BossPartyChatReportDialog(
                                 Column(
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Text("신고 사유", color = MapleBlack, fontSize = 14.sp)
+                                    Text("신고 사유", color = MapleTheme.colors.onSurface, fontSize = 14.sp)
                                     Spacer(modifier = Modifier.height(8.dp))
 
                                     Box(
                                         modifier = Modifier.fillMaxWidth()
-                                            .border(1.dp, MapleBlack, RoundedCornerShape(8.dp))
-                                            .background(MapleWhite, RoundedCornerShape(8.dp))
+                                            .border(1.dp, MapleTheme.colors.onSurface, RoundedCornerShape(8.dp))
+                                            .background(MapleTheme.colors.surface, RoundedCornerShape(8.dp))
                                             .clickable { expanded = true }
                                             .padding(12.dp)
                                     ) {
@@ -173,13 +170,13 @@ fun BossPartyChatReportDialog(
                                             horizontalArrangement = Arrangement.SpaceBetween,
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
-                                            Text(selectedReason.description, color = MapleBlack)
-                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MapleOrange)
+                                            Text(selectedReason.description, color = MapleTheme.colors.onSurface)
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = MapleTheme.colors.primary)
                                         }
 
                                         DropdownMenu(
                                             expanded = expanded,
-                                            containerColor = MapleWhite,
+                                            containerColor = MapleTheme.colors.surface,
                                             onDismissRequest = { expanded = false }
                                         )  {
                                             ReportReason.entries.forEach { reason ->
@@ -201,7 +198,7 @@ fun BossPartyChatReportDialog(
                                 Column(
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Text("신고 사유 작성", color = MapleBlack, fontSize = 14.sp)
+                                    Text("신고 사유 작성", color = MapleTheme.colors.onSurface, fontSize = 14.sp)
                                     Spacer(modifier = Modifier.height(8.dp))
 
                                     TextField(
@@ -211,8 +208,8 @@ fun BossPartyChatReportDialog(
                                             .height(120.dp),
                                         placeholder = { Text("상세 내용을 입력해주세요.", fontSize = 13.sp) },
                                         colors = TextFieldDefaults.colors(
-                                            focusedContainerColor = MapleGray,
-                                            unfocusedContainerColor = MapleGray,
+                                            focusedContainerColor = MapleTheme.colors.outline,
+                                            unfocusedContainerColor = MapleTheme.colors.outline,
                                             focusedIndicatorColor = Color.Transparent,
                                             unfocusedIndicatorColor = Color.Transparent
                                         ),
@@ -225,7 +222,7 @@ fun BossPartyChatReportDialog(
                                 if (uiState.errorMessage != null) {
                                     Text(
                                         text = uiState.errorMessage!!,
-                                        color = MapleOrange, // 혹은 MapleOrange 계열
+                                        color = MapleTheme.colors.primary, // 혹은 MapleTheme.colors.primary 계열
                                         fontSize = 13.sp,
                                         fontFamily = PretendardFamily,
                                         fontWeight = FontWeight.SemiBold,
@@ -243,7 +240,7 @@ fun BossPartyChatReportDialog(
                                 ) {
                                     Text(
                                         text = "신고하기",
-                                        color = MapleWhite,
+                                        color = MapleTheme.colors.surface,
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 18.sp
                                     )

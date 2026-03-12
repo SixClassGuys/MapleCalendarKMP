@@ -23,14 +23,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.toMapleNotificationString
@@ -68,7 +65,7 @@ fun NotificationSection(
                         Icon(
                             imageVector = Icons.Default.DateRange,
                             contentDescription = null,
-                            tint = if (isEnabled) MapleOrange else MapleGray
+                            tint = if (isEnabled) MapleTheme.colors.primary else MapleTheme.colors.outline
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
@@ -78,10 +75,10 @@ fun NotificationSection(
                     onCheckedChange = onToggle,
                     modifier = Modifier.scale(0.8f), // 💡 80% 크기로 줄여서 더 컴팩트하게
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor = MapleOrange,
-                        checkedTrackColor = MapleGray,
-                        uncheckedThumbColor = MapleBlack,
-                        uncheckedTrackColor = MapleGray
+                        checkedThumbColor = MapleTheme.colors.primary,
+                        checkedTrackColor = MapleTheme.colors.outline,
+                        uncheckedThumbColor = MapleTheme.colors.onSurface,
+                        uncheckedTrackColor = MapleTheme.colors.outline
                     )
                 )
             }
@@ -90,7 +87,7 @@ fun NotificationSection(
         Text(
             text = "다음 알림 시간",
             fontFamily = PretendardFamily,
-            color = MapleBlack,
+            color = MapleTheme.colors.onSurface,
             fontWeight = FontWeight.SemiBold
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -101,7 +98,7 @@ fun NotificationSection(
                 style = Typography.bodyMedium,
                 modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
                 textAlign = TextAlign.Center,
-                color = MapleGray
+                color = MapleTheme.colors.outline
             )
         } else {
             notificationTimes.sorted().take(3).forEach { time ->
@@ -112,14 +109,14 @@ fun NotificationSection(
                     Icon(
                         imageVector = Icons.Filled.AccessTimeFilled,
                         contentDescription = null,
-                        tint = MapleOrange,
+                        tint = MapleTheme.colors.primary,
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
                         text = time.toMapleNotificationString(),
                         style = Typography.bodyMedium,
                         modifier = Modifier.padding(start = 8.dp),
-                        color = Color.DarkGray
+                        color = MapleTheme.colors.onSurface
                     )
                 }
             }

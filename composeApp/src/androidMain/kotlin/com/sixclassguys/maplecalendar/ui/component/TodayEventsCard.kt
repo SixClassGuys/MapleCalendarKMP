@@ -20,8 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.domain.model.MapleEvent
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 
@@ -62,7 +61,7 @@ fun TodayEventsCard(
             fontFamily = PretendardFamily,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = MapleBlack
+            color = MapleTheme.colors.onSurface
         )
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -71,7 +70,7 @@ fun TodayEventsCard(
         Text(
             text = "${event.startDate} ~ ${event.endDate}",
             style = Typography.bodyMedium,
-            color = MapleGray
+            color = MapleTheme.colors.outline
         )
     }
 }

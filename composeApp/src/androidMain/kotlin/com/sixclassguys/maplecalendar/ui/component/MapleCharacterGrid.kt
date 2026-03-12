@@ -36,9 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.domain.model.CharacterSummary
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.utils.MapleClass
 
@@ -57,13 +55,13 @@ fun MapleCharacterGrid(
                 Text(
                     text = "등록된 캐릭터가 없습니다.",
                     fontFamily = PretendardFamily,
-                    color = MapleGray,
+                    color = MapleTheme.colors.outline,
                     fontSize = 14.sp
                 )
                 Text(
                     text = "우측 상단의 + 버튼을 눌러 캐릭터를 추가해보세요!",
                     fontFamily = PretendardFamily,
-                    color = MapleGray.copy(alpha = 0.7f),
+                    color = MapleTheme.colors.outline.copy(alpha = 0.7f),
                     fontSize = 12.sp,
                     modifier = Modifier.padding(top = 4.dp)
                 )
@@ -95,7 +93,7 @@ fun CharacterCard(character: CharacterSummary) {
             .fillMaxWidth()
             .aspectRatio(0.75f), // 🚀 카드의 세로 비율을 고정해서 정갈하게 만듭니다.
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MapleWhite),
+        colors = CardDefaults.cardColors(containerColor = MapleTheme.colors.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -104,9 +102,8 @@ fun CharacterCard(character: CharacterSummary) {
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = null,
-                    tint = MapleOrange,
-                    modifier = Modifier
-                        .padding(12.dp)
+                    tint = MapleTheme.colors.primary,
+                    modifier = Modifier.padding(12.dp)
                         .align(Alignment.TopEnd)
                         .size(20.dp)
                 )
@@ -144,7 +141,7 @@ fun CharacterCard(character: CharacterSummary) {
                 Text(
                     text = "Lv.${character.characterLevel}",
                     fontFamily = PretendardFamily,
-                    color = MapleGray,
+                    color = MapleTheme.colors.outline,
                     fontSize = 13.sp
                 )
 

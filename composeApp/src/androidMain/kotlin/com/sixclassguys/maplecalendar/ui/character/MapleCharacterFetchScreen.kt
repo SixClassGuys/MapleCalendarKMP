@@ -47,9 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.character.MapleCharacterIntent
 import com.sixclassguys.maplecalendar.presentation.character.MapleCharacterViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.ApiKeyGuideBottomSheet
@@ -93,7 +91,7 @@ fun MapleCharacterFetchScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
-        containerColor = MapleWhite
+        containerColor = MapleTheme.colors.surface
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding)
@@ -127,7 +125,7 @@ fun MapleCharacterFetchScreen(
                 Row {
                     Text(
                         text = "NEXON Open API 사이트",
-                        color = MapleOrange,
+                        color = MapleTheme.colors.primary,
                         style = Typography.bodyLarge,
                         fontWeight = FontWeight.Bold,
                         textDecoration = TextDecoration.Underline
@@ -158,7 +156,7 @@ fun MapleCharacterFetchScreen(
                     fontFamily = PretendardFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
-                    color = MapleBlack
+                    color = MapleTheme.colors.onSurface
                 )
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
@@ -185,8 +183,8 @@ fun MapleCharacterFetchScreen(
                 shape = RoundedCornerShape(12.dp),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MapleBlack,
-                    unfocusedBorderColor = MapleBlack
+                    focusedBorderColor = MapleTheme.colors.onSurface,
+                    unfocusedBorderColor = MapleTheme.colors.onSurface
                 ),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Done
@@ -210,12 +208,12 @@ fun MapleCharacterFetchScreen(
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MapleBlack)
+                colors = ButtonDefaults.buttonColors(containerColor = MapleTheme.colors.onSurface)
             ) {
                 Text(
                     text = "Open API Key로 캐릭터 조회",
                     fontFamily = PretendardFamily,
-                    color = MapleWhite,
+                    color = MapleTheme.colors.surface,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -226,19 +224,19 @@ fun MapleCharacterFetchScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                    .background(MapleTheme.colors.onSurface.copy(alpha = 0.7f)) // 화면 어둡게 처리
                     .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CircularProgressIndicator(
-                        color = MapleOrange,
+                        color = MapleTheme.colors.primary,
                         strokeWidth = 4.dp
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "캐릭터 정보를 불러오고 있습니다...",
-                        color = MapleWhite,
+                        color = MapleTheme.colors.surface,
                         style = Typography.bodyLarge
                     )
                 }

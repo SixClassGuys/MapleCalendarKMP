@@ -20,8 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.sixclassguys.maplecalendar.R
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
@@ -35,8 +34,8 @@ fun NoRepresentativeCharacterCard(
             .height(200.dp) // 기존 캐릭터 카드와 높이를 통일하여 일관성 유지
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MapleWhite),
-        border = BorderStroke(1.5.dp, MapleOrange) // 테두리로 포인트
+        colors = CardDefaults.cardColors(containerColor = MapleTheme.colors.surface),
+        border = BorderStroke(1.5.dp, MapleTheme.colors.primary) // 테두리로 포인트
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -56,12 +55,12 @@ fun NoRepresentativeCharacterCard(
             Text(
                 text = "${nickname}님을 대표하는 캐릭터가 없어요.",
                 style = Typography.bodyLarge,
-                color = MapleOrange
+                color = MapleTheme.colors.primary
             )
             Text(
                 text = "대표 캐릭터를 설정해보세요!",
                 style = Typography.bodyLarge,
-                color = MapleOrange
+                color = MapleTheme.colors.primary
             )
         }
     }

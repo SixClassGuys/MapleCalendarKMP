@@ -74,12 +74,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.boss.BossIntent
 import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.daysInMonth
@@ -144,24 +141,24 @@ fun BossPartyAlarmSettingDialog(
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
-                    color = Color.White
+                    color = MapleTheme.colors.surface
                 ) {
                     when {
                         uiState.isLoading -> Box(
                             modifier = Modifier.fillMaxWidth()
-                                .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                                .background(MapleTheme.colors.onSurface.copy(alpha = 0.7f)) // 화면 어둡게 처리
                                 .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
                             contentAlignment = Alignment.Center
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 CircularProgressIndicator(
-                                    color = MapleOrange,
+                                    color = MapleTheme.colors.primary,
                                     strokeWidth = 4.dp
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
                                     text = "알람을 예약하는 중이에요...",
-                                    color = MapleWhite,
+                                    color = MapleTheme.colors.surface,
                                     style = Typography.bodyLarge
                                 )
                             }
@@ -223,7 +220,7 @@ fun BossPartyAlarmSettingDialog(
                                 OutlinedTextField(
                                     value = uiState.alarmMessage,
                                     onValueChange = { viewModel.onIntent(BossIntent.UpdateAlarmMessage(it)) },
-                                    placeholder = { Text("알람 메시지 입력", color = Color.Gray) },
+                                    placeholder = { Text("알람 메시지 입력", color = MapleTheme.colors.outline) },
                                     modifier = Modifier.fillMaxWidth()
                                         .height(56.dp)
                                         .focusRequester(messageFocusRequester),
@@ -257,7 +254,7 @@ fun BossPartyAlarmSettingDialog(
                                 if (uiState.errorMessage != null) {
                                     Text(
                                         text = uiState.errorMessage!!,
-                                        color = MapleOrange, // 혹은 MapleOrange 계열
+                                        color = MapleTheme.colors.primary, // 혹은 MapleOrange 계열
                                         fontSize = 13.sp,
                                         fontFamily = PretendardFamily,
                                         fontWeight = FontWeight.SemiBold,
@@ -276,12 +273,12 @@ fun BossPartyAlarmSettingDialog(
                                     },
                                     modifier = Modifier.fillMaxWidth().height(48.dp),
                                     shape = RoundedCornerShape(12.dp),
-                                    colors = ButtonDefaults.buttonColors(containerColor = if (isFormValid) MapleOrange else MapleGray) // Maple Orange
+                                    colors = ButtonDefaults.buttonColors(containerColor = if (isFormValid) MapleTheme.colors.primary else MapleTheme.colors.outline)
                                 ) {
                                     Text(
                                         text = if (selectedTab == 0) "알람 예약" else "알람 주기 설정",
                                         style = Typography.bodyMedium,
-                                        color = if (isFormValid) MapleWhite else MapleBlack
+                                        color = if (isFormValid) MapleTheme.colors.surface else MapleTheme.colors.onSurface
                                     )
                                 }
                             }
@@ -302,17 +299,17 @@ fun TabSwitcher(
         modifier = Modifier.width(144.dp)
             .height(28.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(MapleGray)
+            .background(MapleTheme.colors.outline)
     ) {
         listOf("선택", "주기").forEachIndexed { index, text ->
             Box(
                 modifier = Modifier.weight(1f)
                     .fillMaxHeight()
-                    .background(if (selectedTab == index) MapleOrange else Color.Transparent)
+                    .background(if (selectedTab == index) MapleTheme.colors.primary else Color.Transparent)
                     .clickable { onTabSelected(index) },
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = text, style = Typography.bodyLarge, color = if (selectedTab == index) MapleWhite else MapleBlack)
+                Text(text = text, style = Typography.bodyLarge, color = if (selectedTab == index) MapleTheme.colors.surface else MapleTheme.colors.onSurface)
             }
         }
     }
@@ -373,9 +370,9 @@ fun TimeInputSection(
                         checked = isImmediate,
                         onCheckedChange = onImmediateChange,
                         colors = CheckboxDefaults.colors(
-                            checkedColor = MapleOrange, // 디자인의 주황색
-                            uncheckedColor = MapleGray,
-                            checkmarkColor = MapleWhite
+                            checkedColor = MapleTheme.colors.primary,
+                            uncheckedColor = MapleTheme.colors.outline,
+                            checkmarkColor = MapleTheme.colors.surface
                         )
                     )
                 }
@@ -440,7 +437,7 @@ fun TimeBox(
         decorationBox = { innerTextField ->
             Box(contentAlignment = Alignment.Center) {
                 if (value.isEmpty()) {
-                    Text("00", color = Color.Gray, fontSize = 16.sp) // Placeholder 효과
+                    Text("00", color = MapleTheme.colors.outline, fontSize = 16.sp) // Placeholder 효과
                 }
                 innerTextField()
             }
@@ -475,7 +472,7 @@ fun BossAlarmCalendar(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp), // 조금 더 둥글게 디자인 조정
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MapleTheme.colors.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp), // 다이얼로그 안이므로 그림자 제거 또는 낮게
         border = BorderStroke(1.dp, Color(0xFFEEEEEE))
     ) {
@@ -500,16 +497,16 @@ fun BossAlarmCalendar(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = { onMonthChange(-1) }) {
-                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = null, tint = Color.Gray)
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = null, tint = MapleTheme.colors.outline)
                     }
                     Text(
                         text = "${dateForPage.year}년 ${dateForPage.monthNumber}월",
                         style = Typography.bodyLarge,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
+                        color = MapleTheme.colors.onSurface
                     )
                     IconButton(onClick = { onMonthChange(1) }) {
-                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = Color.Gray)
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = MapleTheme.colors.outline)
                     }
                 }
 
@@ -528,7 +525,7 @@ fun BossAlarmCalendar(
                             color = when(index) {
                                 0 -> Color.Red
                                 6 -> Color.Blue
-                                else -> Color.Gray
+                                else -> MapleTheme.colors.outline
                             }
                         )
                     }
@@ -566,11 +563,11 @@ fun BossAlarmCalendar(
                                         style = Typography.bodySmall,
                                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                                         color = when {
-                                            isSelected -> Color.White
-                                            isPast -> Color.LightGray
+                                            isSelected -> MapleTheme.colors.surface
+                                            isPast -> MapleTheme.colors.outline
                                             col == 0 -> Color.Red
                                             col == 6 -> Color.Blue
-                                            else -> Color.Black
+                                            else -> MapleTheme.colors.onSurface
                                         }
                                     )
                                 }
@@ -623,12 +620,12 @@ fun DayOfWeekSelector(
                 Text(
                     text = displayText,
                     style = Typography.bodyLarge,
-                    color = if (selectedDay == null) Color.Gray else Color.Black
+                    color = if (selectedDay == null) MapleTheme.colors.outline else MapleTheme.colors.onSurface
                 )
                 Icon(
                     imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                     contentDescription = null,
-                    tint = Color.DarkGray
+                    tint = MapleTheme.colors.onSurface
                 )
             }
         }
@@ -638,7 +635,7 @@ fun DayOfWeekSelector(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier.fillMaxWidth(0.8f) // 다이얼로그 너비에 맞춰 조정
-                .background(Color.White, RoundedCornerShape(12.dp))
+                .background(MapleTheme.colors.surface, RoundedCornerShape(12.dp))
         ) {
             // 1. 해제 옵션
             DropdownMenuItem(
@@ -649,7 +646,7 @@ fun DayOfWeekSelector(
                 }
             )
 
-            HorizontalDivider(color = Color(0xFFEEEEEE))
+            HorizontalDivider(color = MapleTheme.colors.surface)
 
             // 2. 요일별 옵션
             DayOfWeek.entries.forEach { day ->
@@ -665,7 +662,7 @@ fun DayOfWeekSelector(
                                 DayOfWeek.SATURDAY -> "매주 토요일"
                                 DayOfWeek.SUNDAY -> "매주 일요일"
                             },
-                            color = if (selectedDay == day) Color(0xFFF59E0B) else Color.Black,
+                            color = if (selectedDay == day) Color(0xFFF59E0B) else MapleTheme.colors.onSurface,
                             fontWeight = if (selectedDay == day) FontWeight.Bold else FontWeight.Normal
                         )
                     },

@@ -25,7 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.util.Boss
 import com.sixclassguys.maplecalendar.utils.iconRes
@@ -48,10 +48,10 @@ fun BossIconItem(
         Box(
             modifier = Modifier.size(60.dp)
                 .clip(RoundedCornerShape(12.dp)) // 둥근 사각형
-                .background(if (isSelected) MapleOrange else Color.Transparent) // 배경색 차이
+                .background(if (isSelected) MapleTheme.colors.primary else Color.Transparent) // 배경색 차이
                 .border(
                     width = 3.dp,
-                    color = if (isSelected) MapleOrange else Color.Transparent, // 선택 시 강조색 테두리
+                    color = if (isSelected) MapleTheme.colors.primary else Color.Transparent, // 선택 시 강조색 테두리
                     shape = RoundedCornerShape(12.dp)
                 ),
             contentAlignment = Alignment.Center
@@ -72,7 +72,7 @@ fun BossIconItem(
         Text(
             text = boss.bossName,
             fontFamily = PretendardFamily,
-            color = if (isSelected) Color.Black else Color.Gray,
+            color = if (isSelected) MapleTheme.colors.onSurface else MapleTheme.colors.outline,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

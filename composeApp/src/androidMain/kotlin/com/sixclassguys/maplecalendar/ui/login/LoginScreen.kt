@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -48,11 +47,10 @@ import com.sixclassguys.maplecalendar.presentation.login.LoginIntent
 import com.sixclassguys.maplecalendar.presentation.login.LoginViewModel
 import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.MapleWhite
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.LoginSuccessDialog
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 
 @Composable
@@ -79,7 +77,6 @@ fun LoginScreen(
         val message = uiState.errorMessage
         if (message != null) {
             viewModel.onIntent(LoginIntent.InitErrorMessage)
-            Napier.d("Error Message: $message")
             scope.launch {
                 snackbarHostState.showSnackbar(
                     message = message,
@@ -90,7 +87,7 @@ fun LoginScreen(
     }
 
     Scaffold(
-        containerColor = MapleWhite,
+        containerColor = MapleTheme.colors.surface,
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         }
@@ -98,7 +95,7 @@ fun LoginScreen(
         Column(
             modifier = Modifier.fillMaxSize()
                 .padding(start = 24.dp, end = 24.dp, bottom = padding.calculateBottomPadding())
-                .background(MapleWhite)
+                .background(MapleTheme.colors.surface)
         ) {
             // 1. 상단 바 (뒤로가기 + 타이틀)
             Box(
@@ -126,7 +123,7 @@ fun LoginScreen(
             Text(
                 text = "대부분의 기능은\n로그인을 해야 이용하실 수 있습니다.",
                 style = Typography.bodyLarge,
-                color = MapleGray,
+                color = MapleTheme.colors.outline,
                 lineHeight = 24.sp
             )
 
@@ -135,7 +132,7 @@ fun LoginScreen(
             Text(
                 text = "로그인하셔서 이벤트 및 보스 파티 알림 등\n다양한 기능을 이용해보세요!",
                 style = Typography.bodyLarge,
-                color = MapleGray,
+                color = MapleTheme.colors.outline,
                 lineHeight = 24.sp
             )
 
@@ -201,19 +198,19 @@ fun LoginScreen(
         if (uiState.isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize()
-                    .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                    .background(MapleTheme.colors.onSurface.copy(alpha = 0.7f)) // 화면 어둡게 처리
                     .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CircularProgressIndicator(
-                        color = MapleOrange,
+                        color = MapleTheme.colors.primary,
                         strokeWidth = 4.dp
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "로그인 중이에요...",
-                        color = MapleWhite,
+                        color = MapleTheme.colors.surface,
                         style = Typography.bodyLarge
                     )
                 }

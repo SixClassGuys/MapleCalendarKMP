@@ -29,8 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarIntent
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarViewModel
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.BossScheduleRow
 import com.sixclassguys.maplecalendar.ui.component.CalendarCard
@@ -61,7 +60,7 @@ fun MapleCalendarScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
-        containerColor = MapleWhite
+        containerColor = MapleTheme.colors.surface
     ) { padding ->
         PullToRefreshBox(
             state = pullToRefreshState,
@@ -72,8 +71,8 @@ fun MapleCalendarScreen(
                     state = pullToRefreshState,
                     isRefreshing = uiState.isRefreshing,
                     modifier = Modifier.align(Alignment.TopCenter),
-                    color = MapleOrange,
-                    containerColor = MapleWhite
+                    color = MapleTheme.colors.primary,
+                    containerColor = MapleTheme.colors.surface
                 )
             },
             modifier = Modifier.fillMaxSize()

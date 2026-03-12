@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.sixclassguys.maplecalendar.R
-import com.sixclassguys.maplecalendar.theme.MapleGray
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
@@ -37,7 +37,7 @@ fun EmptyEventScreen(
         Text(
             text = message,
             style = Typography.bodyMedium,
-            color = MapleGray
+            color = MapleTheme.colors.outline
         )
     }
 }

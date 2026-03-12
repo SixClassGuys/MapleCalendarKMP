@@ -21,9 +21,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sixclassguys.maplecalendar.R
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
@@ -43,7 +41,7 @@ fun CharacterStepIndicator(
             Icon(
                 painter = painterResource(R.drawable.ic_nexon_authentication),
                 contentDescription = null,
-                tint = if (currentStep == 1) MapleOrange else MapleGray,
+                tint = if (currentStep == 1) MapleTheme.colors.primary else MapleTheme.colors.outline,
                 modifier = Modifier.padding(horizontal = 24.dp) // 화살표 양옆 간격을 더 넓게 (기존 8dp -> 24dp)
                     .size(28.dp)
             )
@@ -53,7 +51,7 @@ fun CharacterStepIndicator(
                 style = Typography.bodyLarge,
                 fontStyle = FontStyle.Normal,
                 textAlign = TextAlign.Center,
-                color = if (currentStep == 1) MapleOrange else MapleGray
+                color = if (currentStep == 1) MapleTheme.colors.primary else MapleTheme.colors.outline
             )
         }
 
@@ -61,7 +59,7 @@ fun CharacterStepIndicator(
             Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = null,
             modifier = Modifier.padding(horizontal = 24.dp),
-            tint = MapleBlack
+            tint = MapleTheme.colors.onSurface
         )
 
         // Step 2: 진행 중 상태 (주황색)
@@ -71,7 +69,7 @@ fun CharacterStepIndicator(
             Icon(
                 Icons.Default.PersonAdd,
                 contentDescription = null,
-                tint = if (currentStep == 2) MapleOrange else MapleGray,
+                tint = if (currentStep == 2) MapleTheme.colors.primary else MapleTheme.colors.outline,
                 modifier = Modifier.padding(horizontal = 24.dp) // 화살표 양옆 간격을 더 넓게 (기존 8dp -> 24dp)
                     .size(28.dp)
             )
@@ -80,7 +78,7 @@ fun CharacterStepIndicator(
                 text = "캐릭터\n등록하기",
                 style = Typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                color = if (currentStep == 2) MapleOrange else MapleGray
+                color = if (currentStep == 2) MapleTheme.colors.primary else MapleTheme.colors.outline
             )
         }
     }

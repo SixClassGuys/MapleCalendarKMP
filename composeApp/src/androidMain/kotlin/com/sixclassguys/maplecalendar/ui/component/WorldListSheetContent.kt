@@ -25,11 +25,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.R
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.utils.MapleWorld
 
@@ -61,11 +59,10 @@ fun WorldSelectBottomSheet(
 
             // 2. 월드 리스트 컨테이너 (흰색 라운드 박스)
             Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 shape = RoundedCornerShape(16.dp),
-                color = MapleWhite
+                color = MapleTheme.colors.surface
             ) {
                 LazyColumn {
                     itemsIndexed(worlds) { index, world ->
@@ -78,7 +75,7 @@ fun WorldSelectBottomSheet(
                             HorizontalDivider(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 thickness = 0.5.dp,
-                                color = MapleGray
+                                color = MapleTheme.colors.outline
                             )
                         }
                     }
@@ -113,7 +110,7 @@ fun WorldItem(
             fontFamily = PretendardFamily,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
-            color = MapleBlack
+            color = MapleTheme.colors.onSurface
         )
     }
 }

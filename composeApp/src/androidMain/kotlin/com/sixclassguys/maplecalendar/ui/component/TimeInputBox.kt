@@ -31,10 +31,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 
 @Composable
@@ -63,7 +60,7 @@ fun TimeInputRow(
         Text(
             text = " 시 ",
             fontFamily = PretendardFamily,
-            color = MapleBlack,
+            color = MapleTheme.colors.onSurface,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 4.dp)
         )
@@ -78,7 +75,7 @@ fun TimeInputRow(
         Text(
             text = " 분 ",
             fontFamily = PretendardFamily,
-            color = MapleBlack,
+            color = MapleTheme.colors.onSurface,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 4.dp)
         )
@@ -91,8 +88,8 @@ fun TimeInputRow(
             enabled = isAddEnabled,
             modifier = Modifier.height(36.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MapleOrange,
-                disabledContainerColor = MapleGray.copy(alpha = 0.5f) // 비활성화 시 색상
+                containerColor = MapleTheme.colors.primary,
+                disabledContainerColor = MapleTheme.colors.outline.copy(alpha = 0.5f) // 비활성화 시 색상
             ),
             shape = RoundedCornerShape(18.dp),
             contentPadding = PaddingValues(horizontal = 20.dp)
@@ -100,7 +97,7 @@ fun TimeInputRow(
             Text(
                 text = "추가",
                 fontFamily = PretendardFamily,
-                color = MapleWhite,
+                color = MapleTheme.colors.surface,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -133,13 +130,13 @@ fun HourTextField(
         },
         modifier = Modifier
             .size(60.dp, 36.dp)
-            .background(MapleGray, CircleShape),
+            .background(MapleTheme.colors.outline, CircleShape),
         textStyle = TextStyle(
             textAlign = TextAlign.Center,
             fontFamily = PretendardFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
-            color = MapleBlack
+            color = MapleTheme.colors.onSurface
         ),
         singleLine = true,
         keyboardOptions = KeyboardOptions(
@@ -183,13 +180,13 @@ fun MinuteTextField(
         modifier = Modifier
             .size(60.dp, 36.dp)
             .focusRequester(focusRequester) // 포커스 요청자 등록
-            .background(MapleGray, CircleShape),
+            .background(MapleTheme.colors.outline, CircleShape),
         textStyle = TextStyle(
             textAlign = TextAlign.Center,
             fontFamily = PretendardFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
-            color = MapleBlack
+            color = MapleTheme.colors.onSurface
         ),
         singleLine = true,
         keyboardOptions = KeyboardOptions(

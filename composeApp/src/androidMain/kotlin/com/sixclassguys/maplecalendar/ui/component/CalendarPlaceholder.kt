@@ -33,10 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.daysInMonth
 import com.sixclassguys.maplecalendar.utils.plusMonths
@@ -75,7 +72,7 @@ fun CalendarPlaceholder(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MapleWhite),
+        colors = CardDefaults.cardColors(containerColor = MapleTheme.colors.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
         // 💡 HorizontalPager가 이제 헤더와 요일을 모두 포함합니다.
@@ -102,19 +99,19 @@ fun CalendarPlaceholder(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             contentDescription = null,
-                            tint = MapleOrange
+                            tint = MapleTheme.colors.primary
                         )
                     }
                     Text(
                         text = "${dateForPage.year}년 ${dateForPage.monthNumber}월",
                         style = Typography.bodyLarge,
-                        color = MapleOrange
+                        color = MapleTheme.colors.primary
                     )
                     IconButton(onClick = { onMonthChange(1) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             contentDescription = null,
-                            tint = MapleOrange
+                            tint = MapleTheme.colors.primary
                         )
                     }
                 }
@@ -131,7 +128,7 @@ fun CalendarPlaceholder(
                             style = Typography.bodySmall,
                             modifier = Modifier.weight(1f),
                             textAlign = TextAlign.Center,
-                            color = if (it == "일") Color.Red else if (it == "토") Color.Blue else Color.Gray
+                            color = if (it == "일") Color.Red else if (it == "토") Color.Blue else MapleTheme.colors.outline
                         )
                     }
                 }
@@ -160,14 +157,14 @@ fun CalendarPlaceholder(
                                             .aspectRatio(1f)
                                             .padding(2.dp)
                                             .clip(CircleShape)
-                                            .background(if (isSelected) MapleOrange else Color.Transparent)
+                                            .background(if (isSelected) MapleTheme.colors.primary else Color.Transparent)
                                             .then(if (isEventDay) Modifier.clickable { onDateClick(date) } else Modifier),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
                                             day.toString(),
                                             style = Typography.bodySmall,
-                                            color = if (isEventDay) (if (isSelected) MapleWhite else MapleBlack) else MapleGray
+                                            color = if (isEventDay) (if (isSelected) MapleTheme.colors.surface else MapleTheme.colors.onSurface) else MapleTheme.colors.outline
                                         )
                                     }
                                 } else {

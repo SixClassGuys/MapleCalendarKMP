@@ -22,9 +22,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.domain.model.CharacterSummary
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
@@ -34,7 +32,7 @@ fun CharacterItemCard(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val borderColor = if (isSelected) MapleOrange else MapleBlack
+    val borderColor = if (isSelected) MapleTheme.colors.primary else MapleTheme.colors.onSurface
     val borderStroke = if (isSelected) 2.dp else 1.dp
 
     Column(
@@ -83,12 +81,12 @@ fun CharacterItemCard(
         Text(
             text = "Lv.${character.characterLevel}",
             style = Typography.bodySmall,
-            color = MapleGray
+            color = MapleTheme.colors.outline
         )
         Text(
             text = character.characterClass,
             style = Typography.bodySmall,
-            color = MapleGray
+            color = MapleTheme.colors.outline
         )
     }
 }

@@ -35,11 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.presentation.character.MapleCharacterUiState
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.MapleWorld
 
@@ -73,7 +70,7 @@ fun WorldFetchBottomSheet(
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(28.dp),
-                color = MapleWhite
+                color = MapleTheme.colors.surface
             ) {
                 Column {
                     // 월드 그룹 탭 (SecondaryScrollableTabRow)
@@ -82,14 +79,14 @@ fun WorldFetchBottomSheet(
 
                     SecondaryScrollableTabRow(
                         selectedTabIndex = selectedIndex,
-                        containerColor = MapleWhite,
-                        contentColor = Color.LightGray,
+                        containerColor = MapleTheme.colors.surface,
+                        contentColor = MapleTheme.colors.outline,
                         edgePadding = 20.dp,
                         divider = {},
                         indicator = {
                             TabRowDefaults.SecondaryIndicator(
                                 modifier = Modifier.tabIndicatorOffset(selectedIndex),
-                                color = MapleOrange
+                                color = MapleTheme.colors.primary
                             )
                         }
                     ) {
@@ -102,7 +99,7 @@ fun WorldFetchBottomSheet(
                                     Text(
                                         text = group,
                                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                        color = if (isSelected) MapleBlack else MapleGray
+                                        color = if (isSelected) MapleTheme.colors.onSurface else MapleTheme.colors.outline
                                     )
                                 }
                             )
@@ -126,7 +123,7 @@ fun WorldFetchBottomSheet(
                                     onDismiss() // 클릭 즉시 시트 닫기
                                 }
                             )
-                            HorizontalDivider(color = Color.LightGray)
+                            HorizontalDivider(color = MapleTheme.colors.outline)
                         }
                     }
                 }
@@ -165,7 +162,7 @@ fun WorldListItem(
             text = worldName,
             fontSize = 16.sp,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-            color = if (isSelected) MapleBlack else MapleBlack.copy(alpha = 0.7f),
+            color = if (isSelected) MapleTheme.colors.onSurface else MapleTheme.colors.onSurface.copy(alpha = 0.7f),
             modifier = Modifier.weight(1f)
         )
 
@@ -173,7 +170,7 @@ fun WorldListItem(
             Icon(
                 imageVector = Icons.Default.Check,
                 contentDescription = null,
-                tint = MapleOrange,
+                tint = MapleTheme.colors.primary,
                 modifier = Modifier.size(20.dp)
             )
         }

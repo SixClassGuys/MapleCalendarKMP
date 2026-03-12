@@ -73,11 +73,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.domain.repository.NotificationEventBus
 import com.sixclassguys.maplecalendar.presentation.boss.BossIntent
 import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.BossPartyAlarmContent
 import com.sixclassguys.maplecalendar.ui.component.BossPartyAlarmSettingDialog
@@ -298,7 +295,7 @@ fun BossPartyDetailScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
-        containerColor = MapleWhite
+        containerColor = MapleTheme.colors.surface
     ) { padding ->
         PullToRefreshBox(
             state = pullToRefreshState,
@@ -315,8 +312,8 @@ fun BossPartyDetailScreen(
                     state = pullToRefreshState,
                     isRefreshing = uiState.isRefreshing,
                     modifier = Modifier.align(Alignment.TopCenter),
-                    color = MapleOrange,
-                    containerColor = MapleWhite
+                    color = MapleTheme.colors.primary,
+                    containerColor = MapleTheme.colors.surface
                 )
             },
             modifier = Modifier.fillMaxSize()
@@ -571,11 +568,11 @@ fun BossPartyDetailScreen(
                                     )
                                 },
                                 modifier = Modifier.weight(1f),
-                                placeholder = { Text("메시지를 입력하세요", color = MapleGray) },
+                                placeholder = { Text("메시지를 입력하세요", color = MapleTheme.colors.outline) },
                                 shape = RoundedCornerShape(12.dp),
                                 colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = MapleWhite,
-                                    unfocusedContainerColor = MapleWhite,
+                                    focusedContainerColor = MapleTheme.colors.surface,
+                                    unfocusedContainerColor = MapleTheme.colors.surface,
                                     focusedIndicatorColor = Color.Transparent,
                                     unfocusedIndicatorColor = Color.Transparent
                                 )
@@ -587,14 +584,14 @@ fun BossPartyDetailScreen(
                                     if (isSendEnabled) viewModel.onIntent(BossIntent.SendBossPartyChatMessage)
                                 },
                                 shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = if (isSendEnabled) MapleOrange else MapleGray),
+                                colors = ButtonDefaults.buttonColors(containerColor = if (isSendEnabled) MapleTheme.colors.primary else MapleTheme.colors.outline),
                                 modifier = Modifier.size(50.dp),
                                 contentPadding = PaddingValues(0.dp)
                             ) {
                                 Icon(
                                     Icons.AutoMirrored.Filled.Send,
                                     contentDescription = null,
-                                    tint = if (isSendEnabled) MapleWhite else MapleBlack
+                                    tint = if (isSendEnabled) MapleTheme.colors.surface else MapleTheme.colors.onSurface
                                 )
                             }
                         }
@@ -618,19 +615,19 @@ fun BossPartyDetailScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                .background(MapleTheme.colors.onSurface.copy(alpha = 0.7f)) // 화면 어둡게 처리
                 .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 CircularProgressIndicator(
-                    color = MapleOrange,
+                    color = MapleTheme.colors.primary,
                     strokeWidth = 4.dp
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "보스 파티 정보를 불러오는 중이에요...",
-                    color = MapleWhite,
+                    color = MapleTheme.colors.surface,
                     style = Typography.bodyLarge
                 )
             }

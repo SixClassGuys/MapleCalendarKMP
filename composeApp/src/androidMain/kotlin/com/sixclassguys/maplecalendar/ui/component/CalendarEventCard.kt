@@ -25,9 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.domain.model.MapleEvent
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
@@ -40,7 +38,7 @@ fun CalendarEventCard(
             .padding(vertical = 8.dp)
             .clickable { onClick(event.id) }, // 클릭 시 상세 페이지 이동
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MapleWhite),
+        colors = CardDefaults.cardColors(containerColor = MapleTheme.colors.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column {
@@ -67,7 +65,7 @@ fun CalendarEventCard(
                     style = Typography.bodyLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = MapleBlack
+                    color = MapleTheme.colors.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -80,13 +78,13 @@ fun CalendarEventCard(
                         imageVector = Icons.Default.DateRange,
                         contentDescription = null,
                         modifier = Modifier.size(14.dp),
-                        tint = MapleGray
+                        tint = MapleTheme.colors.outline
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "${event.startDate} ~ ${event.endDate}",
                         style = Typography.bodySmall,
-                        color = MapleGray
+                        color = MapleTheme.colors.outline
                     )
                 }
             }

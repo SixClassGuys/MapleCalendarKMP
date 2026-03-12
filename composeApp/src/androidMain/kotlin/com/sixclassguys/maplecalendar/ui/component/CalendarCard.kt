@@ -36,11 +36,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarUiState
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.generateDaysForMonth
-import com.sixclassguys.maplecalendar.utils.plusMonths
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
@@ -79,7 +77,7 @@ fun CalendarCard(
             .padding(16.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = MapleWhite),
+        colors = CardDefaults.cardColors(containerColor = MapleTheme.colors.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
     ) {
         HorizontalPager(
@@ -116,13 +114,13 @@ fun CalendarCard(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             contentDescription = null,
-                            tint = MapleOrange
+                            tint = MapleTheme.colors.primary
                         )
                     }
                     Text(
                         text = "${displayDate.year}년 ${displayDate.month.value}월",
                         style = Typography.titleMedium,
-                        color = MapleOrange
+                        color = MapleTheme.colors.primary
                     )
                     IconButton(
                         onClick = {
@@ -132,7 +130,7 @@ fun CalendarCard(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             contentDescription = null,
-                            tint = MapleOrange
+                            tint = MapleTheme.colors.primary
                         )
                     }
                 }
@@ -149,7 +147,7 @@ fun CalendarCard(
                             text = day,
                             style = Typography.bodyMedium,
                             textAlign = TextAlign.Center,
-                            color = if (day == "일") Color.Red else if (day == "토") Color.Blue else Color.Gray,
+                            color = if (day == "일") Color.Red else if (day == "토") Color.Blue else MapleTheme.colors.outline,
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -167,7 +165,7 @@ fun CalendarCard(
                                     .padding(2.dp)
                                     .clip(CircleShape)
                                     .background(
-                                        if (date == uiState.selectedDate) MapleOrange else Color.Transparent
+                                        if (date == uiState.selectedDate) MapleTheme.colors.primary else Color.Transparent
                                     )
                                     .clickable(enabled = date != null) { date?.let { onDateClick(it) } },
                                 contentAlignment = Alignment.Center
@@ -176,11 +174,11 @@ fun CalendarCard(
                                     Text(
                                         text = date.dayOfMonth.toString(),
                                         color = when (date) {
-                                            uiState.selectedDate -> Color.White
+                                            uiState.selectedDate -> MapleTheme.colors.surface
 
-                                            today -> MapleOrange
+                                            today -> MapleTheme.colors.primary
 
-                                            else -> Color.Black
+                                            else -> MapleTheme.colors.onSurface
                                         },
                                         style = Typography.bodySmall,
                                         fontWeight = if (date == uiState.selectedDate || date == today) FontWeight.Bold else FontWeight.Normal

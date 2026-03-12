@@ -12,8 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.util.BossPartyTab
 
@@ -26,13 +25,13 @@ fun BossPartyDetailTabRow(
     SecondaryTabRow(
         selectedTabIndex = selectedTab.ordinal,
         modifier = Modifier.fillMaxWidth(),
-        containerColor = MapleWhite, // 배경색
-        contentColor = MapleOrange,     // 선택된 탭의 기본 색상
+        containerColor = MapleTheme.colors.surface, // 배경색
+        contentColor = MapleTheme.colors.primary,     // 선택된 탭의 기본 색상
         indicator = {
             // Material 3 방식의 인디케이터 설정
             TabRowDefaults.SecondaryIndicator(
                 modifier = Modifier.tabIndicatorOffset(selectedTab.ordinal),
-                color = MapleOrange,
+                color = MapleTheme.colors.primary,
                 height = 3.dp
             )
         },
@@ -51,7 +50,7 @@ fun BossPartyDetailTabRow(
                         fontSize = 14.sp,
                         fontFamily = PretendardFamily, // 사용 중인 폰트 적용
                         fontWeight = if (selectedTab == tab) FontWeight.Bold else FontWeight.Normal,
-                        color = if (selectedTab == tab) MapleOrange else Color.LightGray
+                        color = if (selectedTab == tab) MapleTheme.colors.primary else Color.LightGray
                     )
                 }
             )

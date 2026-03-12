@@ -52,12 +52,9 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.domain.model.MapleEvent
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.minusMonths
@@ -205,24 +202,24 @@ fun AlarmSettingDialog(
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
-                        color = MapleWhite
+                        color = MapleTheme.colors.surface
                     ) {
                         when {
                             uiState.isLoading -> Box(
                                 modifier = Modifier.fillMaxWidth()
-                                    .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                                    .background(MapleTheme.colors.onSurface.copy(alpha = 0.7f)) // 화면 어둡게 처리
                                     .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
                                 contentAlignment = Alignment.Center
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     CircularProgressIndicator(
-                                        color = MapleOrange,
+                                        color = MapleTheme.colors.primary,
                                         strokeWidth = 4.dp
                                     )
                                     Spacer(modifier = Modifier.height(16.dp))
                                     Text(
                                         text = "알람을 예약하는 중이에요...",
-                                        color = MapleWhite,
+                                        color = MapleTheme.colors.surface,
                                         style = Typography.bodyLarge
                                     )
                                 }
@@ -243,20 +240,20 @@ fun AlarmSettingDialog(
                                             .height(28.dp) // 높이도 조금 더 컴팩트하게 조절
                                             .align(Alignment.Start) // 부모 Column 내에서 왼쪽으로 배치
                                             .clip(RoundedCornerShape(20.dp)) // 전체를 캡슐 모양으로 깎음
-                                            .background(MapleGray) // 기본 배경색 (연한 회색)
+                                            .background(MapleTheme.colors.outline) // 기본 배경색 (연한 회색)
                                     ) {
                                         // 1. 선택 탭
                                         Box(
                                             modifier = Modifier.weight(1f)
                                                 .fillMaxHeight()
-                                                .background(if (selectedTab == 0) MapleOrange else Color.Transparent) // 선택 시 오렌지색
+                                                .background(if (selectedTab == 0) MapleTheme.colors.primary else Color.Transparent) // 선택 시 오렌지색
                                                 .clickable { selectedTab = 0 },
                                             contentAlignment = Alignment.Center
                                         ) {
                                             Text(
                                                 text = "선택",
                                                 style = Typography.bodyLarge,
-                                                color = if (selectedTab == 0) MapleWhite else MapleBlack
+                                                color = if (selectedTab == 0) MapleTheme.colors.surface else MapleTheme.colors.onSurface
                                             )
                                         }
 
@@ -264,14 +261,14 @@ fun AlarmSettingDialog(
                                         Box(
                                             modifier = Modifier.weight(1f)
                                                 .fillMaxHeight()
-                                                .background(if (selectedTab == 1) MapleOrange else Color.Transparent) // 선택 시 오렌지색
+                                                .background(if (selectedTab == 1) MapleTheme.colors.primary else Color.Transparent) // 선택 시 오렌지색
                                                 .clickable { selectedTab = 1 },
                                             contentAlignment = Alignment.Center
                                         ) {
                                             Text(
                                                 text = "주기",
                                                 style = Typography.bodyLarge,
-                                                color = if (selectedTab == 1) MapleWhite else MapleBlack
+                                                color = if (selectedTab == 1) MapleTheme.colors.surface else MapleTheme.colors.onSurface
                                             )
                                         }
                                     }
@@ -333,7 +330,7 @@ fun AlarmSettingDialog(
                                     Text(
                                         text = "알림 시간 추가",
                                         style = Typography.bodyLarge,
-                                        color = MapleWhite,
+                                        color = MapleTheme.colors.surface,
                                         modifier = Modifier.fillMaxWidth()
                                             .padding(bottom = 8.dp)
                                     )
@@ -363,7 +360,7 @@ fun AlarmSettingDialog(
                                     if (uiState.errorMessage != null) {
                                         Text(
                                             text = uiState.errorMessage!!,
-                                            color = MapleOrange, // 혹은 MapleOrange 계열
+                                            color = MapleTheme.colors.primary,
                                             fontSize = 13.sp,
                                             fontFamily = PretendardFamily,
                                             fontWeight = FontWeight.SemiBold,
@@ -375,7 +372,7 @@ fun AlarmSettingDialog(
                                     Button(
                                         onClick = { onSubmit(addedAlarms.keys.toList()) },
                                         modifier = Modifier.fillMaxWidth(),
-                                        colors = ButtonDefaults.buttonColors(containerColor = MapleOrange),
+                                        colors = ButtonDefaults.buttonColors(containerColor = MapleTheme.colors.primary),
                                         shape = RoundedCornerShape(8.dp)
                                     ) {
                                         Text("제출하기", fontSize = 18.sp, fontWeight = FontWeight.Bold)

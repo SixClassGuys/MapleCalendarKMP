@@ -38,11 +38,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.domain.model.BossPartyBoard
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 
@@ -81,7 +79,7 @@ fun BossPartyAlbumContent(
                 style = Typography.titleMedium
             )
             IconButton(onClick = onSubmitBoard) {
-                Icon(Icons.Default.Add, contentDescription = null, tint = MapleWhite)
+                Icon(Icons.Default.Add, contentDescription = null, tint = MapleTheme.colors.surface)
             }
         }
 
@@ -89,7 +87,7 @@ fun BossPartyAlbumContent(
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
                 .weight(1f)
-                .background(Color.White, shape = RoundedCornerShape(24.dp))
+                .background(MapleTheme.colors.surface, shape = RoundedCornerShape(24.dp))
                 .padding(12.dp)
         ) {
             if (posts.isEmpty()) {
@@ -124,7 +122,7 @@ fun BossPartyAlbumContent(
                             modifier = Modifier.fillMaxWidth().padding(16.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator(color = MapleOrange, strokeWidth = 2.dp)
+                            CircularProgressIndicator(color = MapleTheme.colors.primary, strokeWidth = 2.dp)
                         }
                     }
                 }
@@ -143,7 +141,7 @@ fun BossPartyAlbumItem(
         modifier = Modifier.fillMaxWidth()
             .padding(vertical = 12.dp),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = MapleWhite),
+        colors = CardDefaults.cardColors(containerColor = MapleTheme.colors.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
@@ -187,7 +185,7 @@ fun BossPartyAlbumItem(
                         text = "Lv.${post.characterLevel} ${post.characterClass}",
                         fontFamily = PretendardFamily,
                         fontSize = 12.sp,
-                        color = MapleGray
+                        color = MapleTheme.colors.outline
                     )
                 }
             }
@@ -204,7 +202,7 @@ fun BossPartyAlbumItem(
             Text(
                 text = post.createdAt,
                 fontSize = 11.sp,
-                color = MapleGray,
+                color = MapleTheme.colors.outline,
                 fontFamily = PretendardFamily,
                 modifier = Modifier.padding(vertical = 4.dp)
             )

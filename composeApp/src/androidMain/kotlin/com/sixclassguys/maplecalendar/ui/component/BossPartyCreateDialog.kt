@@ -73,12 +73,9 @@ import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.domain.model.CharacterSummary
 import com.sixclassguys.maplecalendar.presentation.boss.BossIntent
 import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.utils.MapleWorld
@@ -142,7 +139,7 @@ fun BossPartyCreateDialog(
             Column(
                 modifier = Modifier.fillMaxWidth()
                     .clip(RoundedCornerShape(20.dp))
-                    .background(MapleWhite)
+                    .background(MapleTheme.colors.surface)
             ) {
                 // 1. 보스 정보 섹션
                 Row(
@@ -182,7 +179,7 @@ fun BossPartyCreateDialog(
                     }
                 }
 
-                HorizontalDivider(modifier = Modifier.padding(bottom = 4.dp), color = MapleGray)
+                HorizontalDivider(modifier = Modifier.padding(bottom = 4.dp), color = MapleTheme.colors.outline)
 
                 // 2. 캐릭터 선택 및 확장 리스트 섹션
                 Column(
@@ -235,14 +232,14 @@ fun BossPartyCreateDialog(
                             Text(
                                 text = "Lv. ${selectedChar?.characterLevel ?: 0} ${selectedChar?.characterClass ?: ""}",
                                 fontSize = 13.sp,
-                                color = MapleGray
+                                color = MapleTheme.colors.outline
                             )
                         }
 
                         Icon(
                             imageVector = if (isExpanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
                             contentDescription = null,
-                            tint = MapleOrange,
+                            tint = MapleTheme.colors.primary,
                             modifier = Modifier.size(32.dp)
                         )
                     }
@@ -253,8 +250,8 @@ fun BossPartyCreateDialog(
                             modifier = Modifier.fillMaxWidth()
                                 .padding(horizontal = 16.dp)
                                 .padding(bottom = 16.dp)
-                                .border(1.dp, MapleBlack, RoundedCornerShape(8.dp)) // 리스트 외곽선
-                                .background(MapleWhite)
+                                .border(1.dp, MapleTheme.colors.onSurface, RoundedCornerShape(8.dp)) // 리스트 외곽선
+                                .background(MapleTheme.colors.surface)
                                 .heightIn(max = 200.dp) // 최대 높이 제한
                         ) {
                             LazyColumn {
@@ -276,7 +273,7 @@ fun BossPartyCreateDialog(
                     }
                 }
 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = MapleGray)
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = MapleTheme.colors.outline)
 
                 // 1. 보스방 제목 입력 필드
                 BasicTextField(
@@ -297,7 +294,7 @@ fun BossPartyCreateDialog(
                         if (uiState.bossPartyCreateTitle.isEmpty()) {
                             Text(
                                 text = "보스방 제목을 입력하세요",
-                                color = MapleGray,
+                                color = MapleTheme.colors.outline,
                                 fontSize = 14.sp
                             )
                         }
@@ -313,7 +310,7 @@ fun BossPartyCreateDialog(
                         .focusRequester(descriptionFocusRequester),
                     decorationBox = { innerTextField ->
                         if (uiState.bossPartyCreateDescription.isEmpty()) {
-                            Text("소개글을 입력하세요", color = MapleGray, fontSize = 14.sp)
+                            Text("소개글을 입력하세요", color = MapleTheme.colors.outline, fontSize = 14.sp)
                         }
                         innerTextField()
                     }
@@ -324,7 +321,7 @@ fun BossPartyCreateDialog(
                 if (uiState.errorMessage != null) {
                     Text(
                         text = uiState.errorMessage!!,
-                        color = MapleOrange, // 혹은 MapleOrange 계열
+                        color = MapleTheme.colors.primary, // 혹은 MapleTheme.colors.primary 계열
                         fontSize = 13.sp,
                         fontFamily = PretendardFamily,
                         fontWeight = FontWeight.SemiBold,
@@ -344,12 +341,12 @@ fun BossPartyCreateDialog(
                     modifier = Modifier.fillMaxWidth()
                         .padding(16.dp)
                         .height(36.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = if (isEnabled) MapleOrange else MapleGray),
+                    colors = ButtonDefaults.buttonColors(containerColor = if (isEnabled) MapleTheme.colors.primary else MapleTheme.colors.outline),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
                         text = "보스 파티 생성",
-                        color = if (isEnabled) MapleWhite else MapleBlack,
+                        color = if (isEnabled) MapleTheme.colors.surface else MapleTheme.colors.onSurface,
                         style = Typography.bodyLarge
                     )
                 }
@@ -371,8 +368,8 @@ fun CharacterProfileImage(
     Box(
         modifier = Modifier.size(size)
             .clip(CircleShape)
-            .border(1.dp, MapleBlack, CircleShape)
-            .background(MapleWhite),
+            .border(1.dp, MapleTheme.colors.onSurface, CircleShape)
+            .background(MapleTheme.colors.surface),
         contentAlignment = Alignment.TopCenter
     ) {
         AsyncImage(
@@ -463,14 +460,14 @@ fun CharacterListItem(
                 text = "Lv. ${character.second.characterLevel} ${character.second.characterClass}",
                 fontFamily = PretendardFamily,
                 fontSize = 11.sp,
-                color = MapleGray
+                color = MapleTheme.colors.outline
             )
         }
         if (isSelected) {
             Icon(
                 imageVector = Icons.Default.Done,
                 contentDescription = null,
-                tint = MapleOrange,
+                tint = MapleTheme.colors.primary,
                 modifier = Modifier.size(14.dp)
             )
         }

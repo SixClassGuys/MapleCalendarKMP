@@ -40,12 +40,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.sixclassguys.maplecalendar.presentation.boss.BossIntent
 import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 
@@ -95,24 +92,24 @@ fun BossPartyBoardUploadDialog(
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
-                    color = Color.White
+                    color = MapleTheme.colors.surface
                 ) {
                     when {
                         uiState.isLoading -> Box(
                             modifier = Modifier.fillMaxWidth()
-                                .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                                .background(MapleTheme.colors.onSurface.copy(alpha = 0.7f)) // 화면 어둡게 처리
                                 .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
                             contentAlignment = Alignment.Center
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 CircularProgressIndicator(
-                                    color = MapleOrange,
+                                    color = MapleTheme.colors.primary,
                                     strokeWidth = 4.dp
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
                                     text = "게시글을 올리는 중이에요...",
-                                    color = MapleWhite,
+                                    color = MapleTheme.colors.surface,
                                     style = Typography.bodyLarge
                                 )
                             }
@@ -127,7 +124,7 @@ fun BossPartyBoardUploadDialog(
                                     .aspectRatio(1f)
                                     .clickable { pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
                                 shape = RoundedCornerShape(16.dp),
-                                colors = CardDefaults.cardColors(containerColor = MapleWhite)
+                                colors = CardDefaults.cardColors(containerColor = MapleTheme.colors.surface)
                             ) {
                                 val firstImage = uiState.uploadImage.getOrNull(0)
 
@@ -154,15 +151,15 @@ fun BossPartyBoardUploadDialog(
                             TextField(
                                 value = uiState.uploadComment,
                                 onValueChange = { viewModel.onIntent(BossIntent.UpdateBossPartyBoardComment(it)) },
-                                placeholder = { Text("한줄평", color = MapleGray) },
+                                placeholder = { Text("한줄평", color = MapleTheme.colors.outline) },
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = MapleWhite,
-                                    unfocusedContainerColor = MapleWhite,
+                                    focusedContainerColor = MapleTheme.colors.surface,
+                                    unfocusedContainerColor = MapleTheme.colors.surface,
                                     focusedIndicatorColor = Color.Transparent,
                                     unfocusedIndicatorColor = Color.Transparent,
-                                    focusedTextColor = MapleBlack,
-                                    unfocusedTextColor = MapleBlack
+                                    focusedTextColor = MapleTheme.colors.onSurface,
+                                    unfocusedTextColor = MapleTheme.colors.onSurface
                                 ),
                                 shape = RoundedCornerShape(12.dp),
                                 singleLine = true
@@ -173,7 +170,7 @@ fun BossPartyBoardUploadDialog(
                             if (uiState.errorMessage != null) {
                                 Text(
                                     text = uiState.errorMessage!!,
-                                    color = MapleOrange, // 혹은 MapleOrange 계열
+                                    color = MapleTheme.colors.primary, // 혹은 MapleOrange 계열
                                     fontSize = 13.sp,
                                     fontFamily = PretendardFamily,
                                     fontWeight = FontWeight.SemiBold,
@@ -189,13 +186,13 @@ fun BossPartyBoardUploadDialog(
                                     .height(50.dp),
                                 shape = RoundedCornerShape(12.dp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = MapleOrange,
-                                    disabledContainerColor = MapleGray
+                                    containerColor = MapleTheme.colors.primary,
+                                    disabledContainerColor = MapleTheme.colors.outline
                                 )
                             ) {
                                 Text(
                                     text = "업로드",
-                                    color = MapleWhite,
+                                    color = MapleTheme.colors.surface,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp
                                 )

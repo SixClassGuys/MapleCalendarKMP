@@ -16,8 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 import kotlinx.datetime.LocalDateTime
 
@@ -27,7 +26,7 @@ fun AlarmChip(
     onRemove: () -> Unit
 ) {
     Surface(
-        color = MapleOrange,
+        color = MapleTheme.colors.primary,
         shape = RoundedCornerShape(16.dp)
     ) {
         Row(
@@ -37,13 +36,13 @@ fun AlarmChip(
             Text(
                 text = "${alarm.year}년 ${alarm.monthNumber}월 ${alarm.dayOfMonth}일 ${alarm.hour}시 ${alarm.minute}분",
                 style = Typography.labelMedium,
-                color = MapleWhite
+                color = MapleTheme.colors.surface
             )
             Spacer(Modifier.width(4.dp))
             Icon(
                 Icons.Default.Close,
                 contentDescription = "알람 Chip 제거 버튼",
-                tint = MapleWhite,
+                tint = MapleTheme.colors.surface,
                 modifier = Modifier.size(14.dp)
                     .clickable { onRemove() }
             )

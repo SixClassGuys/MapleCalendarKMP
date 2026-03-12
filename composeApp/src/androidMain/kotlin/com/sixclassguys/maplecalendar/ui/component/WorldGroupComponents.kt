@@ -26,9 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.sixclassguys.maplecalendar.R
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.utils.MapleWorld
 
@@ -45,13 +43,13 @@ fun WorldGroupTabs(
     SecondaryScrollableTabRow(
         selectedTabIndex = groups.indexOf(selectedGroup).coerceAtLeast(0),
         containerColor = Color.Transparent,
-        contentColor = MapleOrange, // 인디케이터 기본 컬러로 활용됨
+        contentColor = MapleTheme.colors.primary, // 인디케이터 기본 컬러로 활용됨
         edgePadding = 16.dp,
         divider = {},
         indicator = {
             TabRowDefaults.SecondaryIndicator(
                 modifier = Modifier.tabIndicatorOffset(selectedIndex),
-                color = MapleOrange
+                color = MapleTheme.colors.primary
             )
         }
     ) {
@@ -65,7 +63,7 @@ fun WorldGroupTabs(
                         text = group,
                         fontFamily = PretendardFamily,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                        color = if (isSelected) MapleBlack else MapleGray
+                        color = if (isSelected) MapleTheme.colors.onSurface else MapleTheme.colors.outline
                     )
                 }
             )
@@ -104,7 +102,7 @@ fun WorldIconRow(
                     Box(
                         modifier = Modifier.width(20.dp)
                             .height(2.dp)
-                            .background(MapleOrange)
+                            .background(MapleTheme.colors.primary)
                     )
                 } else {
                     // 높이 유지를 위한 빈 공간

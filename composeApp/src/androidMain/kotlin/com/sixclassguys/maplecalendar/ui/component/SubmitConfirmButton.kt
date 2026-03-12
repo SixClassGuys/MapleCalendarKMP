@@ -11,10 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
@@ -22,8 +19,8 @@ fun SubmitConfirmButton(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val buttonColor = if (isSelected) MapleOrange else MapleGray
-    val textColor = if (isSelected) MapleWhite else MapleBlack
+    val buttonColor = if (isSelected) MapleTheme.colors.primary else MapleTheme.colors.outline
+    val textColor = if (isSelected) MapleTheme.colors.surface else MapleTheme.colors.onSurface
 
     Box(
         modifier = Modifier.fillMaxWidth()

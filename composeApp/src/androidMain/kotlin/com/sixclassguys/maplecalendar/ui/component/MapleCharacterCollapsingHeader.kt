@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,9 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.presentation.character.MapleCharacterUiState
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 
 @Composable
@@ -47,7 +44,7 @@ fun MapleCharacterCollapsingHeader(
 
     Surface(
         modifier = Modifier.fillMaxWidth().height(currentHeightDp),
-        color = MapleWhite,
+        color = MapleTheme.colors.surface,
         shadowElevation = if (scrollPercentage > 0.95f) 4.dp else 0.dp
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -80,7 +77,7 @@ fun MapleCharacterCollapsingHeader(
                     text = "캐릭터 등록하기",
                     fontSize = lerp(24f, 18f, scrollPercentage).sp,
                     fontWeight = FontWeight.Bold,
-                    color = MapleBlack,
+                    color = MapleTheme.colors.onSurface,
                     maxLines = 1, // 타이틀 잘림 방지
                     softWrap = false // 텍스트가 절대 다음 줄로 넘어가지 않게 강제
                 )
@@ -115,7 +112,7 @@ fun MapleCharacterCollapsingHeader(
                                 "캐릭터를 선택해주세요!\n" +
                                 "등록을 원하지 않으시면 체크를 해제해주시면 돼요!",
                         style = Typography.bodyMedium,
-                        color = MapleGray
+                        color = MapleTheme.colors.outline
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))

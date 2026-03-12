@@ -40,16 +40,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sixclassguys.maplecalendar.domain.model.BossPartyAlarmTime
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.util.RegistrationMode
@@ -130,14 +128,14 @@ fun BossPartyAlarmContent(
                         }
                     },
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor = Color.White,
-                        checkedTrackColor = MapleOrange
+                        checkedThumbColor = MapleTheme.colors.surface,
+                        checkedTrackColor = MapleTheme.colors.primary
                     )
                 )
                 if (isLeader) {
                     Spacer(modifier = Modifier.width(12.dp))
                     IconButton(onClick = onAddAlarm) {
-                        Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
+                        Icon(Icons.Default.Add, contentDescription = null, tint = MapleTheme.colors.surface)
                     }
                 }
             }
@@ -147,7 +145,7 @@ fun BossPartyAlarmContent(
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
                 .weight(1f)
-                .background(Color.White, shape = RoundedCornerShape(24.dp))
+                .background(MapleTheme.colors.surface, shape = RoundedCornerShape(24.dp))
                 .padding(12.dp)
         ) {
             if (alarms.isEmpty()) {
@@ -189,7 +187,7 @@ fun BossPartyDetailAlarmItem(
         modifier = Modifier.fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 12.dp),
         shape = RoundedCornerShape(16.dp), // 조금 더 둥근 모서리
-        colors = CardDefaults.cardColors(containerColor = MapleWhite),
+        colors = CardDefaults.cardColors(containerColor = MapleTheme.colors.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -200,7 +198,7 @@ fun BossPartyDetailAlarmItem(
             Icon(
                 imageVector = Icons.Default.Schedule,
                 contentDescription = null,
-                tint = MapleOrange,
+                tint = MapleTheme.colors.primary,
                 modifier = Modifier.size(24.dp)
             )
 
@@ -215,7 +213,7 @@ fun BossPartyDetailAlarmItem(
                     fontFamily = PretendardFamily,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = MapleTheme.colors.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 // 상세 설명
@@ -223,7 +221,7 @@ fun BossPartyDetailAlarmItem(
                     text = description,
                     fontFamily = PretendardFamily,
                     fontSize = 13.sp,
-                    color = Color.Black // 와이어프레임상 검은색
+                    color = MapleTheme.colors.onSurface
                 )
             }
 
@@ -233,7 +231,7 @@ fun BossPartyDetailAlarmItem(
                 Icon(
                     imageVector = Icons.Default.Autorenew, // 회전 아이콘으로 '반복' 의미 전달
                     contentDescription = "주기 알람",
-                    tint = Color.Gray,
+                    tint = MapleTheme.colors.outline,
                     modifier = Modifier
                         .size(20.dp)
                         .padding(end = 4.dp)
@@ -245,7 +243,7 @@ fun BossPartyDetailAlarmItem(
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "삭제",
-                            tint = Color.Black
+                            tint = MapleTheme.colors.onSurface
                         )
                     }
                 }

@@ -79,10 +79,7 @@ import com.sixclassguys.maplecalendar.RepeatMode
 import com.sixclassguys.maplecalendar.domain.model.MapleBgm
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.ui.component.AddMusicDialog
 import com.sixclassguys.maplecalendar.util.MapleBgmLikeStatus
 import com.sixclassguys.maplecalendar.utils.formatTime
@@ -138,7 +135,7 @@ fun MapleBgmPlayScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
-        containerColor = MapleWhite
+        containerColor = MapleTheme.colors.surface
     ) { padding ->
         Box(
             modifier = Modifier
@@ -168,9 +165,8 @@ fun MapleBgmPlayScreen(
                     } else {
                         // [기존 확장된 화면] 기존에 작성했던 1~6번 전체 레이아웃
                         Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(MapleWhite)
+                            modifier = Modifier.fillMaxSize()
+                                .background(MapleTheme.colors.surface)
                                 .padding(
                                     start = 16.dp,
                                     end = 16.dp,
@@ -214,7 +210,7 @@ fun MapleBgmPlayScreen(
                             Surface(
                                 modifier = Modifier.size(280.dp),
                                 shape = RoundedCornerShape(16.dp),
-                                border = BorderStroke(4.dp, MapleBlack), // 와이어프레임의 굵은 테두리
+                                border = BorderStroke(4.dp, MapleTheme.colors.onSurface), // 와이어프레임의 굵은 테두리
                             ) {
                                 AsyncImage(
                                     model = uiState.selectedBgm?.thumbnailUrl,
@@ -236,7 +232,7 @@ fun MapleBgmPlayScreen(
                                 Text(
                                     text = uiState.selectedBgm?.mapName ?: "-",
                                     fontSize = 16.sp,
-                                    color = MapleGray
+                                    color = MapleTheme.colors.outline
                                 )
                             }
 
@@ -255,7 +251,7 @@ fun MapleBgmPlayScreen(
                                     Icon(
                                         imageVector = if (isLiked) Icons.Default.ThumbUp else Icons.Outlined.ThumbUp,
                                         contentDescription = null,
-                                        tint = if (isLiked) MapleOrange else MapleGray,
+                                        tint = if (isLiked) MapleTheme.colors.primary else MapleTheme.colors.outline,
                                         modifier = Modifier
                                             .size(20.dp)
                                             .clickable {
@@ -276,7 +272,7 @@ fun MapleBgmPlayScreen(
                                     Icon(
                                         imageVector = if (isDisliked) Icons.Default.ThumbDown else Icons.Outlined.ThumbDown,
                                         contentDescription = null,
-                                        tint = if (isDisliked) MapleBlack else MapleGray,
+                                        tint = if (isDisliked) MapleTheme.colors.onSurface else MapleTheme.colors.outline,
                                         modifier = Modifier
                                             .size(20.dp)
                                             .clickable {
@@ -340,7 +336,7 @@ fun MapleBgmPlayScreen(
                                 IconButton(onClick = { viewModel.onIntent(PlaylistIntent.ToggleShuffle) }) {
                                     Icon(
                                         Icons.Default.Shuffle,
-                                        tint = if (uiState.isShuffleEnabled) MapleOrange else MapleGray,
+                                        tint = if (uiState.isShuffleEnabled) MapleTheme.colors.primary else MapleTheme.colors.outline,
                                         contentDescription = ""
                                     )
                                 }
@@ -348,7 +344,7 @@ fun MapleBgmPlayScreen(
                                     Icon(
                                         Icons.Default.SkipPrevious, modifier = Modifier.size(36.dp),
                                         contentDescription = "",
-                                        tint = MapleGray
+                                        tint = MapleTheme.colors.outline
                                     )
                                 }
 
@@ -364,13 +360,13 @@ fun MapleBgmPlayScreen(
                                             )
                                         },
                                     shape = CircleShape,
-                                    color = MapleOrange
+                                    color = MapleTheme.colors.primary
                                 ) {
                                     Icon(
                                         imageVector = if (uiState.isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                                         contentDescription = null,
                                         modifier = Modifier.padding(16.dp),
-                                        tint = MapleWhite
+                                        tint = MapleTheme.colors.surface
                                     )
                                 }
 
@@ -390,7 +386,7 @@ fun MapleBgmPlayScreen(
                                 }) {
                                     Icon(
                                         imageVector = if (uiState.repeatMode == RepeatMode.ONE) Icons.Default.RepeatOne else Icons.Default.Repeat,
-                                        tint = if (uiState.repeatMode != RepeatMode.NONE) MapleOrange else MapleGray,
+                                        tint = if (uiState.repeatMode != RepeatMode.NONE) MapleTheme.colors.primary else MapleTheme.colors.outline,
                                         contentDescription = ""
                                     )
                                 }
@@ -475,22 +471,21 @@ fun PlayerSlider(
                 Surface(
                     modifier = Modifier.size(18.dp),
                     shape = CircleShape,
-                    color = MapleOrange
+                    color = MapleTheme.colors.primary
                 ) {}
             },
             track = { sliderState ->
                 val fraction = sliderState.value
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                         .height(6.dp)
-                        .background(MapleGray, CircleShape)
+                        .background(MapleTheme.colors.outline, CircleShape)
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth(fraction)
                             .fillMaxHeight()
-                            .background(color = MapleOrange, shape = CircleShape)
+                            .background(color = MapleTheme.colors.primary, shape = CircleShape)
                     )
                 }
             }
@@ -555,14 +550,14 @@ fun ColumnScope.PlaylistPanelExpanded(
                 .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             shape = RoundedCornerShape(24.dp),
-            color = Color.White
+            color = MapleTheme.colors.surface
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     "현재 재생 목록",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    color = MapleTheme.colors.onSurface
                 )
                 Spacer(Modifier.height(16.dp))
 
@@ -594,8 +589,7 @@ fun ColumnScope.PlaylistPanelExpanded(
                                     val isDismissing =
                                         dismissState.targetValue != SwipeToDismissBoxValue.Settled
                                     Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
+                                        modifier = Modifier.fillMaxSize()
                                             .clip(RoundedCornerShape(8.dp))
                                             .background(if (isDismissing) Color.Red.copy(alpha = 0.8f) else Color.Transparent),
                                         contentAlignment = Alignment.CenterEnd
@@ -604,7 +598,7 @@ fun ColumnScope.PlaylistPanelExpanded(
                                             Icon(
                                                 Icons.Default.Delete,
                                                 null,
-                                                tint = Color.White,
+                                                tint = MapleTheme.colors.surface,
                                                 modifier = Modifier.padding(16.dp)
                                             )
                                         }
@@ -687,14 +681,14 @@ fun PlaylistItemRow(
     Surface(
         shadowElevation = elevation,
         shape = RoundedCornerShape(8.dp),
-        color = if (isDragging) MapleGray else if (isPlaying) MapleOrange.copy(alpha = 0.1f) else MapleWhite
+        color = if (isDragging) MapleTheme.colors.outline else if (isPlaying) MapleTheme.colors.primary.copy(alpha = 0.1f) else MapleTheme.colors.surface
     ) {
         Row(
             modifier = modifier
                 .fillMaxWidth()
                 .height(72.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(if (isPlaying) MapleOrange.copy(alpha = 0.2f) else Color.Transparent)
+                .background(if (isPlaying) MapleTheme.colors.primary.copy(alpha = 0.2f) else Color.Transparent)
                 .clickable { onClick() }
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -714,15 +708,15 @@ fun PlaylistItemRow(
                 Text(
                     text = bgm.title,
                     fontWeight = FontWeight.Bold,
-                    color = if (isPlaying) MapleOrange else Color.Black
+                    color = if (isPlaying) MapleTheme.colors.primary else MapleTheme.colors.onSurface
                 )
-                Text(text = bgm.mapName, fontSize = 12.sp, color = Color.Gray)
+                Text(text = bgm.mapName, fontSize = 12.sp, color = MapleTheme.colors.outline)
             }
 
             Icon(
                 imageVector = Icons.Default.DragHandle,
                 contentDescription = null,
-                tint = MapleGray,
+                tint = MapleTheme.colors.outline,
                 modifier = handleModifier
                     .size(36.dp)
                     .padding(8.dp) // 여기서 드래그 감지
@@ -748,7 +742,7 @@ fun CompressedPlayerHeader(
         Surface(
             modifier = Modifier.size(50.dp),
             shape = RoundedCornerShape(8.dp),
-            border = BorderStroke(2.dp, Color.Black)
+            border = BorderStroke(2.dp, MapleTheme.colors.onSurface)
         ) {
             AsyncImage(
                 model = bgm?.thumbnailUrl,
@@ -772,7 +766,7 @@ fun CompressedPlayerHeader(
             Text(
                 text = bgm?.mapName ?: "-",
                 fontSize = 13.sp,
-                color = Color.Gray
+                color = MapleTheme.colors.outline
             )
         }
 
@@ -782,7 +776,7 @@ fun CompressedPlayerHeader(
                 imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                 contentDescription = null,
                 modifier = Modifier.size(32.dp),
-                tint = MapleOrange
+                tint = MapleTheme.colors.primary
             )
         }
     }

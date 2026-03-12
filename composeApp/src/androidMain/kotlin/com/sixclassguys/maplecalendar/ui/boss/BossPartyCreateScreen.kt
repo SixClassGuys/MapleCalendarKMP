@@ -47,11 +47,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.domain.repository.NotificationEventBus
 import com.sixclassguys.maplecalendar.presentation.boss.BossIntent
 import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.BossIconItem
 import com.sixclassguys.maplecalendar.ui.component.BossPartyCreateDialog
@@ -143,12 +141,12 @@ fun BossPartyCreateScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
-        containerColor = MapleWhite
+        containerColor = MapleTheme.colors.surface
     ) { innerPadding ->
         Column(
             modifier = Modifier.fillMaxSize()
                 .padding(innerPadding)
-                .background(MapleWhite) // 최하단 바닥 배경
+                .background(MapleTheme.colors.surface) // 최하단 바닥 배경
         ) {
             Column(
                 modifier = Modifier.fillMaxSize()
@@ -178,7 +176,7 @@ fun BossPartyCreateScreen(
                         .padding(horizontal = 16.dp)
                         .padding(bottom = 16.dp) // 🚀 바닥에서 살짝 띄우고 싶다면 유지, 아니면 0.dp
                         .clip(RoundedCornerShape(16.dp))
-                        .background(MapleWhite)
+                        .background(MapleTheme.colors.surface)
                 ) {
                     // 지역 선택 탭 (Wireframe처럼 텍스트 위주 구성)
                     BossRegionTabRow(
@@ -190,8 +188,7 @@ fun BossPartyCreateScreen(
 
                     // 보스 아이콘 리스트 (배경 흰색 유지 및 하단 구분선)
                     LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                             .padding(vertical = 16.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -213,21 +210,19 @@ fun BossPartyCreateScreen(
                             .fillMaxWidth() // 가로폭만 꽉 채움
                             .padding(horizontal = 12.dp, vertical = 8.dp)
                             .clip(RoundedCornerShape(20.dp))
-                            .background(MapleWhite) // 혹시 모를 여백을 위한 배경색
+                            .background(MapleTheme.colors.surface) // 혹시 모를 여백을 위한 배경색
                     ) {
                         Image(
                             painter = painterResource(id = uiState.selectedBoss.backgroundRes),
                             contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxWidth() // 가로를 꽉 채움
+                            modifier = Modifier.fillMaxWidth() // 가로를 꽉 채움
                                 .wrapContentHeight(), // 세로는 이미지 비율에 따라 자동 결정
-                            contentScale = ContentScale.FillWidth // 🚀 가로 기준 맞춤 (배경이 다 보임)
+                            contentScale = ContentScale.FillWidth // 가로 기준 맞춤 (배경이 다 보임)
                         )
 
                         // 난이도 버튼 (우측 하단 배치)
                         Column(
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
+                            modifier = Modifier.align(Alignment.BottomEnd)
                                 .padding(end = 12.dp, bottom = 16.dp), // 이미지 안쪽으로 여백 조절
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
@@ -248,19 +243,19 @@ fun BossPartyCreateScreen(
         if (uiState.isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize()
-                    .background(MapleBlack.copy(alpha = 0.7f)) // 화면 어둡게 처리
+                    .background(MapleTheme.colors.onSurface.copy(alpha = 0.7f)) // 화면 어둡게 처리
                     .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CircularProgressIndicator(
-                        color = MapleOrange,
+                        color = MapleTheme.colors.primary,
                         strokeWidth = 4.dp
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "보스 정보를 불러오고 있습니다...",
-                        color = MapleWhite,
+                        color = MapleTheme.colors.surface,
                         style = Typography.bodyLarge
                     )
                 }

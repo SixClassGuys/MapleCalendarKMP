@@ -52,10 +52,7 @@ import com.sixclassguys.maplecalendar.domain.model.MapleBgm
 import com.sixclassguys.maplecalendar.domain.model.MapleBgmPlaylist
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
-import com.sixclassguys.maplecalendar.theme.MapleBlack
-import com.sixclassguys.maplecalendar.theme.MapleGray
-import com.sixclassguys.maplecalendar.theme.MapleOrange
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.ui.component.AddMyPlaylistDialog
 import com.sixclassguys.maplecalendar.util.PlaylistTab
 import com.sixclassguys.maplecalendar.utils.RegionCategory
@@ -140,7 +137,7 @@ fun PlaylistScreen(
                 onSearchClick = onNavigateToSearchBgm
             )
         },
-        containerColor = MapleWhite
+        containerColor = MapleTheme.colors.surface
     ) { padding ->
         LazyColumn(
             state = scrollState,
@@ -239,8 +236,8 @@ fun BgmItem(
         // 1. 순위 표시 (인기 차트일 때만)
         rank?.let {
             val badgeColor = when(it) {
-                1 -> MapleOrange
-                2 -> MapleGray.copy(alpha = 0.5f)
+                1 -> MapleTheme.colors.primary
+                2 -> MapleTheme.colors.outline.copy(alpha = 0.5f)
                 3 -> Color(0xFFE67E22) // 동메달 색상
                 else -> Color(0xFF34495E)
             }
@@ -249,7 +246,7 @@ fun BgmItem(
                     .background(badgeColor, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Text(it.toString(), color = MapleWhite, fontWeight = FontWeight.Bold)
+                Text(it.toString(), color = MapleTheme.colors.surface, fontWeight = FontWeight.Bold)
             }
             Spacer(Modifier.width(12.dp))
         }
@@ -266,12 +263,12 @@ fun BgmItem(
         // 3. 곡 정보
         Column(modifier = Modifier.weight(1f)) {
             Text(bgm.title, fontWeight = FontWeight.Bold, maxLines = 1)
-            Text(bgm.mapName, color = MapleGray, fontSize = 12.sp)
+            Text(bgm.mapName, color = MapleTheme.colors.outline, fontSize = 12.sp)
         }
 
         // 4. 더보기 버튼
         IconButton(onClick = onMoreClick) {
-            Icon(Icons.Default.MoreVert, contentDescription = null, tint = MapleBlack)
+            Icon(Icons.Default.MoreVert, contentDescription = null, tint = MapleTheme.colors.onSurface)
         }
     }
 }
@@ -283,7 +280,7 @@ fun PlaylistTabRow(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth()
-            .background(MapleWhite)
+            .background(MapleTheme.colors.surface)
             .padding(vertical = 8.dp, horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -292,7 +289,7 @@ fun PlaylistTabRow(
             Text(
                 text = tab.title,
                 modifier = Modifier.clickable { onTabSelected(tab) },
-                color = if (isSelected) MapleBlack else MapleGray,
+                color = if (isSelected) MapleTheme.colors.onSurface else MapleTheme.colors.outline,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                 fontSize = 18.sp
             )
@@ -317,7 +314,7 @@ fun PlaylistTopBar(
                 text = "플레이리스트",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = MapleBlack
+                color = MapleTheme.colors.onSurface
             )
         }
 
@@ -328,7 +325,7 @@ fun PlaylistTopBar(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add Playlist",
                     modifier = Modifier.size(32.dp),
-                    tint = MapleBlack
+                    tint = MapleTheme.colors.onSurface
                 )
             }
 
@@ -337,7 +334,7 @@ fun PlaylistTopBar(
                     imageVector = Icons.Default.Search,
                     contentDescription = "Search",
                     modifier = Modifier.size(32.dp),
-                    tint = MapleBlack
+                    tint = MapleTheme.colors.onSurface
                 )
             }
         }
@@ -361,13 +358,13 @@ fun MyPlaylistItem(
             modifier = Modifier
                 .size(60.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(MapleGray.copy(alpha = 0.1f))
+                .background(MapleTheme.colors.outline.copy(alpha = 0.1f))
         ) {
             val regions = playlist.bgms.map { it.region }.distinct().take(4)
 
             if (regions.isEmpty()) {
                 // 곡이 없을 때 기본 아이콘
-                Icon(Icons.Default.MusicNote, contentDescription = null, modifier = Modifier.align(Alignment.Center), tint = MapleGray)
+                Icon(Icons.Default.MusicNote, contentDescription = null, modifier = Modifier.align(Alignment.Center), tint = MapleTheme.colors.outline)
             } else {
                 // 2x2 그리드로 지역 아이콘 배치
                 Column(Modifier.fillMaxSize()) {
@@ -391,7 +388,7 @@ fun MyPlaylistItem(
                 text = playlist.name,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = MapleBlack
+                color = MapleTheme.colors.onSurface
             )
         }
 
@@ -401,7 +398,7 @@ fun MyPlaylistItem(
                 imageVector = Icons.Default.Lock,
                 contentDescription = "Private",
                 modifier = Modifier.size(16.dp),
-                tint = MapleGray
+                tint = MapleTheme.colors.outline
             )
         }
     }
