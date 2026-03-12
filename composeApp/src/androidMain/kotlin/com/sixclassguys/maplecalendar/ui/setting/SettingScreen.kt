@@ -42,10 +42,9 @@ import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
 import com.sixclassguys.maplecalendar.presentation.setting.SettingIntent
 import com.sixclassguys.maplecalendar.presentation.setting.SettingViewModel
-import com.sixclassguys.maplecalendar.theme.MapleWhite
+import com.sixclassguys.maplecalendar.theme.MapleTheme
 import com.sixclassguys.maplecalendar.theme.Typography
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SettingScreen(
@@ -109,7 +108,7 @@ fun SettingScreen(
 
     Column(
         modifier = Modifier.fillMaxSize()
-            .background(MapleWhite)
+            .background(MapleTheme.colors.surface)
             .padding(24.dp)
     ) {
         Text(
@@ -119,6 +118,31 @@ fun SettingScreen(
         )
 
         Spacer(modifier = Modifier.weight(1f))
+
+        // 2. 다크모드 섹션
+        Row(
+            modifier = Modifier.fillMaxWidth()
+                .padding(vertical = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "다크모드 설정",
+                style = Typography.labelLarge
+            )
+            Switch(
+                checked = uiState.isDarkModeEnabled,
+                onCheckedChange = { isChecking ->
+                    viewModel.onIntent(SettingIntent.ToggleDarkModeStatus(isChecking))
+                },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = MapleTheme.colors.primary,
+                    checkedTrackColor = MapleTheme.colors.primary.copy(alpha = 0.5f)
+                )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         // 💡 로그인 상태에 따른 UI 분기
         if (!homeUiState.isLoginSuccess) {
@@ -155,15 +179,15 @@ fun SettingScreen(
                         }
                     },
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor = Color(0xFFF29F38), // 메이플 주황색
-                        checkedTrackColor = Color(0xFFF29F38).copy(alpha = 0.5f)
+                        checkedThumbColor = MapleTheme.colors.primary, // 메이플 주황색
+                        checkedTrackColor = MapleTheme.colors.primary.copy(alpha = 0.5f)
                     )
                 )
             }
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // 2. 로그아웃 버튼
+            // 3. 로그아웃 버튼
             MapleButton(
                 text = "로그아웃",
                 onClick = {
@@ -195,7 +219,7 @@ fun MapleButton(
         Text(
             text = text,
             style = Typography.bodyLarge,
-            color = Color.White
+            color = MapleTheme.colors.surface
         )
     }
 }

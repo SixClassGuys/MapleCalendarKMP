@@ -86,6 +86,7 @@ import com.sixclassguys.maplecalendar.domain.usecase.SubmitRepresentativeCharact
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleBossPartyAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleBossPartyBoardLikeUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleBossPartyChatAlarmUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.ToggleDarkModeStatusUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleEventAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleGlobalAlarmStatusUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleMapleBgmLikeUseCase
@@ -162,6 +163,7 @@ val useCaseModule = module {
     single<SubmitEventAlarmUseCase> { SubmitEventAlarmUseCase(get()) }
     single<ToggleEventAlarmUseCase> { ToggleEventAlarmUseCase(get()) }
     single<ToggleGlobalAlarmStatusUseCase> { ToggleGlobalAlarmStatusUseCase(get()) }
+    single<ToggleDarkModeStatusUseCase> { ToggleDarkModeStatusUseCase(get()) }
     single<UnregisterTokenUseCase> { UnregisterTokenUseCase(get()) }
     single<LogoutUseCase> { LogoutUseCase(get()) }
     single<CheckCharacterAuthorityUseCase> { CheckCharacterAuthorityUseCase(get()) }
@@ -228,7 +230,7 @@ val viewModelModule = module {
         )
     }
     viewModel { LoginViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { SettingViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { SettingViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { NotificationViewModel(get(), get(), get(), get()) }
     viewModel {
         CalendarViewModel(
