@@ -112,7 +112,7 @@ fun BossPartyAlarmSettingDialog(
         if (selectedTab == 0) {
             selectedAlarmDate != null && isTimeValid && isMessageValid
         } else {
-            selectedDayOfWeek != null && isTimeValid && isMessageValid
+            (selectedDayOfWeek == null) || (isTimeValid && isMessageValid)
         }
     }
 

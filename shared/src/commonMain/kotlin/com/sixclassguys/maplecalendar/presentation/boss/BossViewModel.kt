@@ -303,8 +303,16 @@ class BossViewModel(
     private fun updateBossPartyPeriod() {
         val bossPartyId = _uiState.value.selectedBossParty?.id ?: 0L
         val dayOfWeek = _uiState.value.selectedDayOfWeek
-        val hour = _uiState.value.selectedHour.toInt()
-        val minute = _uiState.value.selectedMinute.toInt()
+        val hour = if (_uiState.value.selectedHour.isBlank()) {
+            0
+        } else {
+            _uiState.value.selectedHour.toInt()
+        }
+        val minute = if (_uiState.value.selectedMinute.isBlank()) {
+            0
+        } else {
+            _uiState.value.selectedMinute.toInt()
+        }
         val message = _uiState.value.alarmMessage
         val isImmediateApply = _uiState.value.isImmediatelyAlarm
         viewModelScope.launch { 
