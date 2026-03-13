@@ -40,19 +40,25 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
     override fun onMessageReceived(message: RemoteMessage) {
         CoroutineScope(Dispatchers.IO).launch {
             // 1. 공통 데이터 추출
-            val title = message.notification?.title ?: message.data["title"] ?: "Maplendar"
-            val body = message.notification?.body ?: message.data["body"] ?: "내용이 없습니다."
             val type = message.data["type"] // BOSS, EVENT 등
             val targetId = message.data["targetId"]?.toLongOrNull() ?: 0L
             val contentId = message.data["contentId"]?.toLongOrNull() ?: 0L
 
             handleInternalEvent(type, contentId, message.data)
 
+            if (type == "REFRESH_BOSS_ALARM") {
+                Napier.d("보스 파티 알람 세팅 완료")
+                return@launch
+            }
+
             val isEnabled = dataStore.isNotificationMode.first()
             if (!isEnabled) {
                 Napier.d("알림이 꺼져 있습니다.")
                 return@launch
             }
+
+            val title = message.notification?.title ?: message.data["title"] ?: "Maplendar"
+            val body = message.notification?.body ?: message.data["body"] ?: "내용이 없습니다."
 
             // 2. 타입별 처리
             when (type) {

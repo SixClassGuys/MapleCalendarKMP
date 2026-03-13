@@ -88,8 +88,9 @@ class BossViewModel(
         viewModelScope.launch {
             eventBus.bossPartyId.collect { bossPartyId ->
                 // 알림이 오면 즉시 데이터 갱신
-                if (_uiState.value.selectedBossParty?.id == bossPartyId) {
+                if (_uiState.value.selectedBossParty?.id == bossPartyId && bossPartyId != 0L) {
                     onIntent(BossIntent.RefreshBossPartyDetail(bossPartyId))
+                    eventBus.emitBossPartyId(0L)
                 }
             }
         }
