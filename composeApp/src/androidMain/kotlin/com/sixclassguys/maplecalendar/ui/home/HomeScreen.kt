@@ -1,6 +1,7 @@
 package com.sixclassguys.maplecalendar.ui.home
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,7 @@ import com.sixclassguys.maplecalendar.ui.component.EmptyCharacterBasicCard
 import com.sixclassguys.maplecalendar.ui.component.EmptyEventScreen
 import com.sixclassguys.maplecalendar.ui.component.HomeAppBar
 import com.sixclassguys.maplecalendar.ui.component.NoRepresentativeCharacterCard
+import androidx.core.net.toUri
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -48,6 +50,7 @@ fun HomeScreen(
     snackbarHostState: SnackbarHostState,
     onNavigateToLogin: () -> Unit,
     onNavigateToCharacterList: () -> Unit,
+    onNavigateToEventDetail: (Long) -> Unit,
     onNavigateToBossDetail: (Long) -> Unit
 ) {
     val context = LocalContext.current
@@ -180,7 +183,21 @@ fun HomeScreen(
                     } else {
                         CarouselEventRow(
                             nowEvents = uiState.events,
-                            onNavigateToEventDetail = { /* url 오픈 혹은 상세 페이지 */ }
+                            onNavigateToEventDetail = { eventId, url ->
+                                if (uiState.member == null) {
+                                    if (url.isNotBlank()) {
+                                        val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                                        context.startActivity(intent)
+                                    } else {
+                                        // 링크가 없는 경우에 대한 예외 처리 (기본 홈페이지 등)
+                                        val defaultUrl = "https://maplestory.nexon.com/News/Event"
+                                        context.startActivity(Intent(Intent.ACTION_VIEW,
+                                            defaultUrl.toUri()))
+                                    }
+                                } else {
+                                    onNavigateToEventDetail(eventId)
+                                }
+                            }
                         )
                     }
                     Spacer(modifier = Modifier.height(32.dp)) // 항목 간 여백 확대

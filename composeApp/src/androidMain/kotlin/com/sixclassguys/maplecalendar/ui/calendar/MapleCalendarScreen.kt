@@ -129,7 +129,7 @@ fun MapleCalendarScreen(
                         } else {
                             CarouselEventRow(
                                 nowEvents = nowEvents,
-                                onNavigateToEventDetail = { eventId ->
+                                onNavigateToEventDetail = { eventId, _ ->
                                     onNavigateToEventDetail()
                                     val selected = nowEvents.find { it.id == eventId }
                                     selected?.let {

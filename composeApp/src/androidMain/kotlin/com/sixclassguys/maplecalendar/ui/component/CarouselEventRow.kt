@@ -13,7 +13,7 @@ import com.sixclassguys.maplecalendar.domain.model.MapleEvent
 @Composable
 fun CarouselEventRow(
     nowEvents: List<MapleEvent>,
-    onNavigateToEventDetail: (Long) -> Unit
+    onNavigateToEventDetail: (Long, String) -> Unit
 ) {
     if (nowEvents.isEmpty()) return
 
@@ -41,7 +41,7 @@ fun CarouselEventRow(
 
             CalendarEventCard(
                 event = event,
-                onClick = { onNavigateToEventDetail(it) }
+                onClick = { onNavigateToEventDetail(it, event.url) }
             )
         }
     }
