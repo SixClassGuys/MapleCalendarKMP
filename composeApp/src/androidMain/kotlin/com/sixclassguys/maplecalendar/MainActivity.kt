@@ -2,6 +2,7 @@ package com.sixclassguys.maplecalendar
 
 import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -17,6 +18,7 @@ import androidx.core.content.ContextCompat
 import com.sixclassguys.maplecalendar.data.local.AppPreferences
 import com.sixclassguys.maplecalendar.theme.MapleOrange
 import com.sixclassguys.maplecalendar.theme.MapleTheme
+import io.github.aakira.napier.Napier
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -44,6 +46,12 @@ class MainActivity : ComponentActivity(), KoinComponent {
                 App()
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        // 🌟 앱이 켜져있을(Background 포함) 때 알림 클릭 대응
+        setIntent(intent)
     }
 }
 

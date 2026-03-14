@@ -34,11 +34,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.sixclassguys.maplecalendar.navigation.Navigation
 import com.sixclassguys.maplecalendar.navigation.navhost.NavHost
+import com.sixclassguys.maplecalendar.presentation.boss.BossIntent
 import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarIntent
 import com.sixclassguys.maplecalendar.presentation.calendar.CalendarViewModel
@@ -52,6 +54,8 @@ import com.sixclassguys.maplecalendar.theme.MapleWhite
 import com.sixclassguys.maplecalendar.ui.component.BottomNavigationBar
 import com.sixclassguys.maplecalendar.ui.component.DraggableMiniPlayerOverlay
 import com.sixclassguys.maplecalendar.ui.playlist.MapleBgmPlayScreen
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -63,7 +67,11 @@ import org.koin.core.annotation.KoinExperimentalAPI
 @Preview
 fun App() {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val activity = context as ComponentActivity
+    val scope = rememberCoroutineScope()
+    val intent = activity.intent // Activity의 Intent 직접 참조
+    var processedIntent by remember(intent) { mutableStateOf(false) }
 
     val homeViewModel: HomeViewModel = koinViewModel(viewModelStoreOwner = activity)
     val settingViewModel: SettingViewModel = koinViewModel(viewModelStoreOwner = activity)
@@ -74,6 +82,9 @@ fun App() {
 
     val homeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val playlistUiState by playlistViewModel.uiState.collectAsStateWithLifecycle()
+    val isLoginSuccess = homeUiState.isLoginSuccess
+    val member = homeUiState.member
+    val isAutoLoginFinished = homeUiState.isAutoLoginFinished
 
     val snackbarHostState = remember { SnackbarHostState() }
     val focusManager = LocalFocusManager.current
@@ -102,6 +113,59 @@ fun App() {
     LaunchedEffect(Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    LaunchedEffect(intent, member, isAutoLoginFinished) {
+        // 이미 처리했거나 로딩 중이면 중단
+        if (!isAutoLoginFinished) {
+            Napier.d("자동 로그인 중... 알림 처리를 대기합니다.")
+            return@LaunchedEffect
+        }
+
+        val route = intent?.getStringExtra("NAV_ROUTE")
+        val targetId = intent?.getLongExtra("TARGET_ID", 0L) ?: 0L
+
+        if (route != null && targetId > 0L && !processedIntent) {
+            Napier.d("Route: $route / TargetId: $targetId / 로그인 여부: $member")
+            if (member != null) {
+                // 🌟 2. 처리를 시작하기 전에 플래그를 true로 설정 (중복 실행 방지)
+                processedIntent = true
+
+                scope.launch {
+                    when (route) {
+                        "BOSS_DETAIL" -> {
+                            bossViewModel.onIntent(BossIntent.FetchGlobalAlarmStatus)
+                            bossViewModel.onIntent(BossIntent.FetchBossPartyDetail(targetId))
+                            navController.navigate(Navigation.BossPartyDetail.destination) {
+                                popUpTo(Navigation.Home.destination)
+                            }
+                        }
+                        "EVENT_DETAIL" -> {
+                            Napier.d("이동했음?")
+                            calendarViewModel.onIntent(CalendarIntent.FetchGlobalAlarmStatus)
+                            calendarViewModel.onIntent(CalendarIntent.SelectEvent(targetId))
+                            navController.navigate(Navigation.EventDetail.destination) {
+                                popUpTo(Navigation.Home.destination)
+                            }
+                        }
+                    }
+
+                    // 🌟 3. Intent 데이터 삭제는 하지 마세요.
+                    // 대신 processedIntent가 이 Intent 객체에 대해 한 번만 실행되도록 보장합니다.
+                    Napier.d("딥링크 이동 성공: $route / $targetId")
+                }
+            } else {
+                // 로그인 실패 시 (로딩이 끝났는데 로그인이 안 된 상태)
+                processedIntent = true
+                Toast.makeText(context, "로그인이 필요한 서비스에요.", Toast.LENGTH_SHORT).show()
+
+                if (currentRoute != Navigation.Home.destination) {
+                    navController.navigate(Navigation.Home.destination) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
+                }
+            }
         }
     }
 

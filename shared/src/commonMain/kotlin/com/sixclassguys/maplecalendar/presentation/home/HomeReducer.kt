@@ -92,6 +92,7 @@ class HomeReducer {
             currentState.copy(
                 isLoading = false,
                 isLoginSuccess = intent.isLoginSuccess,
+                isAutoLoginFinished = true,
                 member = intent.member,
                 isGlobalAlarmEnabled = intent.member.isGlobalAlarmEnabled,
                 errorMessage = null

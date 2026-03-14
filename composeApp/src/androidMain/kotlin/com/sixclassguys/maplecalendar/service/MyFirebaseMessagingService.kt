@@ -135,9 +135,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
 
         // 클릭 시 파티 상세 화면 등으로 보낼 정보 설정
         val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-            putExtra("PARTY_ID", partyId)
-            putExtra("ALARM_TYPE", type) // 어떤 종류의 알림인지 전달
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("NAV_ROUTE", "BOSS_DETAIL")
+            putExtra("TARGET_ID", partyId)
+            // putExtra("ALARM_TYPE", type) // 어떤 종류의 알림인지 전달
         }
 
         val pendingIntent = PendingIntent.getActivity(
@@ -179,9 +180,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
 
         // 클릭 시 파티 상세 화면 등으로 보낼 정보 설정
         val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-            // putExtra("navigate_to", "BOSS_DETAIL")
-            // putExtra("partyId", partyId)
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("NAV_ROUTE", "BOSS_DETAIL")
+            putExtra("TARGET_ID", partyId)
         }
 
         val pendingIntent = PendingIntent.getActivity(
@@ -226,13 +227,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
         }
 
         val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("NAV_ROUTE", "EVENT_DETAIL")
+            putExtra("TARGET_ID", eventId)
         }
         val pendingIntent = PendingIntent.getActivity(
             this,
-            0,
+            eventId.toInt(),
             intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
