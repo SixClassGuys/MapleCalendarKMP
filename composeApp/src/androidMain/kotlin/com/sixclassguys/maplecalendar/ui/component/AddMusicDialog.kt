@@ -170,7 +170,7 @@ fun AddMusicDialog(
                                 Button(
                                     onClick = {
                                         val playlistId = uiState.selectedPlaylistToAdd?.id ?: 0L
-                                        val bgmId = uiState.selectedBgm?.id ?: 0L
+                                        val bgmId = uiState.mapleBgmToAdd?.id ?: 0L
                                         viewModel.onIntent(PlaylistIntent.AddMapleBgmToPlaylist(playlistId, bgmId))
                                     },
                                     modifier = Modifier

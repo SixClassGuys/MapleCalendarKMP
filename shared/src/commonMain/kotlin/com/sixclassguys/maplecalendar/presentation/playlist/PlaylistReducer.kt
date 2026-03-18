@@ -337,13 +337,16 @@ class PlaylistReducer {
         is PlaylistIntent.ShowAddMapleBgmToPlaylistDialog -> {
             currentState.copy(
                 showAddMapleBgmToPlaylistDialog = true,
-                selectedPlaylistToAdd = currentState.myPlaylists.first()
+                selectedPlaylistToAdd = currentState.myPlaylists.first(),
+                mapleBgmToAdd = intent.bgmToAdd
             )
         }
 
         is PlaylistIntent.DismissAddMapleBgmToPlaylistDialog -> {
             currentState.copy(
-                showAddMapleBgmToPlaylistDialog = false
+                showAddMapleBgmToPlaylistDialog = false,
+                selectedPlaylistToAdd = null,
+                mapleBgmToAdd = null
             )
         }
 

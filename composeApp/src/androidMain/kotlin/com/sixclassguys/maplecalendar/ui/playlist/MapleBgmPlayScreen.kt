@@ -294,13 +294,9 @@ fun MapleBgmPlayScreen(
                                 Row(
                                     modifier = Modifier.clickable {
                                         if (uiState.myPlaylists.isEmpty()) {
-                                            Toast.makeText(
-                                                context,
-                                                "플레이리스트가 비어있어요.",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
+                                            Toast.makeText(context, "플레이리스트가 비어있어요.", Toast.LENGTH_SHORT).show()
                                         } else {
-                                            viewModel.onIntent(PlaylistIntent.ShowAddMapleBgmToPlaylistDialog)
+                                            viewModel.onIntent(PlaylistIntent.ShowAddMapleBgmToPlaylistDialog(uiState.selectedBgm))
                                         }
                                     },
                                     verticalAlignment = Alignment.CenterVertically

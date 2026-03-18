@@ -39,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
 import com.sixclassguys.maplecalendar.theme.MapleTheme
+import com.sixclassguys.maplecalendar.ui.component.AddMusicDialog
 import com.sixclassguys.maplecalendar.ui.component.EmptyEventScreen
 
 @Composable
@@ -138,12 +139,21 @@ fun SearchMapleBgmScreen(
                                 viewModel.onIntent(PlaylistIntent.PlayMapleBgm(bgm, uiState.searchedMapleBgms))
                                 viewModel.onIntent(PlaylistIntent.MaximizePlayer)
                             },
-                            onMoreClick = { /* 상세 메뉴 */ }
+                            onAddToPlaylist = { bgm ->
+                                viewModel.onIntent(PlaylistIntent.ShowAddMapleBgmToPlaylistDialog(bgm))
+                            }
                         )
                     }
                 }
             }
         }
+    }
+
+    if (uiState.showAddMapleBgmToPlaylistDialog) {
+        AddMusicDialog(
+            viewModel = viewModel,
+            onDismiss = { viewModel.onIntent(PlaylistIntent.DismissAddMapleBgmToPlaylistDialog) }
+        )
     }
 }
 

@@ -22,11 +22,15 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -36,7 +40,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,6 +59,7 @@ import com.sixclassguys.maplecalendar.domain.model.MapleBgmPlaylist
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
 import com.sixclassguys.maplecalendar.theme.MapleTheme
+import com.sixclassguys.maplecalendar.ui.component.AddMusicDialog
 import com.sixclassguys.maplecalendar.ui.component.AddMyPlaylistDialog
 import com.sixclassguys.maplecalendar.util.PlaylistTab
 import com.sixclassguys.maplecalendar.utils.RegionCategory
@@ -169,7 +176,9 @@ fun PlaylistScreen(
                                 viewModel.onIntent(PlaylistIntent.PlayMapleBgm(bgm, uiState.topMapleBgms))
                                 onNavigateToBgmPlay()
                             },
-                            onMoreClick = { /* 메뉴 팝업 */ }
+                            onAddToPlaylist = { bgm ->
+                                viewModel.onIntent(PlaylistIntent.ShowAddMapleBgmToPlaylistDialog(bgm))
+                            }
                         )
                     }
                 }
@@ -218,6 +227,13 @@ fun PlaylistScreen(
             onDismiss = { viewModel.onIntent(PlaylistIntent.DismissNewPlaylistDialog) }
         )
     }
+
+    if (uiState.showAddMapleBgmToPlaylistDialog) {
+        AddMusicDialog(
+            viewModel = viewModel,
+            onDismiss = { viewModel.onIntent(PlaylistIntent.DismissAddMapleBgmToPlaylistDialog) }
+        )
+    }
 }
 
 @Composable
@@ -225,8 +241,10 @@ fun BgmItem(
     rank: Int? = null,
     bgm: MapleBgm,
     onNavigateToBgmPlay: (MapleBgm) -> Unit,
-    onMoreClick: () -> Unit = {}
+    onAddToPlaylist: (MapleBgm) -> Unit = {}
 ) {
+    var menuExpanded by remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier.fillMaxWidth()
             .padding(16.dp)
@@ -267,8 +285,39 @@ fun BgmItem(
         }
 
         // 4. 더보기 버튼
-        IconButton(onClick = onMoreClick) {
-            Icon(Icons.Default.MoreVert, contentDescription = null, tint = MapleTheme.colors.onSurface)
+        Box {
+            IconButton(onClick = { menuExpanded = true }) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "더보기",
+                    tint = MapleTheme.colors.onSurface
+                )
+            }
+
+            // 🌟 드랍다운 메뉴 컴포저블
+            DropdownMenu(
+                expanded = menuExpanded,
+                // 메뉴 바깥이나 백버튼 누르면 닫힘
+                onDismissRequest = { menuExpanded = false },
+                // 팝업 배경색 (테마에 맞춰 설정)
+                modifier = Modifier.background(MapleTheme.colors.surface)
+            ) {
+                DropdownMenuItem(
+                    text = { Text("플레이리스트에 추가") },
+                    onClick = {
+                        // 🌟 메뉴 닫고 콜백 실행
+                        menuExpanded = false
+                        onAddToPlaylist(bgm)
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
+                            contentDescription = null
+                        )
+                    }
+                )
+                // 필요하다면 여기에 Divider()나 다른 메뉴 아이템 추가 가능
+            }
         }
     }
 }

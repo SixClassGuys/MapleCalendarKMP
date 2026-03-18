@@ -103,7 +103,7 @@ sealed class PlaylistIntent {
 
     data class DeleteMapleBgmPlaylistFailure(val message: String) : PlaylistIntent()
 
-    data object ShowAddMapleBgmToPlaylistDialog : PlaylistIntent()
+    data class ShowAddMapleBgmToPlaylistDialog(val bgmToAdd: MapleBgm?) : PlaylistIntent()
 
     data object DismissAddMapleBgmToPlaylistDialog : PlaylistIntent()
 
