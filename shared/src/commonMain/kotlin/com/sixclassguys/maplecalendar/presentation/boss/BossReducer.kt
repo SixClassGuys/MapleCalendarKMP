@@ -1098,6 +1098,40 @@ class BossReducer {
             )
         }
 
+        is BossIntent.SelectBossPartyBoardImage -> {
+            currentState.copy(
+                isLoading = false,
+                selectedBossPartyBoardImageUrl = intent.imageUrl
+            )
+        }
+
+        is BossIntent.DownloadBossPartyBoardImage -> {
+            currentState.copy(
+                isLoading = true
+            )
+        }
+
+        is BossIntent.DownloadBossPartyBoardImageStart -> {
+            currentState.copy(
+                isLoading = true,
+                successMessage = intent.message
+            )
+        }
+
+        is BossIntent.DownloadBossPartyBoardImageSuccess -> {
+            currentState.copy(
+                isLoading = false,
+                successMessage = intent.message
+            )
+        }
+
+        is BossIntent.DownloadBossPartyBoardImageFailed -> {
+            currentState.copy(
+                isLoading = false,
+                errorMessage = intent.message
+            )
+        }
+
         is BossIntent.LikeBossPartyBoardPost -> {
             currentState.copy(
                 isLoading = true,

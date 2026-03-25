@@ -269,6 +269,16 @@ sealed class BossIntent {
 
     data class SubmitBossPartyBoardFailed(val message: String) : BossIntent()
 
+    data class SelectBossPartyBoardImage(val imageUrl: String) : BossIntent()
+
+    data object DownloadBossPartyBoardImage : BossIntent()
+
+    data class DownloadBossPartyBoardImageStart(val message: String) : BossIntent()
+
+    data class DownloadBossPartyBoardImageSuccess(val message: String) : BossIntent()
+
+    data class DownloadBossPartyBoardImageFailed(val message: String?) : BossIntent()
+
     data class LikeBossPartyBoardPost(val postId: Long) : BossIntent()
 
     data class LikeBossPartyBoardPostSuccess(val bossPartyBoard: BossPartyBoard) : BossIntent()

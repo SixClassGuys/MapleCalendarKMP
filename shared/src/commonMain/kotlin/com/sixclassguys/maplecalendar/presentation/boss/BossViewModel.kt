@@ -2,6 +2,7 @@ package com.sixclassguys.maplecalendar.presentation.boss
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sixclassguys.maplecalendar.ImageDownloader
 import com.sixclassguys.maplecalendar.domain.model.ApiState
 import com.sixclassguys.maplecalendar.domain.repository.NotificationEventBus
 import com.sixclassguys.maplecalendar.domain.usecase.AcceptBossPartyInvitationUseCase
@@ -39,6 +40,8 @@ import com.sixclassguys.maplecalendar.util.ReportReason
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -50,6 +53,7 @@ import kotlinx.datetime.toLocalDateTime
 class BossViewModel(
     private val reducer: BossReducer,
     private val eventBus: NotificationEventBus,
+    private val imageDownloader: ImageDownloader,
     private val getGlobalAlarmStatusUseCase: GetGlobalAlarmStatusUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
     private val getBossPartiesUseCase: GetBossPartiesUseCase,
@@ -653,6 +657,27 @@ class BossViewModel(
         }
     }
 
+    private fun downloadImage(url: String?) {
+        viewModelScope.launch {
+            if (url == null) {
+                onIntent(BossIntent.DownloadBossPartyBoardImageFailed("이미지 URL이 없습니다."))
+                return@launch
+            }
+            imageDownloader.downloadImage(url).onEach { result ->
+                Napier.d("Result: ${result.getOrNull()}")
+                result.onSuccess { msg ->
+                    if (msg == "LOADING_STARTED") {
+                        onIntent(BossIntent.DownloadBossPartyBoardImageStart("이미지 다운로드 중이에요..."))
+                    } else {
+                        onIntent(BossIntent.DownloadBossPartyBoardImageSuccess(msg))
+                    }
+                }.onFailure { error ->
+                    onIntent(BossIntent.DownloadBossPartyBoardImageFailed(error.message))
+                }
+            }.launchIn(viewModelScope)
+        }
+    }
+
     private fun toggleBossPartyBoardLike(postId: Long, likeType: String) {
         val bossPartyId = _uiState.value.selectedBossParty?.id ?: return
         viewModelScope.launch {
@@ -829,6 +854,10 @@ class BossViewModel(
 
             is BossIntent.SubmitBossPartyBoardSuccess -> {
                 getBossPartyBoardHistory()
+            }
+
+            is BossIntent.DownloadBossPartyBoardImage -> {
+                downloadImage(_uiState.value.selectedBossPartyBoardImageUrl)
             }
 
             is BossIntent.LikeBossPartyBoardPost -> {
