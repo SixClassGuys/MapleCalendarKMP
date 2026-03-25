@@ -17,6 +17,8 @@ val androidPermissionModule = module {
 
     single<MusicPlayer> { AndroidMusicPlayer(get(), "com.sixclassguys.maplecalendar.service.MusicService") }
 
+    single<ImageDownloader> { AndroidImageDownloader(get()) }
+
     single<DataStore<Preferences>> {
         PreferenceDataStoreFactory.create(
             produceFile = {
