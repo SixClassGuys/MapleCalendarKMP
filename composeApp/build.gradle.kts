@@ -104,7 +104,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 19
-        versionName = "0.4.3"
+        versionName = "1.0.0"
 
         buildConfigField("int", "VERSION_CODE", "${versionCode}")
         buildConfigField("String", "VERSION_NAME", "\"${versionName}\"")
