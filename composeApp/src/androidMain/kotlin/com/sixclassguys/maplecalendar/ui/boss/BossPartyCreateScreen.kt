@@ -23,7 +23,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -37,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -44,12 +44,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
+import com.sixclassguys.maplecalendar.R
 import com.sixclassguys.maplecalendar.domain.repository.NotificationEventBus
 import com.sixclassguys.maplecalendar.presentation.boss.BossIntent
 import com.sixclassguys.maplecalendar.presentation.boss.BossViewModel
+import com.sixclassguys.maplecalendar.theme.MapleBlack
 import com.sixclassguys.maplecalendar.theme.MapleStatBackground
 import com.sixclassguys.maplecalendar.theme.MapleStatTitle
 import com.sixclassguys.maplecalendar.theme.MapleTheme
+import com.sixclassguys.maplecalendar.theme.MapleWhite
 import com.sixclassguys.maplecalendar.theme.Typography
 import com.sixclassguys.maplecalendar.ui.component.BossIconItem
 import com.sixclassguys.maplecalendar.ui.component.BossPartyCreateDialog
@@ -243,19 +247,26 @@ fun BossPartyCreateScreen(
         if (uiState.isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize()
-                    .background(MapleTheme.colors.onSurface.copy(alpha = 0.7f)) // 화면 어둡게 처리
-                    .pointerInput(Unit) {}, // 터치 이벤트 전파 방지 (클릭 막기)
+                    .background(MapleBlack.copy(alpha = 0.7f))
+                    .pointerInput(Unit) {},
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    CircularProgressIndicator(
-                        color = MapleTheme.colors.primary,
-                        strokeWidth = 4.dp
+                    AsyncImage(
+                        model = R.drawable.ic_loading, // 주황버섯 GIF
+                        contentDescription = "로딩 중",
+                        modifier = Modifier.size(120.dp)
+                            .graphicsLayer {
+                                scaleX = -1f // 좌우대칭
+                            },
+                        contentScale = ContentScale.Fit
                     )
+
                     Spacer(modifier = Modifier.height(16.dp))
+
                     Text(
-                        text = "보스 정보를 불러오고 있습니다...",
-                        color = MapleTheme.colors.surface,
+                        text = "보스 정보를 불러오는 중이에요...",
+                        color = MapleWhite,
                         style = Typography.bodyLarge
                     )
                 }
