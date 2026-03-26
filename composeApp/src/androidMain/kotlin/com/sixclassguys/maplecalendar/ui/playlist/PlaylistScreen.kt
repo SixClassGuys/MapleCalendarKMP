@@ -27,7 +27,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -59,6 +58,7 @@ import com.sixclassguys.maplecalendar.domain.model.MapleBgmPlaylist
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistIntent
 import com.sixclassguys.maplecalendar.presentation.playlist.PlaylistViewModel
 import com.sixclassguys.maplecalendar.theme.MapleTheme
+import com.sixclassguys.maplecalendar.theme.PretendardFamily
 import com.sixclassguys.maplecalendar.ui.component.AddMusicDialog
 import com.sixclassguys.maplecalendar.ui.component.AddMyPlaylistDialog
 import com.sixclassguys.maplecalendar.util.PlaylistTab
@@ -264,7 +264,12 @@ fun BgmItem(
                     .background(badgeColor, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Text(it.toString(), color = MapleTheme.colors.surface, fontWeight = FontWeight.Bold)
+                Text(
+                    text = it.toString(),
+                    color = MapleTheme.colors.surface,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = PretendardFamily
+                )
             }
             Spacer(Modifier.width(12.dp))
         }
@@ -279,9 +284,22 @@ fun BgmItem(
         Spacer(Modifier.width(12.dp))
 
         // 3. 곡 정보
-        Column(modifier = Modifier.weight(1f)) {
-            Text(bgm.title, fontWeight = FontWeight.Bold, maxLines = 1)
-            Text(bgm.mapName, color = MapleTheme.colors.outline, fontSize = 12.sp)
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = bgm.title,
+                fontWeight = FontWeight.Bold,
+                fontFamily = PretendardFamily,
+                fontSize = 14.sp,
+                maxLines = 1
+            )
+            Text(
+                text = bgm.mapName,
+                color = MapleTheme.colors.outline,
+                fontFamily = PretendardFamily,
+                fontSize = 12.sp
+            )
         }
 
         // 4. 더보기 버튼
@@ -340,6 +358,7 @@ fun PlaylistTabRow(
                 modifier = Modifier.clickable { onTabSelected(tab) },
                 color = if (isSelected) MapleTheme.colors.onSurface else MapleTheme.colors.outline,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                fontFamily = PretendardFamily,
                 fontSize = 18.sp
             )
         }
@@ -363,6 +382,7 @@ fun PlaylistTopBar(
                 text = "플레이리스트",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
+                fontFamily = PretendardFamily,
                 color = MapleTheme.colors.onSurface
             )
         }
@@ -396,16 +416,14 @@ fun MyPlaylistItem(
     onClick: (MapleBgmPlaylist) -> Unit
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
             .clickable { onClick(playlist) }
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // 1. 4구역 썸네일 박스
         Box(
-            modifier = Modifier
-                .size(60.dp)
+            modifier = Modifier.size(60.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(MapleTheme.colors.outline.copy(alpha = 0.1f))
         ) {
@@ -437,6 +455,7 @@ fun MyPlaylistItem(
                 text = playlist.name,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
+                fontFamily = PretendardFamily,
                 color = MapleTheme.colors.onSurface
             )
         }

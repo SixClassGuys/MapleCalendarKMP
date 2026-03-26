@@ -3,6 +3,7 @@ package com.sixclassguys.maplecalendar.ui.component
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -62,7 +63,7 @@ fun BossPartyCollapsingHeader(
 
     // 💡 높이 기준 설정
     val IMAGE_HEIGHT = 260.dp
-    val COLLAPSED_HEIGHT = 48.dp // 요청하신 높이
+    val COLLAPSED_HEIGHT = 56.dp // 요청하신 높이
     val ICON_AREA_WIDTH = 48.dp // 버튼 영역
 
     // 1. 🚀 Y축 보간 (이미지 아래 -> 56dp의 수직 중앙)
@@ -78,7 +79,7 @@ fun BossPartyCollapsingHeader(
     }
 
     // 2. 텍스트 크기 및 아이콘 색상 보간
-    val titleSize = lerp(20f, 17f, scrollPercentage).sp
+    val titleSize = lerp(20f, 16f, scrollPercentage).sp
     val subInfoAlpha = 1f - (scrollPercentage * 3).coerceIn(0f, 1f)
     val iconColor by animateColorAsState(
         targetValue = if (scrollPercentage > 0.5f) MapleTheme.colors.onSurface else MapleTheme.colors.surface
@@ -154,7 +155,8 @@ fun BossPartyCollapsingHeader(
                     // 💡 핵심: 양쪽 아이콘(48dp)을 고려하여 패딩을 lerp로 조절
                     // 확장(16dp 패딩) -> 축소(48dp 패딩으로 늘려 수평 중앙 확보)
                     .padding(horizontal = horizontalPadding),
-                horizontalAlignment = if (scrollPercentage > 0.8f) Alignment.CenterHorizontally else Alignment.Start
+                horizontalAlignment = if (scrollPercentage > 0.8f) Alignment.CenterHorizontally else Alignment.Start,
+                verticalArrangement = Arrangement.Center
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -181,8 +183,7 @@ fun BossPartyCollapsingHeader(
 
                 // 4. 뱃지 및 보스 이름 (접히면 투명화)
                 Column(
-                    modifier = Modifier
-                        .padding(top = 8.dp)
+                    modifier = Modifier.padding(top = 8.dp)
                         .graphicsLayer { alpha = subInfoAlpha },
                 ) {
                     Row(
@@ -210,12 +211,12 @@ fun BossPartyCollapsingHeader(
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = bossParty.description, // 예: "숙련자만 오세요. 숍 필수!"
+                        text = bossParty.description,
                         fontSize = 14.sp,
                         color = MapleTheme.colors.onSurface,
                         fontFamily = PretendardFamily,
                         lineHeight = 20.sp,
-                        maxLines = 5, // 너무 길어지면 두 줄까지만 표시
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
