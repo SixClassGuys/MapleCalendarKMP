@@ -19,7 +19,8 @@ enum class MapleEventType(val displayName: String, val color: Color) {
     REMASTER("리마스터", Color(0xFF00BCD4)),
     ETC("기타", Color(0xFF9E9E9E)),
     PASS("패스", Color(0xFF00897B)),
-    COORDINATE("코디", Color(0xFFBA68C8));
+    COORDINATE("코디", Color(0xFFBA68C8)),
+    CHANGEBURNING("체인지버닝", Color(0xFF673AB7));
 
     companion object {
 
