@@ -1,14 +1,18 @@
 package com.sixclassguys.maplecalendar.domain.usecase
 
 import com.sixclassguys.maplecalendar.domain.model.ApiState
-import com.sixclassguys.maplecalendar.domain.model.BossWebSocketEvent
 import com.sixclassguys.maplecalendar.domain.repository.BossRepository
 import kotlinx.coroutines.flow.Flow
 
-class ObserveBossChatUseCase(
+class ConfirmBossPartyScheduleUseCase(
     private val repository: BossRepository
 ) {
 
-    operator fun invoke(): Flow<ApiState<BossWebSocketEvent>> =
-        repository.observeMessages()
+    suspend operator fun invoke(
+        bossPartyId: Long,
+        selectedIndex: Int,
+        message: String
+    ): Flow<ApiState<Unit>> {
+        return repository.confirmBossTime(bossPartyId, selectedIndex, message)
+    }
 }
