@@ -356,6 +356,8 @@ class BossReducer {
                 bossPartyBoards = emptyList(),
                 bossPartyBoardPage = 0,
                 isBossPartyBoardLastPage = false,
+                myAvailableSlots = intent.bossPartyDetail.myAvailableSlots ?: "0".repeat(504),
+                myKeepNextWeek = intent.bossPartyDetail.myKeepNextWeek ?: false,
                 createdPartyId = null
             )
         }
@@ -559,6 +561,132 @@ class BossReducer {
                 isRefreshing = false,
                 errorMessage = intent.message,
                 createdPartyId = null
+            )
+        }
+
+        is BossIntent.ShowBossPartyTimeSelectDialog -> {
+            currentState.copy(
+                showBossPartyTimeSelectDialog = true,
+                newAvailableSlots = currentState.myAvailableSlots,
+                newKeepNextWeek = currentState.myKeepNextWeek
+            )
+        }
+
+        is BossIntent.DismissBossPartyTimeSelectDialog -> {
+            currentState.copy(
+                showBossPartyTimeSelectDialog = false
+            )
+        }
+
+        is BossIntent.UpdateBossPartyAbleSchedule -> {
+            currentState.copy(
+                isScheduleUpdating = false,
+                newAvailableSlots = intent.newAvailableSlots
+            )
+        }
+
+        is BossIntent.UpdateBossPartyScheduleKeep -> {
+            currentState.copy(
+                isScheduleUpdating = false,
+                newKeepNextWeek = intent.newKeepNextWeek
+            )
+        }
+
+        is BossIntent.SubmitBossPartyAbleSchedule -> {
+            currentState.copy(
+                isScheduleUpdating = true
+            )
+        }
+
+        is BossIntent.SubmitBossPartyAbleScheduleSuccess -> {
+            currentState.copy(
+                isScheduleUpdating = false,
+                myAvailableSlots = intent.availableSlots,
+                myKeepNextWeek = intent.keepNextWeek,
+                showBossPartyTimeSelectDialog = false,
+                successMessage = intent.message
+            )
+        }
+
+        is BossIntent.SubmitBossPartyAbleScheduleFailed -> {
+            currentState.copy(
+                isScheduleUpdating = false,
+                errorMessage = intent.message
+            )
+        }
+
+        is BossIntent.ShowBossPartyTimeConfirmDialog -> {
+            currentState.copy(
+                showBossPartyTimeConfirmDialog = true,
+                isLoadingCandidates = true,
+                selectedScheduleCandidate = null,
+                confirmAlarmMessage = ""
+            )
+        }
+
+        is BossIntent.DismissBossPartyTimeConfirmDialog -> {
+            currentState.copy(
+                showBossPartyTimeConfirmDialog = false
+            )
+        }
+
+        is BossIntent.InitBossPartySchedule -> {
+            currentState.copy(
+                bossPartyAlarmTimes = emptyList()
+            )
+        }
+
+        is BossIntent.GetBossPartyScheduleCandidates -> {
+            currentState.copy(
+                isLoadingCandidates = true
+            )
+        }
+
+        is BossIntent.GetBossPartyScheduleCandidatesSuccess -> {
+            currentState.copy(
+                isLoadingCandidates = false,
+                scheduleCandidates = intent.scheduleCandidates,
+                selectedScheduleCandidate = null
+            )
+        }
+
+        is BossIntent.GetBossPartyScheduleCandidatesFailed -> {
+            currentState.copy(
+                isLoadingCandidates = false,
+                errorMessage = intent.message
+            )
+        }
+
+        is BossIntent.SelectBossPartyScheduleCandidate -> {
+            currentState.copy(
+                selectedScheduleCandidate = intent.schedule
+            )
+        }
+
+        is BossIntent.UpdateBossPartyConfirmMessage -> {
+            currentState.copy(
+                confirmAlarmMessage = intent.message
+            )
+        }
+
+        is BossIntent.ConfirmBossPartySchedule -> {
+            currentState.copy(
+                isScheduleConfirming = true
+            )
+        }
+
+        is BossIntent.ConfirmBossPartyScheduleSuccess -> {
+            currentState.copy(
+                isScheduleConfirming = false,
+                successMessage = intent.message,
+                showBossPartyTimeConfirmDialog = false
+            )
+        }
+
+        is BossIntent.ConfirmBossPartyScheduleFailed -> {
+            currentState.copy(
+                isScheduleConfirming = false,
+                errorMessage = intent.message
             )
         }
 
@@ -780,12 +908,12 @@ class BossReducer {
 
         is BossIntent.ReceiveRealTimeChat -> {
             val newMessage = intent.bossPartyChat
-            Napier.d("ReceiveRealTimeChat: ${newMessage}")
+            Napier.d("ReceiveRealTimeChat: $newMessage")
 
-            // 💡 1. 기존 리스트에서 새 메시지 ID와 같은 녀석을 완전히 필터링
+            // 1. 기존 리스트에서 새 메시지 ID와 같은 녀석을 완전히 필터링
             val filteredList = currentState.bossPartyChats.filterNot { it.id == newMessage.id }
 
-            // 💡 2. 새 메시지를 맨 앞에 추가 (순서 보장)
+            // 2. 새 메시지를 맨 앞에 추가 (순서 보장)
             val updatedList = (listOf(newMessage) + filteredList)
                 .distinctBy { it.id } // ID가 중복되면 뒤에 오는 데이터는 무시함
                 .sortedByDescending { it.id } // ID 내림차순 정렬 (최신이 위로)

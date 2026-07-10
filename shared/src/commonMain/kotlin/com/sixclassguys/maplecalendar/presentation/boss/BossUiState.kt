@@ -4,6 +4,7 @@ import com.sixclassguys.maplecalendar.domain.model.BossParty
 import com.sixclassguys.maplecalendar.domain.model.BossPartyAlarmTime
 import com.sixclassguys.maplecalendar.domain.model.BossPartyBoard
 import com.sixclassguys.maplecalendar.domain.model.BossPartyChat
+import com.sixclassguys.maplecalendar.domain.model.BossPartyCommonSchedule
 import com.sixclassguys.maplecalendar.domain.model.BossPartyDetail
 import com.sixclassguys.maplecalendar.domain.model.CharacterSummary
 import com.sixclassguys.maplecalendar.util.Boss
@@ -65,6 +66,20 @@ data class BossUiState(
     val uploadComment: String = "",
     val uploadSuccessEvent: Long = 0L,
     val selectedBossPartyBoardImageUrl: String? = null,
+
+    // 보스 시간
+    val showBossPartyTimeSelectDialog: Boolean = false,
+    val isScheduleUpdating: Boolean = false,
+    val myAvailableSlots: String = "0".repeat(504),
+    val newAvailableSlots: String = "0".repeat(504),
+    val myKeepNextWeek: Boolean = false,
+    val newKeepNextWeek: Boolean = false,
+    val showBossPartyTimeConfirmDialog: Boolean = false,
+    val isLoadingCandidates: Boolean = false,
+    val isScheduleConfirming: Boolean = false,
+    val scheduleCandidates: List<BossPartyCommonSchedule> = emptyList(),
+    val selectedScheduleCandidate: BossPartyCommonSchedule? = null,
+    val confirmAlarmMessage: String = "",
 
     // 상태 메시지
     val successMessage: String? = null,
