@@ -30,6 +30,7 @@ import com.sixclassguys.maplecalendar.domain.usecase.AppleLoginUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.AutoLoginUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.CheckCharacterAuthorityUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.CheckLatestVersionUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.ConfirmBossPartyScheduleUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ConnectBossChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.CreateBossPartyAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.CreateBossPartyBoardUseCase
@@ -49,6 +50,7 @@ import com.sixclassguys.maplecalendar.domain.usecase.GetBossPartyAlarmTimesUseCa
 import com.sixclassguys.maplecalendar.domain.usecase.GetBossPartyBoardsUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetBossPartyChatHistoryUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetBossPartyDetailUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.GetBossPartyScheduleCandidatesUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetCharacterBasicUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetCharactersUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetDailyBossPartySchedulesUseCase
@@ -92,6 +94,7 @@ import com.sixclassguys.maplecalendar.domain.usecase.ToggleGlobalAlarmStatusUseC
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleMapleBgmLikeUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.TransferBossPartyLeaderUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.UnregisterTokenUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.UpdateBossPartyAbleScheduleUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.UpdateBossPartyPeriodUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.UpdateMapleBgmPlaylistUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.UpdateRepresentativeCharacterUseCase
@@ -180,6 +183,9 @@ val useCaseModule = module {
     single<CreateBossPartyAlarmUseCase> { CreateBossPartyAlarmUseCase(get()) }
     single<UpdateBossPartyPeriodUseCase> { UpdateBossPartyPeriodUseCase(get()) }
     single<DeleteBossPartyAlarmUseCase> { DeleteBossPartyAlarmUseCase(get()) }
+    single<UpdateBossPartyAbleScheduleUseCase> { UpdateBossPartyAbleScheduleUseCase(get()) }
+    single<GetBossPartyScheduleCandidatesUseCase> { GetBossPartyScheduleCandidatesUseCase(get()) }
+    single<ConfirmBossPartyScheduleUseCase> { ConfirmBossPartyScheduleUseCase(get()) }
     single<SearchCharactersUseCase> { SearchCharactersUseCase(get()) }
     single<InviteBossPartyMemberUseCase> { InviteBossPartyMemberUseCase(get()) }
     single<AcceptBossPartyInvitationUseCase> { AcceptBossPartyInvitationUseCase(get()) }
@@ -249,6 +255,9 @@ val viewModelModule = module {
     viewModel { MapleCharacterViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel {
         BossViewModel(
+            get(),
+            get(),
+            get(),
             get(),
             get(),
             get(),
