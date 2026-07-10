@@ -94,6 +94,8 @@ import com.sixclassguys.maplecalendar.ui.component.BossPartyChatReportDialog
 import com.sixclassguys.maplecalendar.ui.component.BossPartyCollapsingHeader
 import com.sixclassguys.maplecalendar.ui.component.BossPartyDetailTabRow
 import com.sixclassguys.maplecalendar.ui.component.BossPartyMemberContent
+import com.sixclassguys.maplecalendar.ui.component.BossPartyTimeConfirmDialog
+import com.sixclassguys.maplecalendar.ui.component.BossPartyTimeSelectDialog
 import com.sixclassguys.maplecalendar.ui.component.CharacterInviteDialog
 import com.sixclassguys.maplecalendar.util.BossPartyTab
 import kotlinx.coroutines.launch
@@ -396,7 +398,8 @@ fun BossPartyDetailScreen(
                                                 ).show()
                                             }
                                         },
-                                        onAddAlarm = { viewModel.onIntent(BossIntent.ShowAlarmCreateDialog) },
+                                        onAddAlarm = { viewModel.onIntent(BossIntent.ShowBossPartyTimeConfirmDialog) },
+                                        onUpdateSchedule = { viewModel.onIntent(BossIntent.ShowBossPartyTimeSelectDialog) },
                                         onDeleteAlarm = {
                                             viewModel.onIntent(
                                                 BossIntent.DeleteBossPartyAlarm(
@@ -675,6 +678,20 @@ fun BossPartyDetailScreen(
         BossPartyAlarmSettingDialog(
             viewModel = viewModel,
             onDismiss = { viewModel.onIntent(BossIntent.DismissAlarmCreateDialog) }
+        )
+    }
+
+    if (uiState.showBossPartyTimeSelectDialog) {
+        BossPartyTimeSelectDialog(
+            viewModel = viewModel,
+            onDismiss = { viewModel.onIntent(BossIntent.DismissBossPartyTimeSelectDialog) }
+        )
+    }
+
+    if (uiState.showBossPartyTimeConfirmDialog) {
+        BossPartyTimeConfirmDialog(
+            viewModel = viewModel,
+            onDismiss = { viewModel.onIntent(BossIntent.DismissBossPartyTimeConfirmDialog) }
         )
     }
 
