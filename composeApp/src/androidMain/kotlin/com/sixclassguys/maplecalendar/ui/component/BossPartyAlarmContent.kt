@@ -23,9 +23,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Autorenew
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -61,6 +60,7 @@ fun BossPartyAlarmContent(
     snackbarHostState: SnackbarHostState,
     onToggleAlarm: () -> Unit,
     onAddAlarm: () -> Unit,
+    onUpdateSchedule: () -> Unit,
     onDeleteAlarm: (Long) -> Unit,
     modifier: Modifier
 ) {
@@ -105,7 +105,7 @@ fun BossPartyAlarmContent(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "ALARM",
+                text = "SCHEDULE",
                 color = MapleStatTitle,
                 style = Typography.titleMedium
             )
@@ -135,8 +135,12 @@ fun BossPartyAlarmContent(
                 if (isLeader) {
                     Spacer(modifier = Modifier.width(12.dp))
                     IconButton(onClick = onAddAlarm) {
-                        Icon(Icons.Default.Add, contentDescription = null, tint = MapleTheme.colors.surface)
+                        Icon(Icons.Default.Settings, contentDescription = null, tint = MapleTheme.colors.surface)
                     }
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                IconButton(onClick = onUpdateSchedule) {
+                    Icon(Icons.Default.Add, contentDescription = null, tint = MapleTheme.colors.surface)
                 }
             }
         }
@@ -225,7 +229,7 @@ fun BossPartyDetailAlarmItem(
                 )
             }
 
-            // 닫기 버튼
+            /*
             if (registrationMode == RegistrationMode.PERIODIC) {
                 // 주기 알람 아이콘 (삭제 불가)
                 Icon(
@@ -248,6 +252,7 @@ fun BossPartyDetailAlarmItem(
                     }
                 }
             }
+            */
         }
     }
 }

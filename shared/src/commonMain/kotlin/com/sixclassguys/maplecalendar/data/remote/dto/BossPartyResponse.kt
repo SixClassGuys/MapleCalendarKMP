@@ -18,6 +18,7 @@ data class BossPartyResponse(
     val leaderNickname: String? = null,
     val memberCount: Int? = null,
     val joinStatus: JoinStatus?,
+    val isScheduleRequired: Boolean,
     val createdAt: String? = null,
     val updatedAt: String? = null
 ) {
@@ -35,6 +36,7 @@ data class BossPartyResponse(
             leaderNickname = this.leaderNickname ?: "",
             memberCount = this.memberCount ?: 0,
             joinStatus = this.joinStatus ?: JoinStatus.INVITED,
+            isScheduleRequired = this.isScheduleRequired,
             createdAt = this.createdAt ?: "1970-01-01",
             updatedAt = this.updatedAt ?: "1970-01-01"
         )

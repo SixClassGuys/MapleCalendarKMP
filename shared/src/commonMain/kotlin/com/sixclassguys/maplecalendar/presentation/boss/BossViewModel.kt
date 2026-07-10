@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sixclassguys.maplecalendar.ImageDownloader
 import com.sixclassguys.maplecalendar.domain.model.ApiState
+import com.sixclassguys.maplecalendar.domain.model.BossWebSocketEvent
 import com.sixclassguys.maplecalendar.domain.repository.NotificationEventBus
 import com.sixclassguys.maplecalendar.domain.usecase.AcceptBossPartyInvitationUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.ConfirmBossPartyScheduleUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ConnectBossChatUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.CreateBossPartyAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.CreateBossPartyBoardUseCase
@@ -19,6 +21,7 @@ import com.sixclassguys.maplecalendar.domain.usecase.GetBossPartyAlarmTimesUseCa
 import com.sixclassguys.maplecalendar.domain.usecase.GetBossPartyBoardsUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetBossPartyChatHistoryUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetBossPartyDetailUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.GetBossPartyScheduleCandidatesUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetCharactersUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.GetGlobalAlarmStatusUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.HideBossPartyChatUseCase
@@ -33,6 +36,7 @@ import com.sixclassguys.maplecalendar.domain.usecase.ToggleBossPartyAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleBossPartyBoardLikeUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.ToggleBossPartyChatAlarmUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.TransferBossPartyLeaderUseCase
+import com.sixclassguys.maplecalendar.domain.usecase.UpdateBossPartyAbleScheduleUseCase
 import com.sixclassguys.maplecalendar.domain.usecase.UpdateBossPartyPeriodUseCase
 import com.sixclassguys.maplecalendar.util.Boss
 import com.sixclassguys.maplecalendar.util.BossDifficulty
@@ -49,6 +53,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.Int
 
 class BossViewModel(
     private val reducer: BossReducer,
@@ -64,6 +69,9 @@ class BossViewModel(
     private val createBossPartyAlarmUseCase: CreateBossPartyAlarmUseCase,
     private val updateBossPartyPeriodUseCase: UpdateBossPartyPeriodUseCase,
     private val deleteBossPartyAlarmUseCase: DeleteBossPartyAlarmUseCase,
+    private val updateBossPartyAbleScheduleUseCase: UpdateBossPartyAbleScheduleUseCase,
+    private val getBossPartyScheduleCandidatesUseCase: GetBossPartyScheduleCandidatesUseCase,
+    private val confirmBossPartyScheduleUseCase: ConfirmBossPartyScheduleUseCase,
     private val searchCharactersUseCase: SearchCharactersUseCase,
     private val inviteBossPartyMemberUseCase: InviteBossPartyMemberUseCase,
     private val acceptBossPartyInvitationUseCase: AcceptBossPartyInvitationUseCase,
@@ -153,7 +161,7 @@ class BossViewModel(
             }
         }
     }
-    
+
     private fun createBossParty(
         boss: Boss,
         bossDifficulty: BossDifficulty,
@@ -162,7 +170,13 @@ class BossViewModel(
         characterId: Long
     ) {
         viewModelScope.launch {
-            createBossPartyUseCase(boss, bossDifficulty, title, description, characterId).collect { state ->
+            createBossPartyUseCase(
+                boss,
+                bossDifficulty,
+                title,
+                description,
+                characterId
+            ).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
                         onIntent(BossIntent.CreateBossPartySuccess(state.data, state.message))
@@ -255,7 +269,7 @@ class BossViewModel(
         val timeZone: TimeZone = TimeZone.currentSystemDefault()
         return now.toLocalDateTime(timeZone).date
     }
-    
+
     private fun createBossPartyAlarm() {
         val bossPartyId = _uiState.value.selectedBossParty?.id ?: 0L
         val hour = _uiState.value.selectedHour.toInt()
@@ -303,7 +317,7 @@ class BossViewModel(
             }
         }
     }
-    
+
     private fun updateBossPartyPeriod() {
         val bossPartyId = _uiState.value.selectedBossParty?.id ?: 0L
         val dayOfWeek = _uiState.value.selectedDayOfWeek
@@ -319,7 +333,7 @@ class BossViewModel(
         }
         val message = _uiState.value.alarmMessage
         val isImmediateApply = _uiState.value.isImmediatelyAlarm
-        viewModelScope.launch { 
+        viewModelScope.launch {
             updateBossPartyPeriodUseCase(
                 bossPartyId = bossPartyId,
                 dayOfWeek = dayOfWeek,
@@ -330,7 +344,12 @@ class BossViewModel(
             ).collect { state ->
                 when (state) {
                     is ApiState.Success -> {
-                        onIntent(BossIntent.UpdateBossPartyAlarmPeriodSuccess(state.data, state.message))
+                        onIntent(
+                            BossIntent.UpdateBossPartyAlarmPeriodSuccess(
+                                state.data,
+                                state.message
+                            )
+                        )
                     }
 
                     is ApiState.Error -> {
@@ -354,6 +373,77 @@ class BossViewModel(
 
                     is ApiState.Error -> {
                         onIntent(BossIntent.DeleteBossPartyAlarmFailed(state.message))
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun updateBossPartyAbleSchedule() {
+        val bossPartyId = _uiState.value.selectedBossParty?.id ?: 0L
+        val availableSlots = _uiState.value.newAvailableSlots
+        val keepNextWeek = _uiState.value.newKeepNextWeek
+        viewModelScope.launch {
+            updateBossPartyAbleScheduleUseCase(
+                bossPartyId,
+                availableSlots,
+                keepNextWeek
+            ).collect { state ->
+                when (state) {
+                    is ApiState.Success -> {
+                        onIntent(
+                            BossIntent.SubmitBossPartyAbleScheduleSuccess(
+                                state.data.first,
+                                state.data.second,
+                                state.message
+                            )
+                        )
+                    }
+
+                    is ApiState.Error -> {
+                        onIntent(BossIntent.SubmitBossPartyAbleScheduleFailed(state.message))
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun getBossPartyScheduleCandidates() {
+        val bossPartyId = _uiState.value.selectedBossParty?.id ?: 0L
+        viewModelScope.launch {
+            getBossPartyScheduleCandidatesUseCase(bossPartyId).collect { state ->
+                when (state) {
+                    is ApiState.Success -> {
+                        onIntent(BossIntent.GetBossPartyScheduleCandidatesSuccess(state.data))
+                    }
+
+                    is ApiState.Error -> {
+                        onIntent(BossIntent.GetBossPartyScheduleCandidatesFailed(state.message))
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun confirmBossPartySchedule() {
+        val bossPartyId = _uiState.value.selectedBossParty?.id ?: 0L
+        val selectedIndex = _uiState.value.selectedScheduleCandidate?.selectedIndex ?: 0
+        val message = _uiState.value.confirmAlarmMessage
+        viewModelScope.launch {
+            confirmBossPartyScheduleUseCase(bossPartyId, selectedIndex, message).collect { state ->
+                when (state) {
+                    is ApiState.Success -> {
+                        onIntent(BossIntent.ConfirmBossPartyScheduleSuccess(state.message))
+                    }
+
+                    is ApiState.Error -> {
+                        onIntent(BossIntent.ConfirmBossPartyScheduleFailed(state.message))
                     }
 
                     else -> {}
@@ -525,7 +615,21 @@ class BossViewModel(
         viewModelScope.launch {
             observeBossChatUseCase().collect { state ->
                 if (state is ApiState.Success) {
-                    onIntent(BossIntent.ReceiveRealTimeChat(state.data))
+                    when (val event = state.data) {
+                        is BossWebSocketEvent.Chat -> {
+                            onIntent(BossIntent.ReceiveRealTimeChat(event.data))
+                        }
+
+                        is BossWebSocketEvent.ScheduleUpdate -> {
+                            onIntent(BossIntent.GetBossPartyScheduleCandidatesSuccess(event.candidates))
+                            Napier.d("스케줄 후보군 실시간 갱신 완료")
+                        }
+
+                        is BossWebSocketEvent.ScheduleCancel -> {
+                            onIntent(BossIntent.InitBossPartySchedule)
+                            Napier.d("스케줄 실시간 취소 완료")
+                        }
+                    }
                 }
             }
         }
@@ -741,7 +845,7 @@ class BossViewModel(
             is BossIntent.FetchCharacters -> {
                 getSavedCharacters(intent.allWorldNames)
             }
-            
+
             is BossIntent.CreateBossParty -> {
                 createBossParty(
                     boss = _uiState.value.selectedBoss,
@@ -771,7 +875,7 @@ class BossViewModel(
             is BossIntent.RefreshBossPartyDetail -> {
                 refreshBossPartyDetail(intent.bossPartyId)
             }
-            
+
             is BossIntent.CreateBossPartyAlarm -> {
                 createBossPartyAlarm()
             }
@@ -779,13 +883,25 @@ class BossViewModel(
             is BossIntent.ToggleBossPartyAlarm -> {
                 toggleBossPartyAlarm()
             }
-            
+
             is BossIntent.UpdateBossPartyAlarmPeriod -> {
                 updateBossPartyPeriod()
             }
 
             is BossIntent.DeleteBossPartyAlarm -> {
                 deleteBossPartyAlarm(intent.alarmId)
+            }
+
+            is BossIntent.SubmitBossPartyAbleSchedule -> {
+                updateBossPartyAbleSchedule()
+            }
+
+            is BossIntent.ShowBossPartyTimeConfirmDialog -> {
+                getBossPartyScheduleCandidates()
+            }
+
+            is BossIntent.ConfirmBossPartySchedule -> {
+                confirmBossPartySchedule()
             }
 
             is BossIntent.SearchCharacters -> {

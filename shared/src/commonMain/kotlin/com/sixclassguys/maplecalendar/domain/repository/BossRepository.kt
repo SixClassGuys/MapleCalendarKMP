@@ -7,8 +7,10 @@ import com.sixclassguys.maplecalendar.domain.model.BossPartyBoard
 import com.sixclassguys.maplecalendar.domain.model.BossPartyBoardHistory
 import com.sixclassguys.maplecalendar.domain.model.BossPartyChat
 import com.sixclassguys.maplecalendar.domain.model.BossPartyChatHistory
+import com.sixclassguys.maplecalendar.domain.model.BossPartyCommonSchedule
 import com.sixclassguys.maplecalendar.domain.model.BossPartyDetail
 import com.sixclassguys.maplecalendar.domain.model.BossPartySchedule
+import com.sixclassguys.maplecalendar.domain.model.BossWebSocketEvent
 import com.sixclassguys.maplecalendar.util.Boss
 import com.sixclassguys.maplecalendar.util.BossDifficulty
 import kotlinx.coroutines.flow.Flow
@@ -61,6 +63,22 @@ interface BossRepository {
         alarmId: Long
     ): Flow<ApiState<List<BossPartyAlarmTime>>>
 
+    suspend fun updateSchedule(
+        bossPartyId: Long,
+        availableSlots: String,
+        keepNextWeek: Boolean
+    ): Flow<ApiState<Pair<String, Boolean>>>
+
+    suspend fun getScheduleCandidates(
+        bossPartyId: Long
+    ): Flow<ApiState<List<BossPartyCommonSchedule>>>
+
+    suspend fun confirmBossTime(
+        bossPartyId: Long,
+        selectedIndex: Int,
+        message: String
+    ): Flow<ApiState<Unit>>
+
     suspend fun inviteMember(bossPartyId: Long, characterId: Long): Flow<ApiState<Unit>>
 
     suspend fun acceptInvitation(bossPartyId: Long): Flow<ApiState<Long>>
@@ -79,7 +97,7 @@ interface BossRepository {
 
     suspend fun updateChatAlarmSetting(bossPartyId: Long): Flow<ApiState<Boolean>>
 
-    fun observeMessages(): Flow<ApiState<BossPartyChat>>
+    fun observeMessages(): Flow<ApiState<BossWebSocketEvent>>
 
     suspend fun sendMessage(partyId: Long, message: BossPartyChat): ApiState<Unit>
 

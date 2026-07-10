@@ -62,7 +62,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
 
             // 2. 타입별 처리
             when (type) {
-                "BOSS", "MEMBER_JOINED", "MEMBER_KICKED", "MEMBER_LEFT", "LEADER_TRANSFERRED" -> {
+                "BOSS", "MEMBER_JOINED", "MEMBER_KICKED", "MEMBER_LEFT", "LEADER_TRANSFERRED", "SCHEDULE_CANCEL" -> {
                     showBossNotification(title, body, contentId)
                 }
 
@@ -88,7 +88,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
     // 별도의 함수로 분리하여 관리하면 코드가 더 깔끔해집니다.
     private suspend fun handleInternalEvent(type: String?, contentId: Long, data: Map<String, String>) {
         when (type) {
-            "BOSS", "MEMBER_JOINED", "MEMBER_KICKED", "MEMBER_LEFT", "LEADER_TRANSFERRED" -> {
+            "BOSS", "MEMBER_JOINED", "MEMBER_KICKED", "MEMBER_LEFT", "LEADER_TRANSFERRED", "SCHEDULE_CANCEL" -> {
                 eventBus.emitBossPartyId(contentId)
 
                 // 수락 의도 파악 등 추가 로직
@@ -100,7 +100,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
             "BOSS_INVITATION", "INVITATION_DECLINED" -> {
                 eventBus.emitInvitedPartyId(contentId)
             }
-
 
             "REFRESH_BOSS_ALARM" -> {
                 eventBus.emitBossPartyId(contentId)

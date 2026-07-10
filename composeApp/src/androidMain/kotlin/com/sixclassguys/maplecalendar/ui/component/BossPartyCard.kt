@@ -63,13 +63,37 @@ fun BossPartyCard(
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-                // 🚀 2. 제목 및 난이도 태그
-                Text(
-                    text = bossParty.title,
-                    fontFamily = PretendardFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                )
+                // 제목 및 난이도 태그
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = bossParty.title,
+                        fontFamily = PretendardFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    if (bossParty.isScheduleRequired) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Surface(
+                            color = MapleTheme.colors.primary,
+                            shape = RoundedCornerShape(50)
+                        ) {
+                            Text(
+                                text = "시간 미확정",
+                                color = MapleTheme.colors.surface,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                                fontSize = 12.sp,
+                                fontFamily = PretendardFamily,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
 
                 Row(
                     modifier = Modifier.padding(vertical = 6.dp),

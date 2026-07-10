@@ -6,6 +6,7 @@ import com.sixclassguys.maplecalendar.domain.model.BossPartyBoard
 import com.sixclassguys.maplecalendar.domain.model.BossPartyBoardHistory
 import com.sixclassguys.maplecalendar.domain.model.BossPartyChat
 import com.sixclassguys.maplecalendar.domain.model.BossPartyChatHistory
+import com.sixclassguys.maplecalendar.domain.model.BossPartyCommonSchedule
 import com.sixclassguys.maplecalendar.domain.model.BossPartyDetail
 import com.sixclassguys.maplecalendar.domain.model.CharacterSummary
 import com.sixclassguys.maplecalendar.util.Boss
@@ -131,6 +132,47 @@ sealed class BossIntent {
     ) : BossIntent()
 
     data class DeleteBossPartyAlarmFailed(val message: String) : BossIntent()
+
+    data object ShowBossPartyTimeSelectDialog : BossIntent()
+
+    data object DismissBossPartyTimeSelectDialog : BossIntent()
+
+    data class UpdateBossPartyAbleSchedule(val newAvailableSlots: String) : BossIntent()
+
+    data class UpdateBossPartyScheduleKeep(val newKeepNextWeek: Boolean) : BossIntent()
+
+    data object SubmitBossPartyAbleSchedule : BossIntent()
+
+    data class SubmitBossPartyAbleScheduleSuccess(
+        val availableSlots: String,
+        val keepNextWeek: Boolean,
+        val message: String?
+    ) : BossIntent()
+
+    data class SubmitBossPartyAbleScheduleFailed(val message: String) : BossIntent()
+
+    data object ShowBossPartyTimeConfirmDialog : BossIntent()
+
+    data object DismissBossPartyTimeConfirmDialog : BossIntent()
+
+    data object InitBossPartySchedule : BossIntent()
+
+    data object GetBossPartyScheduleCandidates : BossIntent()
+
+    data class GetBossPartyScheduleCandidatesSuccess(val scheduleCandidates: List<BossPartyCommonSchedule>) :
+        BossIntent()
+
+    data class GetBossPartyScheduleCandidatesFailed(val message: String) : BossIntent()
+
+    data class SelectBossPartyScheduleCandidate(val schedule: BossPartyCommonSchedule) : BossIntent()
+
+    data class UpdateBossPartyConfirmMessage(val message: String) : BossIntent()
+
+    data object ConfirmBossPartySchedule : BossIntent()
+
+    data class ConfirmBossPartyScheduleSuccess(val message: String?) : BossIntent()
+
+    data class ConfirmBossPartyScheduleFailed(val message: String) : BossIntent()
 
     data object ToggleBossPartyAlarm : BossIntent()
 

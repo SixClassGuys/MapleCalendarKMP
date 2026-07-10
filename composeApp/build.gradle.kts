@@ -103,8 +103,8 @@ android {
         applicationId = "com.sixclassguys.maplecalendar"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 19
-        versionName = "1.0.0"
+        versionCode = 20
+        versionName = "1.1.0"
 
         buildConfigField("int", "VERSION_CODE", "${versionCode}")
         buildConfigField("String", "VERSION_NAME", "\"${versionName}\"")
