@@ -159,15 +159,6 @@ enum class Boss(
         memberCounts = listOf(6),
         rewards = listOf()
     ),
-    HILLA(
-        bossName = "힐라",
-        region = "메이플 월드",
-        difficulties = listOf(BossDifficulty.HARD),
-        reqLevels = listOf(170),
-        bossLevels = listOf(190),
-        memberCounts = listOf(6),
-        rewards = listOf()
-    ),
     PAPULATUS(
         bossName = "파풀라투스",
         region = "메이플 월드",
@@ -211,24 +202,6 @@ enum class Boss(
         reqLevels = listOf(180),
         bossLevels = listOf(190),
         memberCounts = listOf(6),
-        rewards = listOf()
-    ),
-    PINKBEAN(
-        bossName = "핑크빈",
-        region = "메이플 월드",
-        difficulties = listOf(BossDifficulty.CHAOS),
-        reqLevels = listOf(170),
-        bossLevels = listOf(190),
-        memberCounts = listOf(6),
-        rewards = listOf()
-    ),
-    CYGNUS(
-        bossName = "시그너스",
-        region = "메이플 월드",
-        difficulties = listOf(BossDifficulty.EASY, BossDifficulty.NORMAL),
-        reqLevels = listOf(),
-        bossLevels = listOf(),
-        memberCounts = listOf(6, 6),
         rewards = listOf()
     ),
     LOTUS(

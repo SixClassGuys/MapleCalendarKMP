@@ -80,14 +80,11 @@ val Boss.iconRes: Int
         Boss.BLACKMAGE -> R.drawable.ic_boss_black_mage
         Boss.ZAKUM -> R.drawable.ic_boss_zakum
         Boss.MAGNUS -> R.drawable.ic_boss_magnus
-        Boss.HILLA -> R.drawable.ic_boss_hilla
         Boss.PAPULATUS -> R.drawable.ic_boss_papulatus
         Boss.VONBON -> R.drawable.ic_boss_von_bon
         Boss.PIERRE -> R.drawable.ic_boss_pierre
         Boss.BLOODYQUEEN -> R.drawable.ic_boss_bloody_queen
         Boss.VELLUM -> R.drawable.ic_boss_vellum
-        Boss.PINKBEAN -> R.drawable.ic_boss_pink_bean
-        Boss.CYGNUS -> R.drawable.ic_boss_cygnus
         Boss.LOTUS -> R.drawable.ic_boss_lotus
         Boss.DAMIEN -> R.drawable.ic_boss_damien
         Boss.GUARDIANANGELSLIME -> R.drawable.ic_boss_guardian_angel_slime
@@ -111,14 +108,11 @@ val Boss.backgroundRes: Int
         Boss.BLACKMAGE -> R.drawable.bg_boss_black_mage
         Boss.ZAKUM -> R.drawable.bg_boss_zakum
         Boss.MAGNUS -> R.drawable.bg_boss_magnus
-        Boss.HILLA -> R.drawable.bg_boss_hilla
         Boss.PAPULATUS -> R.drawable.bg_boss_papulatus
         Boss.VONBON -> R.drawable.bg_boss_von_bon
         Boss.PIERRE -> R.drawable.bg_boss_pierre
         Boss.BLOODYQUEEN -> R.drawable.bg_boss_bloody_queen
         Boss.VELLUM -> R.drawable.bg_boss_vellum
-        Boss.PINKBEAN -> R.drawable.bg_boss_pink_bean
-        Boss.CYGNUS -> R.drawable.bg_boss_cygnus
         Boss.LOTUS -> R.drawable.bg_boss_lotus
         Boss.DAMIEN -> R.drawable.bg_boss_damien
         Boss.GUARDIANANGELSLIME -> R.drawable.bg_boss_guardian_angel_slime
@@ -142,14 +136,11 @@ val Boss.entryBackgroundRes: Int
         Boss.BLACKMAGE -> R.drawable.boss_entry_black_mage
         Boss.ZAKUM -> R.drawable.boss_entry_zakum
         Boss.MAGNUS -> R.drawable.boss_entry_magnus
-        Boss.HILLA -> R.drawable.boss_entry_hilla
         Boss.PAPULATUS -> R.drawable.boss_entry_papulatus
         Boss.VONBON -> R.drawable.boss_entry_von_bon
         Boss.PIERRE -> R.drawable.boss_entry_pierre
         Boss.BLOODYQUEEN -> R.drawable.boss_entry_bloody_queen
         Boss.VELLUM -> R.drawable.boss_entry_vellum
-        Boss.PINKBEAN -> R.drawable.boss_entry_pink_bean
-        Boss.CYGNUS -> R.drawable.boss_entry_cygnus
         Boss.LOTUS -> R.drawable.boss_entry_lotus
         Boss.DAMIEN -> R.drawable.boss_entry_damien
         Boss.GUARDIANANGELSLIME -> R.drawable.boss_entry_guardian_angel_slime
