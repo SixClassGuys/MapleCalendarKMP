@@ -7,6 +7,10 @@ import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyAlarmTimeRequest
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyChatMessageRequest
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyChatMessageResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyCreateRequest
+import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyScheduleCancellationWebsocketResponse
+import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyScheduleWebsocketResponse
+import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyTimeConfirmRequest
+import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyUpdateScheduleRequest
 import com.sixclassguys.maplecalendar.domain.model.ApiState
 import com.sixclassguys.maplecalendar.domain.model.BossParty
 import com.sixclassguys.maplecalendar.domain.model.BossPartyAlarmTime
@@ -14,8 +18,10 @@ import com.sixclassguys.maplecalendar.domain.model.BossPartyBoard
 import com.sixclassguys.maplecalendar.domain.model.BossPartyBoardHistory
 import com.sixclassguys.maplecalendar.domain.model.BossPartyChat
 import com.sixclassguys.maplecalendar.domain.model.BossPartyChatHistory
+import com.sixclassguys.maplecalendar.domain.model.BossPartyCommonSchedule
 import com.sixclassguys.maplecalendar.domain.model.BossPartyDetail
 import com.sixclassguys.maplecalendar.domain.model.BossPartySchedule
+import com.sixclassguys.maplecalendar.domain.model.BossWebSocketEvent
 import com.sixclassguys.maplecalendar.domain.repository.BossRepository
 import com.sixclassguys.maplecalendar.util.Boss
 import com.sixclassguys.maplecalendar.util.BossDifficulty
@@ -35,6 +41,8 @@ import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 class BossRepositoryImpl(
     private val dataSource: BossDataSource,
@@ -76,15 +84,16 @@ class BossRepositoryImpl(
         emit(ApiState.Success(bossPartyId, "보스 파티 생성에 성공했어요."))
     }.handleApiError()
 
-    override suspend fun getBossPartyDetail(bossPartyId: Long): Flow<ApiState<BossPartyDetail>> = flow {
-        emit(ApiState.Loading)
+    override suspend fun getBossPartyDetail(bossPartyId: Long): Flow<ApiState<BossPartyDetail>> =
+        flow {
+            emit(ApiState.Loading)
 
-        val accessToken = dataStore.accessToken.first()
-        val response = dataSource.getBossPartyDetail(accessToken, bossPartyId)
-        val bossPartyDetail = response.toDomain()
+            val accessToken = dataStore.accessToken.first()
+            val response = dataSource.getBossPartyDetail(accessToken, bossPartyId)
+            val bossPartyDetail = response.toDomain()
 
-        emit(ApiState.Success(bossPartyDetail))
-    }.handleApiError()
+            emit(ApiState.Success(bossPartyDetail))
+        }.handleApiError()
 
     override suspend fun getBossPartySchedules(
         year: Int,
@@ -100,18 +109,19 @@ class BossRepositoryImpl(
         emit(ApiState.Success(bossPartySchedules))
     }.handleApiError()
 
-    override suspend fun getBossPartyAlarmTimes(bossPartyId: Long): Flow<ApiState<List<BossPartyAlarmTime>>> = flow {
-        emit(ApiState.Loading)
+    override suspend fun getBossPartyAlarmTimes(bossPartyId: Long): Flow<ApiState<List<BossPartyAlarmTime>>> =
+        flow {
+            emit(ApiState.Loading)
 
-        val accessToken = dataStore.accessToken.first()
-        val response = dataSource.getBossPartyAlarmTimes(
-            accessToken = accessToken,
-            bossPartyId = bossPartyId
-        )
-        val alarmTimes = response.map { it.toDomain() }
+            val accessToken = dataStore.accessToken.first()
+            val response = dataSource.getBossPartyAlarmTimes(
+                accessToken = accessToken,
+                bossPartyId = bossPartyId
+            )
+            val alarmTimes = response.map { it.toDomain() }
 
-        emit(ApiState.Success(alarmTimes))
-    }.handleApiError()
+            emit(ApiState.Success(alarmTimes))
+        }.handleApiError()
 
     override suspend fun updateAlarmSetting(
         bossPartyId: Long
@@ -196,6 +206,65 @@ class BossRepositoryImpl(
         emit(ApiState.Success(alarmTimes, "예약된 알람을 제거했어요."))
     }.handleApiError()
 
+    override suspend fun updateSchedule(
+        bossPartyId: Long,
+        availableSlots: String,
+        keepNextWeek: Boolean
+    ): Flow<ApiState<Pair<String, Boolean>>> = flow {
+        emit(ApiState.Loading)
+
+        val accessToken = dataStore.accessToken.first()
+        val response = dataSource.updateSchedule(
+            accessToken = accessToken,
+            bossPartyId = bossPartyId,
+            request = BossPartyUpdateScheduleRequest(
+                availableSlots = availableSlots,
+                keepNextWeek = keepNextWeek
+            )
+        )
+
+        emit(
+            ApiState.Success(
+                Pair(response.newAvailableSlots, response.newKeepNextWeek),
+                "가능한 시간대를 변경했어요."
+            )
+        )
+    }.handleApiError()
+
+    override suspend fun getScheduleCandidates(bossPartyId: Long): Flow<ApiState<List<BossPartyCommonSchedule>>> =
+        flow {
+            emit(ApiState.Loading)
+
+            val accessToken = dataStore.accessToken.first()
+            val response = dataSource.getScheduleCandidates(
+                accessToken = accessToken,
+                bossPartyId = bossPartyId
+            )
+            val commonSchedules = response.map { it.toDomain() }
+
+            emit(ApiState.Success(commonSchedules, "파티원 모두가 가능한 시간대를 가져왔어요."))
+        }.handleApiError()
+
+    override suspend fun confirmBossTime(
+        bossPartyId: Long,
+        selectedIndex: Int,
+        message: String
+    ): Flow<ApiState<Unit>> = flow {
+        emit(ApiState.Loading)
+
+        val accessToken = dataStore.accessToken.first()
+        val response = dataSource.confirmBossTime(
+            accessToken = accessToken,
+            bossPartyId = bossPartyId,
+            request = BossPartyTimeConfirmRequest(
+                selectedIndex = selectedIndex,
+                message = message
+            )
+        )
+
+        emit(ApiState.Success(response, "보스 출발 시간을 변경하고 알람을 예약했어요."))
+    }.handleApiError()
+
     override suspend fun inviteMember(
         bossPartyId: Long,
         characterId: Long
@@ -224,18 +293,19 @@ class BossRepositoryImpl(
         emit(ApiState.Success(response, "초대 수락에 성공했어요."))
     }.handleApiError()
 
-    override suspend fun declineInvitation(bossPartyId: Long): Flow<ApiState<List<BossParty>>> = flow {
-        emit(ApiState.Loading)
+    override suspend fun declineInvitation(bossPartyId: Long): Flow<ApiState<List<BossParty>>> =
+        flow {
+            emit(ApiState.Loading)
 
-        val accessToken = dataStore.accessToken.first()
-        val response = dataSource.declineInvitation(
-            accessToken = accessToken,
-            bossPartyId = bossPartyId
-        )
-        val bossParties = response.map { it.toDomain() }
+            val accessToken = dataStore.accessToken.first()
+            val response = dataSource.declineInvitation(
+                accessToken = accessToken,
+                bossPartyId = bossPartyId
+            )
+            val bossParties = response.map { it.toDomain() }
 
-        emit(ApiState.Success(bossParties, "초대를 거절했어요."))
-    }.handleApiError()
+            emit(ApiState.Success(bossParties, "초대를 거절했어요."))
+        }.handleApiError()
 
     override suspend fun kickMember(
         bossPartyId: Long,
@@ -282,19 +352,24 @@ class BossRepositoryImpl(
         emit(ApiState.Success(Unit, "파티장 양도에 성공했어요."))
     }.handleApiError()
 
-    override suspend fun getChatMessage(bossPartyId: Long, page: Int): Flow<ApiState<BossPartyChatHistory>> = flow {
+    override suspend fun getChatMessage(
+        bossPartyId: Long,
+        page: Int
+    ): Flow<ApiState<BossPartyChatHistory>> = flow {
         emit(ApiState.Loading)
 
         val accessToken = dataStore.accessToken.first()
         val response = dataSource.getChatMessages(accessToken, bossPartyId, page)
         val messages = response.content.map { it.toDomain() }
 
-        emit(ApiState.Success(
-            BossPartyChatHistory(
-                messages = messages,
-                isLastPage = response.last
+        emit(
+            ApiState.Success(
+                BossPartyChatHistory(
+                    messages = messages,
+                    isLastPage = response.last
+                )
             )
-        ))
+        )
     }.handleApiError()
 
     override suspend fun connect(partyId: String): Flow<ApiState<Unit>> = flow {
@@ -320,36 +395,69 @@ class BossRepositoryImpl(
         emit(ApiState.Success(response))
     }.handleApiError()
 
-    override fun observeMessages(): Flow<ApiState<BossPartyChat>> {
+    override fun observeMessages(): Flow<ApiState<BossWebSocketEvent>> {
         return dataSource.observeMessages()
             .filterIsInstance<Frame.Text>()
             .map { frame ->
-                val domainModel = Json.decodeFromString<BossPartyChatMessageResponse>(frame.readText()).toDomain()
-                // 명시적으로 타입을 지정하여 반환
-                ApiState.Success(domainModel) as ApiState<BossPartyChat>
+                val rawText = frame.readText()
+
+                // 1. JSON 구조 분석을 위해 JsonElement로 파싱
+                val jsonObject = Json.parseToJsonElement(rawText).jsonObject
+
+                Napier.d("JSON: $jsonObject")
+
+                // 2. type 필드가 SCHEDULE_UPDATE 일 때 (스케줄 DTO -> 도메인 매핑)
+                when (jsonObject["type"]?.jsonPrimitive?.content) {
+                    "SCHEDULE_UPDATE" -> {
+                        val dto = Json.decodeFromString<BossPartyScheduleWebsocketResponse>(rawText)
+
+                        // 💡 DTO를 도메인 모델로 변환하여 캡슐화
+                        val domainCandidates = dto.candidates.map { it.toDomain() }
+                        ApiState.Success(BossWebSocketEvent.ScheduleUpdate(domainCandidates))
+                    }
+
+                    "SCHEDULE_CANCEL" -> {
+                        val dto = Json.decodeFromString<BossPartyScheduleCancellationWebsocketResponse>(rawText)
+
+                        // 💡 DTO를 도메인 모델로 변환하여 캡슐화
+                        val scheduleCancellation = dto.toDomain()
+                        ApiState.Success(BossWebSocketEvent.ScheduleCancel(scheduleCancellation))
+                    }
+
+                    // 3. 그 외의 경우 (채팅 DTO -> 도메인 매핑)
+                    else -> {
+                        val dto = Json.decodeFromString<BossPartyChatMessageResponse>(rawText)
+
+                        // 💡 기존에 구현해두신 .toDomain() 호출
+                        val chatDomain = dto.toDomain()
+                        ApiState.Success(BossWebSocketEvent.Chat(chatDomain))
+                    }
+                }
             }
             .retryWhen { _, attempt ->
                 if (attempt < 3) {
-                    delay(2000) // 여기서 멈췄다가
-                    true        // true를 반환해서 재시도 결정
+                    delay(2000)
+                    true
                 } else {
-                    false       // 3번 넘으면 포기
+                    false
                 }
             }
             .catch { e ->
-                emit(ApiState.Error(e.message ?: "메시지 수신에 오류가 있어요."))
+                ApiState.Error(e.message ?: "메시지 수신에 오류가 있어요.")
             }
     }
 
     override suspend fun sendMessage(partyId: Long, message: BossPartyChat): ApiState<Unit> {
         return try {
             Napier.d("Sending message: ${message.content}")
-            dataSource.sendMessage(BossPartyChatMessageRequest(
-                bossPartyId = partyId,
-                characterId = message.senderId,
-                content = message.content,
-                messageType = message.messageType
-            ))
+            dataSource.sendMessage(
+                BossPartyChatMessageRequest(
+                    bossPartyId = partyId,
+                    characterId = message.senderId,
+                    content = message.content,
+                    messageType = message.messageType
+                )
+            )
             ApiState.Success(Unit)
         } catch (e: Exception) {
             Napier.d(e.message ?: "메시지 전송 실패")
@@ -366,14 +474,15 @@ class BossRepositoryImpl(
         emit(ApiState.Success(Unit, "메시지를 가렸어요."))
     }.handleApiError()
 
-    override suspend fun deleteMessage(bossPartyId: Long, chatId: Long): Flow<ApiState<Unit>> = flow {
-        emit(ApiState.Loading)
+    override suspend fun deleteMessage(bossPartyId: Long, chatId: Long): Flow<ApiState<Unit>> =
+        flow {
+            emit(ApiState.Loading)
 
-        val accessToken = dataStore.accessToken.first()
-        dataSource.deleteMessage(accessToken, bossPartyId, chatId)
+            val accessToken = dataStore.accessToken.first()
+            dataSource.deleteMessage(accessToken, bossPartyId, chatId)
 
-        emit(ApiState.Success(Unit, "메시지를 삭제했어요."))
-    }.handleApiError()
+            emit(ApiState.Success(Unit, "메시지를 삭제했어요."))
+        }.handleApiError()
 
     override suspend fun disconnect() = dataSource.disconnect()
 
@@ -391,12 +500,14 @@ class BossRepositoryImpl(
         )
         val boards = response.content.map { it.toDomain() }
 
-        emit(ApiState.Success(
-            BossPartyBoardHistory(
-                boards = boards,
-                isLastPage = response.last
+        emit(
+            ApiState.Success(
+                BossPartyBoardHistory(
+                    boards = boards,
+                    isLastPage = response.last
+                )
             )
-        ))
+        )
     }.handleApiError()
 
     override suspend fun createBoardPost(
