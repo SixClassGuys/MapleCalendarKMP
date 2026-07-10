@@ -6,11 +6,15 @@ import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyAlarmTimeResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyBoardResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyChatMessageRequest
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyChatMessageResponse
+import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyCommonScheduleResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyCreateRequest
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyCreateResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyDetailResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyScheduleResponse
+import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyTimeConfirmRequest
+import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyUpdateScheduleRequest
+import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyUpdateScheduleResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.SliceResponse
 import com.sixclassguys.maplecalendar.util.ApiException
 import com.sixclassguys.maplecalendar.util.handleResponse
@@ -191,6 +195,59 @@ class BossDataSourceImpl(
         return try {
             httpClient.delete("boss-parties/$bossPartyId/alarm-times/$alarmId") {
                 header("Authorization", "Bearer $accessToken")
+            }.handleResponse()
+        } catch (e: ApiException) {
+            throw e
+        } catch (e: Exception) {
+            throw ApiException(0, "$e: 인터넷 연결을 확인해주세요.")
+        }
+    }
+
+    override suspend fun updateSchedule(
+        accessToken: String,
+        bossPartyId: Long,
+        request: BossPartyUpdateScheduleRequest
+    ): BossPartyUpdateScheduleResponse {
+        return try {
+            httpClient.put("boss-parties/$bossPartyId/schedule") {
+                header("Authorization", "Bearer $accessToken")
+                setBody(request)
+
+                contentType(ContentType.Application.Json)
+            }.handleResponse()
+        } catch (e: ApiException) {
+            throw e
+        } catch (e: Exception) {
+            throw ApiException(0, "$e: 인터넷 연결을 확인해주세요.")
+        }
+    }
+
+    override suspend fun getScheduleCandidates(
+        accessToken: String,
+        bossPartyId: Long
+    ): List<BossPartyCommonScheduleResponse> {
+        return try {
+            httpClient.get("boss-parties/$bossPartyId/schedule/candidates") {
+                header("Authorization", "Bearer $accessToken")
+            }.handleResponse()
+        } catch (e: ApiException) {
+            throw e
+        } catch (e: Exception) {
+            throw ApiException(0, "$e: 인터넷 연결을 확인해주세요.")
+        }
+    }
+
+    override suspend fun confirmBossTime(
+        accessToken: String,
+        bossPartyId: Long,
+        request: BossPartyTimeConfirmRequest
+    ) {
+        return try {
+            httpClient.post("boss-parties/$bossPartyId/schedule/confirm") {
+                header("Authorization", "Bearer $accessToken")
+                setBody(request)
+
+                contentType(ContentType.Application.Json)
             }.handleResponse()
         } catch (e: ApiException) {
             throw e

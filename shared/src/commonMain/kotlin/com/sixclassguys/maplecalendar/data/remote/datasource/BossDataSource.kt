@@ -6,11 +6,15 @@ import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyAlarmTimeResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyBoardResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyChatMessageRequest
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyChatMessageResponse
+import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyCommonScheduleResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyCreateRequest
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyCreateResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyDetailResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyScheduleResponse
+import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyTimeConfirmRequest
+import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyUpdateScheduleRequest
+import com.sixclassguys.maplecalendar.data.remote.dto.BossPartyUpdateScheduleResponse
 import com.sixclassguys.maplecalendar.data.remote.dto.SliceResponse
 import io.ktor.websocket.Frame
 import kotlinx.coroutines.flow.Flow
@@ -57,6 +61,23 @@ interface BossDataSource {
         bossPartyId: Long,
         alarmId: Long
     ): List<BossPartyAlarmTimeResponse>
+
+    suspend fun updateSchedule(
+        accessToken: String,
+        bossPartyId: Long,
+        request: BossPartyUpdateScheduleRequest
+    ): BossPartyUpdateScheduleResponse
+
+    suspend fun getScheduleCandidates(
+        accessToken: String,
+        bossPartyId: Long
+    ): List<BossPartyCommonScheduleResponse>
+
+    suspend fun confirmBossTime(
+        accessToken: String,
+        bossPartyId: Long,
+        request: BossPartyTimeConfirmRequest
+    )
 
     suspend fun inviteMember(
         accessToken: String,
