@@ -15,6 +15,7 @@ data class BossParty(
     val leaderNickname: String,
     val memberCount: Int,
     val joinStatus: JoinStatus,
+    val isScheduleRequired: Boolean,
     val createdAt: String,
     val updatedAt: String
 )

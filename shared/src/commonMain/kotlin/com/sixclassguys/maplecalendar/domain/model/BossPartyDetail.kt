@@ -14,6 +14,8 @@ data class BossPartyDetail(
     val members: List<BossPartyMember>,
     val isLeader: Boolean,
     val isPartyAlarmEnabled: Boolean,
+    val myAvailableSlots: String?,
+    val myKeepNextWeek: Boolean?,
     val isChatAlarmEnabled: Boolean,
     val alarmDayOfWeek: DayOfWeek?,
     val alarmHour: Int?,
